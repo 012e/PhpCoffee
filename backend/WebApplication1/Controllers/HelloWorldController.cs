@@ -16,6 +16,7 @@ public class HelloWorldController : ControllerBase
     [HttpGet(Name = "hello world")]
     public string Get()
     {
+        throw new Exception("what the fuck");
         return "hello world";
     }
 }

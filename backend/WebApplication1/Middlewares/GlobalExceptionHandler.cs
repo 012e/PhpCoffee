@@ -1,4 +1,11 @@
+using System.Diagnostics;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using WebApplication1.Exceptions;
+
 namespace WebApplication1.Middlewares;
+
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
@@ -6,49 +13,62 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-internal sealed class GlobalExceptionHandler : IExceptionHandler
+internal sealed class GlobalExceptionHandler(IHostEnvironment env, ILogger<GlobalExceptionHandler> logger)
+    : IExceptionHandler
 {
-    private readonly ILogger<GlobalExceptionHandler> _logger;
+    private const string UnhandledExceptionMsg = "An unhandled exception has occurred while executing the request.";
 
-    public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
+    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web)
     {
-        _logger = logger;
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+    };
+
+    public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception,
+        CancellationToken cancellationToken)
+    {
+        //If your logger logs "Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware", you should remove the string below to avoid the exception being logged twice.
+        logger.LogError(exception, exception is BaseException ? exception.Message : UnhandledExceptionMsg);
+
+        var problemDetails = CreateProblemDetails(context, exception);
+        var json = ToJson(problemDetails);
+
+        const string contentType = "application/problem+json";
+        context.Response.ContentType = contentType;
+        await context.Response.WriteAsync(json, cancellationToken);
+
+        return true;
     }
 
-    public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+    private static ProblemDetails CreateProblemDetails(in HttpContext context, in Exception exception)
     {
-        _logger.LogError(exception, "Unhandled exception occurred");
-
-        var statusCode = exception switch
+        var statusCode = context.Response.StatusCode;
+        var reasonPhrase = ReasonPhrases.GetReasonPhrase(statusCode);
+        if (string.IsNullOrEmpty(reasonPhrase))
         {
-            BadHttpRequestException => (int)HttpStatusCode.BadRequest,
-            ValidationException => (int)HttpStatusCode.UnprocessableEntity,
-            _ => (int)HttpStatusCode.InternalServerError
+            reasonPhrase = UnhandledExceptionMsg;
+        }
+
+        var problemDetails = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = reasonPhrase,
         };
 
-        httpContext.Response.StatusCode = statusCode;
-        httpContext.Response.ContentType = "application/json";
-
-        var response = new ErrorResponse
-        {
-            Message = exception switch
-            {
-                BadHttpRequestException => "Invalid request payload.",
-                ValidationException => "Validation failed.",
-                _ => "An unexpected error occurred. Please try again later."
-            },
-            Details = exception.Message
-        };
-
-        var jsonResponse = JsonSerializer.Serialize(response);
-        await httpContext.Response.WriteAsync(jsonResponse, cancellationToken);
-
-        return true; // Exception handled
+        return problemDetails;
     }
-}
 
-internal sealed class ErrorResponse
-{
-    public string Message { get; set; } = string.Empty;
-    public string? Details { get; set; }
+    private string ToJson(in ProblemDetails problemDetails)
+    {
+        try
+        {
+            return JsonSerializer.Serialize(problemDetails, SerializerOptions);
+        }
+        catch (Exception ex)
+        {
+            const string msg = "An exception has occurred while serializing error to JSON";
+            logger.LogError(ex, msg);
+        }
+
+        return string.Empty;
+    }
 }
