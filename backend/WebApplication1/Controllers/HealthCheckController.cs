@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using System.Security.Principal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,18 +24,16 @@ public class HealthCheckController : ControllerBase
 
     [Authorize]
     [HttpGet("CurrentUser")]
-    [ProducesResponseType(typeof(ProblemDetails),StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(IEnumerable<Claim>),StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<Claim>), StatusCodes.Status400BadRequest)]
     public IActionResult Hello()
     {
         if (User.Identity is null || !User.Identity.IsAuthenticated)
         {
-            throw new Exception("You are not logged in");
             return BadRequest(new ProblemDetails
             {
                 Title = "User is not logged in"
             });
-
         }
 
         return Ok(User.Claims);
