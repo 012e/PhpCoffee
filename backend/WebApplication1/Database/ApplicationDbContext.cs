@@ -15,7 +15,7 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Ingredient> Ingredients { get; set; }
 
-    public virtual DbSet<InventoryTransaction> InventoryTransactions { get; set; }
+    public virtual DbSet<InventoryTransaction> TableInventoryTransactions { get; set; }
 
     public virtual DbSet<MenuItem> MenuItems { get; set; }
 

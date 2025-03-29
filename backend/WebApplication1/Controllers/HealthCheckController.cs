@@ -19,7 +19,7 @@ public class HealthCheckController : ControllerBase
     public string Throw()
     {
         throw new Exception("what the fuck");
-        return "hello world";
+        //return "hello world";
     }
 
     [Authorize]

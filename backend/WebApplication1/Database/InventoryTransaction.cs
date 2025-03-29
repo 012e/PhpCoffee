@@ -1,4 +1,6 @@
-﻿namespace WebApplication1.Database;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace WebApplication1.Database;
 
 public partial class InventoryTransaction
 {
