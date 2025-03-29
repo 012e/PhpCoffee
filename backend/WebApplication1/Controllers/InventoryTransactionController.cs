@@ -1,13 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Database;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Cryptography.X509Certificates;
-using System.Numerics;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using System.Transactions;
-using System.Threading.Tasks;
 
 namespace WebApplication1.Controllers;
 [Route("api/[controller]")]
@@ -24,14 +17,14 @@ public class InventoryTransactionController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<InventoryTransaction>>> GetTransactions()
     {
-        return await _context.TableInventoryTransactions.ToListAsync();
+        return await _context.InventoryTransactionsTable.ToListAsync();
     }
 
     //lấy theo số id
     [HttpGet("{id}")]
     public async Task<ActionResult<InventoryTransaction>> GetTransactionsById(int id)
     {
-        var transaction = await _context.TableInventoryTransactions.FindAsync(id);
+        var transaction = await _context.InventoryTransactionsTable.FindAsync(id);
 
         if (transaction == null)
         {
@@ -47,7 +40,7 @@ public class InventoryTransactionController : ControllerBase
         {
             NewTransaction.TotalCost = NewTransaction.Quantity * NewTransaction.UnitPrice;
         }
-        _context.TableInventoryTransactions.Add(NewTransaction);
+        _context.InventoryTransactionsTable.Add(NewTransaction);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetTransactionsById), new { id = NewTransaction.TransactionId }, NewTransaction);
     }
@@ -56,7 +49,7 @@ public class InventoryTransactionController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateTransaction(int id, InventoryTransaction transaction_Update)
     {
-        var findid = await _context.TableInventoryTransactions.FindAsync(id);
+        var findid = await _context.InventoryTransactionsTable.FindAsync(id);
         if (findid == null)
         {
             return NotFound(new { message = "Không tìm thấy giao dịch" });
@@ -77,12 +70,12 @@ public class InventoryTransactionController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteTransactionById(int id)
     {
-        var delete = await _context.TableInventoryTransactions.FindAsync(id);
+        var delete = await _context.InventoryTransactionsTable.FindAsync(id);
         if (delete == null)
         {
             return NotFound(new { message = "Khong tim thay id" });
         }
-        _context.TableInventoryTransactions.Remove(delete);
+        _context.InventoryTransactionsTable.Remove(delete);
         await _context.SaveChangesAsync();
         return Ok(new { message = "Xoa thanh cong" });
     }
