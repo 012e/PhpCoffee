@@ -13,21 +13,22 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Ingredient> Ingredients { get; set; }
+    public virtual DbSet<Ingredient> IngredientsTable { get; set; }
 
-    public virtual DbSet<InventoryTransaction> TableInventoryTransactions { get; set; }
 
-    public virtual DbSet<MenuItem> MenuItems { get; set; }
+    public virtual DbSet<InventoryTransaction> InventoryTransactionsTable { get; set; }
 
-    public virtual DbSet<Order> Orders { get; set; }
+    public virtual DbSet<MenuItem> MenuItemsTable { get; set; }
 
-    public virtual DbSet<OrderItem> OrderItems { get; set; }
+    public virtual DbSet<Order> OrdersTable { get; set; }
 
-    public virtual DbSet<Payment> Payments { get; set; }
+    public virtual DbSet<OrderItem> OrderItemsTable { get; set; }
 
-    public virtual DbSet<Recipe> Recipes { get; set; }
+    public virtual DbSet<Payment> PaymentsTable { get; set; }
 
-    public virtual DbSet<Supplier> Suppliers { get; set; }
+    public virtual DbSet<Recipe> RecipesTable { get; set; }
+
+    public virtual DbSet<Supplier> SuppliersTable { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
