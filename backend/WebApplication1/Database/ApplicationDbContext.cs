@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Database;
 
@@ -13,43 +15,33 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Ingredient> IngredientsTable { get; set; }
+    public virtual DbSet<Ingredient> Ingredients { get; set; }
 
+    public virtual DbSet<InventoryTransaction> InventoryTransactions { get; set; }
 
-    public virtual DbSet<InventoryTransaction> InventoryTransactionsTable { get; set; }
+    public virtual DbSet<MenuItem> MenuItems { get; set; }
 
-    public virtual DbSet<MenuItem> MenuItemsTable { get; set; }
+    public virtual DbSet<Order> Orders { get; set; }
 
-    public virtual DbSet<Order> OrdersTable { get; set; }
+    public virtual DbSet<OrderItem> OrderItems { get; set; }
 
-    public virtual DbSet<OrderItem> OrderItemsTable { get; set; }
+    public virtual DbSet<Payment> Payments { get; set; }
 
-    public virtual DbSet<Payment> PaymentsTable { get; set; }
+    public virtual DbSet<Recipe> Recipes { get; set; }
 
-    public virtual DbSet<Recipe> RecipesTable { get; set; }
+    public virtual DbSet<Supplier> Suppliers { get; set; }
 
-    public virtual DbSet<Supplier> SuppliersTable { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseNpgsql("Host=db.thmpdhrucfczexmfyxnl.supabase.co;Database=postgres;Username=postgres;Password=ZyPo4ObjFpd3hySW");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum("auth", "aal_level", new[] { "aal1", "aal2", "aal3" })
-            .HasPostgresEnum("auth", "code_challenge_method", new[] { "s256", "plain" })
             .HasPostgresEnum("auth", "factor_status", new[] { "unverified", "verified" })
             .HasPostgresEnum("auth", "factor_type", new[] { "totp", "webauthn", "phone" })
-            .HasPostgresEnum("auth", "one_time_token_type",
-                new[]
-                {
-                    "confirmation_token", "reauthentication_token", "recovery_token", "email_change_token_new",
-                    "email_change_token_current", "phone_change_token"
-                })
+            .HasPostgresEnum("auth", "one_time_token_type", new[] { "confirmation_token", "reauthentication_token", "recovery_token", "email_change_token_new", "email_change_token_current", "phone_change_token" })
             .HasPostgresEnum("pgsodium", "key_status", new[] { "default", "valid", "invalid", "expired" })
-            .HasPostgresEnum("pgsodium", "key_type",
-                new[]
-                {
-                    "aead-ietf", "aead-det", "hmacsha512", "hmacsha256", "auth", "shorthash", "generichash", "kdf",
-                    "secretbox", "secretstream", "stream_xchacha20"
-                })
+            .HasPostgresEnum("pgsodium", "key_type", new[] { "aead-ietf", "aead-det", "hmacsha512", "hmacsha256", "auth", "shorthash", "generichash", "kdf", "secretbox", "secretstream", "stream_xchacha20" })
             .HasPostgresEnum("realtime", "action", new[] { "INSERT", "UPDATE", "DELETE", "TRUNCATE", "ERROR" })
             .HasPostgresEnum("realtime", "equality_op", new[] { "eq", "neq", "lt", "lte", "gt", "gte", "in" })
             .HasPostgresExtension("extensions", "pg_stat_statements")
@@ -64,7 +56,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.IngredientId).HasName("ingredients_pkey");
 
-            entity.ToTable("ingredients");
+            entity.ToTable("ingredients", "phpcafe");
 
             entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
             entity.Property(e => e.CostPerUnit)
@@ -95,7 +87,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.TransactionId).HasName("inventory_transactions_pkey");
 
-            entity.ToTable("inventory_transactions");
+            entity.ToTable("inventory_transactions", "phpcafe");
 
             entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
             entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
@@ -125,7 +117,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.ItemId).HasName("menu_items_pkey");
 
-            entity.ToTable("menu_items");
+            entity.ToTable("menu_items", "phpcafe");
 
             entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.BasePrice)
@@ -148,7 +140,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.OrderId).HasName("orders_pkey");
 
-            entity.ToTable("orders");
+            entity.ToTable("orders", "phpcafe");
 
             entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.OrderDate)
@@ -169,7 +161,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.OrderItemId).HasName("order_items_pkey");
 
-            entity.ToTable("order_items");
+            entity.ToTable("order_items", "phpcafe");
 
             entity.Property(e => e.OrderItemId).HasColumnName("order_item_id");
             entity.Property(e => e.ItemId).HasColumnName("item_id");
@@ -197,7 +189,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.PaymentId).HasName("payments_pkey");
 
-            entity.ToTable("payments");
+            entity.ToTable("payments", "phpcafe");
 
             entity.Property(e => e.PaymentId).HasColumnName("payment_id");
             entity.Property(e => e.Amount)
@@ -221,7 +213,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.RecipeId).HasName("recipes_pkey");
 
-            entity.ToTable("recipes");
+            entity.ToTable("recipes", "phpcafe");
 
             entity.Property(e => e.RecipeId).HasColumnName("recipe_id");
             entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
@@ -243,7 +235,7 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.SupplierId).HasName("suppliers_pkey");
 
-            entity.ToTable("suppliers");
+            entity.ToTable("suppliers", "phpcafe");
 
             entity.Property(e => e.SupplierId).HasColumnName("supplier_id");
             entity.Property(e => e.Address).HasColumnName("address");

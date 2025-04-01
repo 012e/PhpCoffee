@@ -13,19 +13,19 @@ public class MenuItemController : ControllerBase
     {
         _context = context;
     }
-    
+
     //[GET] lấy tất cả menu items
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenuItems()
     {
-        return await _context.MenuItemsTable.ToListAsync();
+        return await _context.MenuItems.ToListAsync();
     }
 
     //lấy theo số id
     [HttpGet("{id}")]
     public async Task<ActionResult<MenuItem>> GetMenuItemById(int id)
     {
-        var menuItem = await _context.MenuItemsTable.FindAsync(id);
+        var menuItem = await _context.MenuItems.FindAsync(id);
 
         if (menuItem == null)
         {
@@ -33,12 +33,12 @@ public class MenuItemController : ControllerBase
         }
         return menuItem;
     }
-    
+
     //Thêm menu item mới
     [HttpPost]
     public async Task<ActionResult<MenuItem>> AddMenuItem(MenuItem newMenuItem)
     {
-        _context.MenuItemsTable.Add(newMenuItem);
+        _context.MenuItems.Add(newMenuItem);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetMenuItemById), new { id = newMenuItem.ItemId }, newMenuItem);
     }
@@ -47,32 +47,32 @@ public class MenuItemController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateMenuItem(int id, MenuItem menuItem_Update)
     {
-        var findId = await _context.MenuItemsTable.FindAsync(id);
+        var findId = await _context.MenuItems.FindAsync(id);
         if (findId == null)
         {
             return NotFound(new { message = "Không tìm thấy menu item" });
         }
-        
+
         findId.ItemName = menuItem_Update.ItemName;
         findId.Description = menuItem_Update.Description;
         findId.BasePrice = menuItem_Update.BasePrice;
         findId.IsActive = menuItem_Update.IsActive;
         findId.CreatedAt = menuItem_Update.CreatedAt;
-        
+
         await _context.SaveChangesAsync();
         return Ok(new { message = "Hoàn thành cập nhật" });
     }
-    
+
     //Xóa menu item
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteMenuItem(int id)
     {
-        var delete = await _context.MenuItemsTable.FindAsync(id);
+        var delete = await _context.MenuItems.FindAsync(id);
         if (delete == null)
         {
             return NotFound(new { message = "Không tìm thấy id" });
         }
-        _context.MenuItemsTable.Remove(delete);
+        _context.MenuItems.Remove(delete);
         await _context.SaveChangesAsync();
         return Ok(new { message = "Xóa thành công" });
     }
