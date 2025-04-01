@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Database;
 
-public partial class ApplicationDbContext : DbContext
+public partial class PostgresContext : DbContext
 {
-    public ApplicationDbContext()
+    public PostgresContext()
     {
     }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public PostgresContext(DbContextOptions<PostgresContext> options)
         : base(options)
     {
     }
