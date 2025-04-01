@@ -5,15 +5,15 @@ namespace WebApplication1.Database;
 
 public partial class Recipe
 {
-    public int RecipeId { get; set; }
+    public int Id { get; set; }
 
-    public int? ItemId { get; set; }
+    public string Name { get; set; } = null!;
 
-    public int? IngredientId { get; set; }
+    public string? Description { get; set; }
 
-    public decimal Quantity { get; set; }
+    public string Instructions { get; set; } = null!;
 
-    public virtual Ingredient? Ingredient { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
-    public virtual MenuItem? Item { get; set; }
+    public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = new List<RecipeIngredient>();
 }

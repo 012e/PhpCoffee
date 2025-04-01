@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Database;
 
-public partial class ApplicationDbContext : DbContext
+public partial class PostgresContext : DbContext
 {
-    public ApplicationDbContext()
+    public PostgresContext()
     {
     }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public PostgresContext(DbContextOptions<PostgresContext> options)
         : base(options)
     {
     }
@@ -28,6 +28,8 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<Payment> Payments { get; set; }
 
     public virtual DbSet<Recipe> Recipes { get; set; }
+
+    public virtual DbSet<RecipeIngredient> RecipeIngredients { get; set; }
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
@@ -211,24 +213,41 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Recipe>(entity =>
         {
-            entity.HasKey(e => e.RecipeId).HasName("recipes_pkey");
+            entity.HasKey(e => e.Id).HasName("recipes_pkey");
 
             entity.ToTable("recipes", "phpcafe");
 
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Instructions).HasColumnName("instructions");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<RecipeIngredient>(entity =>
+        {
+            entity.HasKey(e => new { e.RecipeId, e.IngredientId }).HasName("recipe_ingredients_pkey");
+
+            entity.ToTable("recipe_ingredients", "phpcafe");
+
             entity.Property(e => e.RecipeId).HasColumnName("recipe_id");
             entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
-            entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.Quantity)
-                .HasPrecision(10, 3)
+                .HasPrecision(10, 2)
                 .HasColumnName("quantity");
 
-            entity.HasOne(d => d.Ingredient).WithMany(p => p.Recipes)
+            entity.HasOne(d => d.Ingredient).WithMany(p => p.RecipeIngredients)
                 .HasForeignKey(d => d.IngredientId)
-                .HasConstraintName("recipes_ingredient_id_fkey");
+                .HasConstraintName("recipe_ingredients_ingredient_id_fkey");
 
-            entity.HasOne(d => d.Item).WithMany(p => p.Recipes)
-                .HasForeignKey(d => d.ItemId)
-                .HasConstraintName("recipes_item_id_fkey");
+            entity.HasOne(d => d.Recipe).WithMany(p => p.RecipeIngredients)
+                .HasForeignKey(d => d.RecipeId)
+                .HasConstraintName("recipe_ingredients_recipe_id_fkey");
         });
 
         modelBuilder.Entity<Supplier>(entity =>

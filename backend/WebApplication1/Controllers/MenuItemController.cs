@@ -7,18 +7,38 @@ namespace WebApplication1.Controllers;
 [ApiController]
 public class MenuItemController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly PostgresContext _context;
 
-    public MenuItemController(ApplicationDbContext context)
+    public MenuItemController(PostgresContext context)
     {
         _context = context;
     }
 
     //[GET] lấy tất cả menu items
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenuItems()
+    public async Task<ActionResult<GetMenuItemsResponse>> GetMenuItems()
     {
-        return await _context.MenuItems.ToListAsync();
+        var menuItems = await _context.MenuItems
+            .Include(x => x.Recipes)
+            .ThenInclude(x => x.Ingredient)
+            .ToListAsync();
+
+        var result = menuItems.Select(x => new GetMenuItemsResponse
+        {
+            ItemId = x.ItemId,
+            ItemName = x.ItemName,
+            Description = x.Description,
+            BasePrice = (int)x.BasePrice,
+            IsActive = (bool)x.IsActive,
+            CreatedAt = (DateTime)x.CreatedAt,
+            Recipe = x.Recipes.Select(y => new RecipeResponse
+            {
+                IngredientId = y.IngredientId,
+                Quantity = y.Quantity
+            }).ToList()
+        }).ToList();
+
+        return Ok(result);
     }
 
     //lấy theo số id

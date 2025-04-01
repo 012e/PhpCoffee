@@ -18,6 +18,4 @@ public partial class MenuItem
     public DateTime? CreatedAt { get; set; }
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-
-    public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
 }
