@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WebApplication1.Database;
+﻿namespace WebApplication1.Database;
 
 public partial class MenuItem
 {
@@ -17,5 +14,9 @@ public partial class MenuItem
 
     public DateTime? CreatedAt { get; set; }
 
+    public int RecipeId { get; set; }
+
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
+    public virtual Recipe Recipe { get; set; } = null!;
 }

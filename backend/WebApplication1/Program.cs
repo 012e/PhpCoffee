@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddAppControllers()
     .AddEndpointsApiExplorer()
+    .AddMappers()
     .AddAppSwagger(builder.Configuration)
     .AddAppDbContext(builder.Configuration)
     .AddExceptionHandler<GlobalExceptionHandler>()

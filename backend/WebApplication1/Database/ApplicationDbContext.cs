@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Database;
 
-public partial class PostgresContext : DbContext
+public partial class ApplicationDbContext : DbContext
 {
-    public PostgresContext()
+    public ApplicationDbContext()
     {
     }
 
-    public PostgresContext(DbContextOptions<PostgresContext> options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }
@@ -34,16 +32,28 @@ public partial class PostgresContext : DbContext
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=db.thmpdhrucfczexmfyxnl.supabase.co;Database=postgres;Username=postgres;Password=ZyPo4ObjFpd3hySW");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https: //go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql(
+            "Host=db.thmpdhrucfczexmfyxnl.supabase.co;Database=postgres;Username=postgres;Password=ZyPo4ObjFpd3hySW;SSL Mode=Require;Trust Server Certificate=true;SearchPath=phpcafe");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasPostgresEnum("auth", "factor_status", new[] { "unverified", "verified" })
             .HasPostgresEnum("auth", "factor_type", new[] { "totp", "webauthn", "phone" })
-            .HasPostgresEnum("auth", "one_time_token_type", new[] { "confirmation_token", "reauthentication_token", "recovery_token", "email_change_token_new", "email_change_token_current", "phone_change_token" })
+            .HasPostgresEnum("auth", "one_time_token_type",
+                new[]
+                {
+                    "confirmation_token", "reauthentication_token", "recovery_token", "email_change_token_new",
+                    "email_change_token_current", "phone_change_token"
+                })
             .HasPostgresEnum("pgsodium", "key_status", new[] { "default", "valid", "invalid", "expired" })
-            .HasPostgresEnum("pgsodium", "key_type", new[] { "aead-ietf", "aead-det", "hmacsha512", "hmacsha256", "auth", "shorthash", "generichash", "kdf", "secretbox", "secretstream", "stream_xchacha20" })
+            .HasPostgresEnum("pgsodium", "key_type",
+                new[]
+                {
+                    "aead-ietf", "aead-det", "hmacsha512", "hmacsha256", "auth", "shorthash", "generichash", "kdf",
+                    "secretbox", "secretstream", "stream_xchacha20"
+                })
             .HasPostgresEnum("realtime", "action", new[] { "INSERT", "UPDATE", "DELETE", "TRUNCATE", "ERROR" })
             .HasPostgresEnum("realtime", "equality_op", new[] { "eq", "neq", "lt", "lte", "gt", "gte", "in" })
             .HasPostgresExtension("extensions", "pg_stat_statements")
@@ -60,7 +70,9 @@ public partial class PostgresContext : DbContext
 
             entity.ToTable("ingredients", "phpcafe");
 
-            entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
+            entity.Property(e => e.IngredientId)
+                .HasDefaultValueSql("nextval('ingredients_ingredient_id_seq'::regclass)")
+                .HasColumnName("ingredient_id");
             entity.Property(e => e.CostPerUnit)
                 .HasPrecision(10, 2)
                 .HasColumnName("cost_per_unit");
@@ -91,7 +103,9 @@ public partial class PostgresContext : DbContext
 
             entity.ToTable("inventory_transactions", "phpcafe");
 
-            entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
+            entity.Property(e => e.TransactionId)
+                .HasDefaultValueSql("nextval('inventory_transactions_transaction_id_seq'::regclass)")
+                .HasColumnName("transaction_id");
             entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
             entity.Property(e => e.Quantity)
                 .HasPrecision(10, 2)
@@ -121,7 +135,9 @@ public partial class PostgresContext : DbContext
 
             entity.ToTable("menu_items", "phpcafe");
 
-            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.ItemId)
+                .HasDefaultValueSql("nextval('menu_items_item_id_seq'::regclass)")
+                .HasColumnName("item_id");
             entity.Property(e => e.BasePrice)
                 .HasPrecision(10, 2)
                 .HasColumnName("base_price");
@@ -136,6 +152,12 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.ItemName)
                 .HasMaxLength(100)
                 .HasColumnName("item_name");
+            entity.Property(e => e.RecipeId).HasColumnName("recipe_id");
+
+            entity.HasOne(d => d.Recipe).WithMany(p => p.MenuItems)
+                .HasForeignKey(d => d.RecipeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("menu_items_recipe_id_fkey");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -144,7 +166,9 @@ public partial class PostgresContext : DbContext
 
             entity.ToTable("orders", "phpcafe");
 
-            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.OrderId)
+                .HasDefaultValueSql("nextval('orders_order_id_seq'::regclass)")
+                .HasColumnName("order_id");
             entity.Property(e => e.OrderDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
@@ -165,7 +189,9 @@ public partial class PostgresContext : DbContext
 
             entity.ToTable("order_items", "phpcafe");
 
-            entity.Property(e => e.OrderItemId).HasColumnName("order_item_id");
+            entity.Property(e => e.OrderItemId)
+                .HasDefaultValueSql("nextval('order_items_order_item_id_seq'::regclass)")
+                .HasColumnName("order_item_id");
             entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.Quantity)
@@ -193,7 +219,9 @@ public partial class PostgresContext : DbContext
 
             entity.ToTable("payments", "phpcafe");
 
-            entity.Property(e => e.PaymentId).HasColumnName("payment_id");
+            entity.Property(e => e.PaymentId)
+                .HasDefaultValueSql("nextval('payments_payment_id_seq'::regclass)")
+                .HasColumnName("payment_id");
             entity.Property(e => e.Amount)
                 .HasPrecision(10, 2)
                 .HasColumnName("amount");
@@ -217,7 +245,9 @@ public partial class PostgresContext : DbContext
 
             entity.ToTable("recipes", "phpcafe");
 
-            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("nextval('recipes_id_seq'::regclass)")
+                .HasColumnName("id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
@@ -256,7 +286,9 @@ public partial class PostgresContext : DbContext
 
             entity.ToTable("suppliers", "phpcafe");
 
-            entity.Property(e => e.SupplierId).HasColumnName("supplier_id");
+            entity.Property(e => e.SupplierId)
+                .HasDefaultValueSql("nextval('suppliers_supplier_id_seq'::regclass)")
+                .HasColumnName("supplier_id");
             entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.ContactPhone)
                 .HasMaxLength(20)
