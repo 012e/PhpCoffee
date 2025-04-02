@@ -19,7 +19,7 @@ public partial class Ingredient
     public virtual ICollection<InventoryTransaction> InventoryTransactions { get; set; } =
         new List<InventoryTransaction>();
 
-    public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
+    public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = new List<RecipeIngredient>();
 
     public virtual Supplier? Supplier { get; set; }
 }

@@ -1,10 +1,10 @@
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using WebApplication1.Database;
+using WebApplication1.Dtos.Mappers;
 
 namespace WebApplication1.Helpers.Extensions;
 
@@ -18,13 +18,17 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddMappers(this IServiceCollection services)
+    {
+        services.AddSingleton<IngredientMapper>();
+
+        return services;
+    }
+
+
     public static IServiceCollection AddAppControllers(this IServiceCollection services)
     {
-        services.AddControllers().AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-            options.JsonSerializerOptions.WriteIndented = true;
-        });
+        services.AddControllers().AddNewtonsoftJson();
 
         return services;
     }

@@ -13,28 +13,27 @@ public partial class ApplicationDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Ingredient> IngredientsTable { get; set; }
+    public virtual DbSet<Ingredient> Ingredients { get; set; }
 
+    public virtual DbSet<InventoryTransaction> InventoryTransactions { get; set; }
 
-    public virtual DbSet<InventoryTransaction> InventoryTransactionsTable { get; set; }
+    public virtual DbSet<MenuItem> MenuItems { get; set; }
 
-    public virtual DbSet<MenuItem> MenuItemsTable { get; set; }
+    public virtual DbSet<Order> Orders { get; set; }
 
-    public virtual DbSet<Order> OrdersTable { get; set; }
+    public virtual DbSet<OrderItem> OrderItems { get; set; }
 
-    public virtual DbSet<OrderItem> OrderItemsTable { get; set; }
+    public virtual DbSet<Payment> Payments { get; set; }
 
-    public virtual DbSet<Payment> PaymentsTable { get; set; }
+    public virtual DbSet<Recipe> Recipes { get; set; }
 
-    public virtual DbSet<Recipe> RecipesTable { get; set; }
+    public virtual DbSet<RecipeIngredient> RecipeIngredients { get; set; }
 
-    public virtual DbSet<Supplier> SuppliersTable { get; set; }
+    public virtual DbSet<Supplier> Suppliers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum("auth", "aal_level", new[] { "aal1", "aal2", "aal3" })
-            .HasPostgresEnum("auth", "code_challenge_method", new[] { "s256", "plain" })
             .HasPostgresEnum("auth", "factor_status", new[] { "unverified", "verified" })
             .HasPostgresEnum("auth", "factor_type", new[] { "totp", "webauthn", "phone" })
             .HasPostgresEnum("auth", "one_time_token_type",
@@ -64,9 +63,11 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.IngredientId).HasName("ingredients_pkey");
 
-            entity.ToTable("ingredients");
+            entity.ToTable("ingredients", "phpcafe");
 
-            entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
+            entity.Property(e => e.IngredientId)
+                .HasDefaultValueSql("nextval('ingredients_ingredient_id_seq'::regclass)")
+                .HasColumnName("ingredient_id");
             entity.Property(e => e.CostPerUnit)
                 .HasPrecision(10, 2)
                 .HasColumnName("cost_per_unit");
@@ -95,9 +96,11 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.TransactionId).HasName("inventory_transactions_pkey");
 
-            entity.ToTable("inventory_transactions");
+            entity.ToTable("inventory_transactions", "phpcafe");
 
-            entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
+            entity.Property(e => e.TransactionId)
+                .HasDefaultValueSql("nextval('inventory_transactions_transaction_id_seq'::regclass)")
+                .HasColumnName("transaction_id");
             entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
             entity.Property(e => e.Quantity)
                 .HasPrecision(10, 2)
@@ -125,9 +128,11 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.ItemId).HasName("menu_items_pkey");
 
-            entity.ToTable("menu_items");
+            entity.ToTable("menu_items", "phpcafe");
 
-            entity.Property(e => e.ItemId).HasColumnName("item_id");
+            entity.Property(e => e.ItemId)
+                .HasDefaultValueSql("nextval('menu_items_item_id_seq'::regclass)")
+                .HasColumnName("item_id");
             entity.Property(e => e.BasePrice)
                 .HasPrecision(10, 2)
                 .HasColumnName("base_price");
@@ -142,15 +147,23 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.ItemName)
                 .HasMaxLength(100)
                 .HasColumnName("item_name");
+            entity.Property(e => e.RecipeId).HasColumnName("recipe_id");
+
+            entity.HasOne(d => d.Recipe).WithMany(p => p.MenuItems)
+                .HasForeignKey(d => d.RecipeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("menu_items_recipe_id_fkey");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.OrderId).HasName("orders_pkey");
 
-            entity.ToTable("orders");
+            entity.ToTable("orders", "phpcafe");
 
-            entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.OrderId)
+                .HasDefaultValueSql("nextval('orders_order_id_seq'::regclass)")
+                .HasColumnName("order_id");
             entity.Property(e => e.OrderDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
@@ -169,9 +182,11 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.OrderItemId).HasName("order_items_pkey");
 
-            entity.ToTable("order_items");
+            entity.ToTable("order_items", "phpcafe");
 
-            entity.Property(e => e.OrderItemId).HasColumnName("order_item_id");
+            entity.Property(e => e.OrderItemId)
+                .HasDefaultValueSql("nextval('order_items_order_item_id_seq'::regclass)")
+                .HasColumnName("order_item_id");
             entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.Quantity)
@@ -197,9 +212,11 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.PaymentId).HasName("payments_pkey");
 
-            entity.ToTable("payments");
+            entity.ToTable("payments", "phpcafe");
 
-            entity.Property(e => e.PaymentId).HasColumnName("payment_id");
+            entity.Property(e => e.PaymentId)
+                .HasDefaultValueSql("nextval('payments_payment_id_seq'::regclass)")
+                .HasColumnName("payment_id");
             entity.Property(e => e.Amount)
                 .HasPrecision(10, 2)
                 .HasColumnName("amount");
@@ -219,33 +236,54 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Recipe>(entity =>
         {
-            entity.HasKey(e => e.RecipeId).HasName("recipes_pkey");
+            entity.HasKey(e => e.Id).HasName("recipes_pkey");
 
-            entity.ToTable("recipes");
+            entity.ToTable("recipes", "phpcafe");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("nextval('recipes_id_seq'::regclass)")
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Instructions).HasColumnName("instructions");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<RecipeIngredient>(entity =>
+        {
+            entity.HasKey(e => new { e.RecipeId, e.IngredientId }).HasName("recipe_ingredients_pkey");
+
+            entity.ToTable("recipe_ingredients", "phpcafe");
 
             entity.Property(e => e.RecipeId).HasColumnName("recipe_id");
             entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
-            entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.Quantity)
-                .HasPrecision(10, 3)
+                .HasPrecision(10, 2)
                 .HasColumnName("quantity");
 
-            entity.HasOne(d => d.Ingredient).WithMany(p => p.Recipes)
+            entity.HasOne(d => d.Ingredient).WithMany(p => p.RecipeIngredients)
                 .HasForeignKey(d => d.IngredientId)
-                .HasConstraintName("recipes_ingredient_id_fkey");
+                .HasConstraintName("recipe_ingredients_ingredient_id_fkey");
 
-            entity.HasOne(d => d.Item).WithMany(p => p.Recipes)
-                .HasForeignKey(d => d.ItemId)
-                .HasConstraintName("recipes_item_id_fkey");
+            entity.HasOne(d => d.Recipe).WithMany(p => p.RecipeIngredients)
+                .HasForeignKey(d => d.RecipeId)
+                .HasConstraintName("recipe_ingredients_recipe_id_fkey");
         });
 
         modelBuilder.Entity<Supplier>(entity =>
         {
             entity.HasKey(e => e.SupplierId).HasName("suppliers_pkey");
 
-            entity.ToTable("suppliers");
+            entity.ToTable("suppliers", "phpcafe");
 
-            entity.Property(e => e.SupplierId).HasColumnName("supplier_id");
+            entity.Property(e => e.SupplierId)
+                .HasDefaultValueSql("nextval('suppliers_supplier_id_seq'::regclass)")
+                .HasColumnName("supplier_id");
             entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.ContactPhone)
                 .HasMaxLength(20)

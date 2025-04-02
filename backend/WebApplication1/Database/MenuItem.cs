@@ -14,7 +14,9 @@ public partial class MenuItem
 
     public DateTime? CreatedAt { get; set; }
 
+    public int RecipeId { get; set; }
+
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
-    public virtual ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
+    public virtual Recipe Recipe { get; set; } = null!;
 }

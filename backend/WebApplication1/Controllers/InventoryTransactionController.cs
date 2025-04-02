@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.Database;
 
 namespace WebApplication1.Controllers;
-[Route("api/[controller]")]
+
+[Route("[controller]")]
 [ApiController]
 public class InventoryTransactionController : ControllerBase
 {
@@ -13,25 +14,28 @@ public class InventoryTransactionController : ControllerBase
     {
         _context = context;
     }
+
     //[GET] lấy tất cả các hóa đơn
     [HttpGet]
     public async Task<ActionResult<IEnumerable<InventoryTransaction>>> GetTransactions()
     {
-        return await _context.InventoryTransactionsTable.ToListAsync();
+        return await _context.InventoryTransactions.ToListAsync();
     }
 
     //lấy theo số id
     [HttpGet("{id}")]
     public async Task<ActionResult<InventoryTransaction>> GetTransactionsById(int id)
     {
-        var transaction = await _context.InventoryTransactionsTable.FindAsync(id);
+        var transaction = await _context.InventoryTransactions.FindAsync(id);
 
         if (transaction == null)
         {
             return NotFound(new { message = "Không tìm thấy giao dịch" });
         }
+
         return transaction;
     }
+
     //Them giao dich moi
     [HttpPost]
     public async Task<ActionResult<InventoryTransaction>> AddTransaction(InventoryTransaction NewTransaction)
@@ -40,7 +44,8 @@ public class InventoryTransactionController : ControllerBase
         {
             NewTransaction.TotalCost = NewTransaction.Quantity * NewTransaction.UnitPrice;
         }
-        _context.InventoryTransactionsTable.Add(NewTransaction);
+
+        _context.InventoryTransactions.Add(NewTransaction);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetTransactionsById), new { id = NewTransaction.TransactionId }, NewTransaction);
     }
@@ -49,11 +54,12 @@ public class InventoryTransactionController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateTransaction(int id, InventoryTransaction transaction_Update)
     {
-        var findid = await _context.InventoryTransactionsTable.FindAsync(id);
+        var findid = await _context.InventoryTransactions.FindAsync(id);
         if (findid == null)
         {
             return NotFound(new { message = "Không tìm thấy giao dịch" });
         }
+
         findid.TransactionId = transaction_Update.TransactionId;
         findid.IngredientId = transaction_Update.IngredientId;
         findid.TransactionType = transaction_Update.TransactionType;
@@ -61,21 +67,23 @@ public class InventoryTransactionController : ControllerBase
         findid.TransactionDate = transaction_Update.TransactionDate;
         findid.UnitPrice = transaction_Update.UnitPrice;
         findid.TotalCost = transaction_Update.UnitPrice.HasValue
-           ? transaction_Update.UnitPrice * transaction_Update.Quantity
-           : null;
+            ? transaction_Update.UnitPrice * transaction_Update.Quantity
+            : null;
         await _context.SaveChangesAsync();
         return Ok(new { message = "hoan thanh cap nhat" });
     }
+
     //Xoa
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteTransactionById(int id)
     {
-        var delete = await _context.InventoryTransactionsTable.FindAsync(id);
+        var delete = await _context.InventoryTransactions.FindAsync(id);
         if (delete == null)
         {
             return NotFound(new { message = "Khong tim thay id" });
         }
-        _context.InventoryTransactionsTable.Remove(delete);
+
+        _context.InventoryTransactions.Remove(delete);
         await _context.SaveChangesAsync();
         return Ok(new { message = "Xoa thanh cong" });
     }
