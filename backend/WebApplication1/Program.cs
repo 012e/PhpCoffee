@@ -1,5 +1,6 @@
 using WebApplication1.Helpers.Extensions;
 using WebApplication1.Middlewares;
+using WebApplication1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,8 @@ builder.Services
     .AddAppControllers()
     .AddEndpointsApiExplorer()
     .AddMappers()
+    .AddSingleton<IngredientImageService>()
+    .AddSupabase(builder.Configuration)
     .AddAppSwagger(builder.Configuration)
     .AddAppDbContext(builder.Configuration)
     .AddExceptionHandler<GlobalExceptionHandler>()

@@ -87,6 +87,10 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("unit");
 
+            entity.Property(e => e.ImagePath)
+                .HasMaxLength(255)
+                .HasColumnName("image_url");
+
             entity.HasOne(d => d.Supplier).WithMany(p => p.Ingredients)
                 .HasForeignKey(d => d.SupplierId)
                 .HasConstraintName("ingredients_supplier_id_fkey");
