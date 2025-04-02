@@ -162,6 +162,17 @@ public class IngredientController : ControllerBase
     public async Task<ActionResult<IngredientResponse>> UpdateIngredient(int id,
         UpdateIngredientRequest updateIngredientRequest)
     {
+        if (updateIngredientRequest.SupplierId is not null && !SupplierExists(updateIngredientRequest.SupplierId))
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Detail = "Supplier not found",
+                Title = "Invalid Supplier ID",
+                Status = 400,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+            });
+        }
+
         // Tìm ingredient theo ID
         var ingredient = await _context
             .Ingredients

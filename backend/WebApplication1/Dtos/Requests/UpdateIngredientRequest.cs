@@ -11,8 +11,5 @@ public class UpdateIngredientRequest
     public decimal? CostPerUnit { get; set; }
 
     public string? IngredientDescription { get; set; }
-
-    public decimal? Quantity { get; set; }
-
     public int? SupplierId { get; set; }
 }
