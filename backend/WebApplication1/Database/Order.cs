@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WebApplication1.Database;
+﻿namespace WebApplication1.Database;
 
 public partial class Order
 {

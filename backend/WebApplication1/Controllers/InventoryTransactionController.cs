@@ -8,9 +8,9 @@ namespace WebApplication1.Controllers;
 [ApiController]
 public class InventoryTransactionController : ControllerBase
 {
-    private readonly PostgresContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public InventoryTransactionController(PostgresContext context)
+    public InventoryTransactionController(ApplicationDbContext context)
     {
         _context = context;
     }
