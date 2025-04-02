@@ -226,4 +226,33 @@ public class IngredientController : ControllerBase
     {
         return await _context.Ingredients.AnyAsync(e => e.IngredientId == id);
     }
+
+    /// <summary>
+    /// Xóa một nguyên liệu theo ID
+    /// DELETE /Ingredient/{id}
+    /// </summary>
+    /// <param name="id">ID của nguyên liệu cần xóa</param>
+    /// <returns>NoContent nếu xóa thành công, NotFound nếu không tìm thấy</returns>
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)] // Trả về 204 nếu xóa thành công
+    [ProducesResponseType(StatusCodes.Status404NotFound)] // Trả về 404 nếu không tìm thấy
+    public async Task<IActionResult> DeleteIngredient(int id)
+    {
+        var ingredient = await _context.Ingredients.FindAsync(id);
+        if (ingredient == null)
+        {
+            return NotFound(new ProblemDetails
+            {
+                Detail = $"Ingredient with ID {id} not found",
+                Title = "Resource Not Found",
+                Status = 404,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4"
+            });
+        }
+
+        _context.Ingredients.Remove(ingredient);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
