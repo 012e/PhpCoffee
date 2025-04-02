@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Supabase;
 using Swashbuckle.AspNetCore.Filters;
 using WebApplication1.Database;
 using WebApplication1.Dtos.Mappers;
@@ -87,6 +88,19 @@ public static class ServiceCollectionExtensions
                 ValidAudience = configuration["OAuth:Audience"],
                 ValidIssuer = configuration["OAuth:Authority"]
             };
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddSupabase(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddSingleton((_) =>
+        {
+            var supabaseUrl = configuration["Supabase:Url"]!;
+            var supabaseKey = configuration["Supabase:Key"];
+            return new Client(supabaseUrl, supabaseKey);
         });
 
         return services;

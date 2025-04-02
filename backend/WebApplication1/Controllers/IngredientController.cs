@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.Database;
 using WebApplication1.Dtos.Mappers;
 using WebApplication1.Dtos.Requests;
+using WebApplication1.Helpers;
+using WebApplication1.Services;
 
 namespace WebApplication1.Controllers;
 
@@ -13,6 +15,7 @@ public class IngredientController : ControllerBase
     // Các dependency được inject thông qua constructor
     // Đây là ví dụ về Dependency Injection Pattern, giúp giảm sự phụ thuộc và tăng khả năng test
     private readonly ApplicationDbContext _context;
+    private readonly IngredientImageService _ingredientImageService;
     private readonly IngredientMapper _ingredientMapper;
 
     /// <summary>
@@ -20,10 +23,13 @@ public class IngredientController : ControllerBase
     /// </summary>
     /// <param name="context">DbContext để tương tác với cơ sở dữ liệu</param>
     /// <param name="ingredientMapper">Mapper để chuyển đổi giữa các entity và DTO</param>
-    public IngredientController(ApplicationDbContext context, IngredientMapper ingredientMapper)
+    public IngredientController(ApplicationDbContext context,
+        IngredientMapper ingredientMapper,
+        IngredientImageService ingredientImageService)
     {
         _context = context;
         _ingredientMapper = ingredientMapper;
+        _ingredientImageService = ingredientImageService;
     }
 
     /// <summary>
@@ -254,5 +260,63 @@ public class IngredientController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpPut("{id}/image")]
+    [ProducesResponseType(StatusCodes.Status200OK)] // Trả về 200 nếu thành công
+    [ProducesResponseType(StatusCodes.Status400BadRequest)] // Trả về 400 nếu có lỗi trong dữ liệu đầu vào
+    [ProducesResponseType(StatusCodes.Status404NotFound)] // Trả về 404 nếu không tìm thấy
+    public async Task<IActionResult> UploadImage(int id, IFormFile file)
+    {
+        if (file.Length == 0)
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Detail = "File is empty",
+                Title = "Invalid File",
+                Status = 400,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+            });
+        }
+
+        var ingredient = await _context.Ingredients.FindAsync(id);
+        if (ingredient == null)
+        {
+            return NotFound(new ProblemDetails
+            {
+                Detail = $"Ingredient with ID {id} not found",
+                Title = "Resource Not Found",
+                Status = 404,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4"
+            });
+        }
+
+        var imageUrl = await _ingredientImageService.UpsertIngredientImageAsync(file, ingredient.IngredientId);
+
+        ingredient.ImagePath = imageUrl;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch
+            (DbUpdateConcurrencyException)
+        {
+            if (!await IngredientExists(id))
+            {
+                return NotFound(new ProblemDetails
+                {
+                    Detail = $"Ingredient with ID {id} not found",
+                    Title = "Resource Not Found",
+                    Status = 404,
+                    Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4"
+                });
+            }
+
+            throw;
+        }
+
+
+        return Ok(new Success("File Uploaded"));
     }
 }

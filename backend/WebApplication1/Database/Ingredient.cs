@@ -16,6 +16,8 @@ public partial class Ingredient
 
     public DateTime? CreatedAt { get; set; }
 
+    public string? ImagePath { get; set; }
+
     public virtual ICollection<InventoryTransaction> InventoryTransactions { get; set; } =
         new List<InventoryTransaction>();
 
