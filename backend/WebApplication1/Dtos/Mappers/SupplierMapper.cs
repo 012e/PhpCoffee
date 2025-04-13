@@ -10,11 +10,6 @@ namespace WebApplication1.Dtos.Mappers
     [Mapper(AllowNullPropertyAssignment = false)]
     public partial class SupplierMapper
     {
-        private readonly Client _supabaseClient;
-        public SupplierMapper(Client supabaseClient)
-        {
-            _supabaseClient = supabaseClient;
-        }
         public partial SupplierResponses SupplierToSupplierResponse(Supplier supplier);
         public partial IEnumerable<SupplierResponses> SuppliersToSupplierResponses(IEnumerable<Supplier> suppliers);
 

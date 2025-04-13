@@ -10,11 +10,7 @@ namespace WebApplication1.Dtos.Mappers
     [Mapper(AllowNullPropertyAssignment = false)]
     public partial class MenuItemMapper
     {
-        private readonly Client _supabaseClient;
-        public MenuItemMapper(Client supabaseClient)
-        {
-            _supabaseClient = supabaseClient;
-        }
+
         public partial MenuItemResponse MenuItemToMenuItemResponse(MenuItem menuItem);
         public partial IEnumerable<MenuItemResponse> MenuItemsToMenuItemResponses(IEnumerable<MenuItem> menuItems);
 
