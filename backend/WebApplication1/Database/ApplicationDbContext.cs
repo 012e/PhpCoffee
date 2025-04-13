@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication1.Database;
 
@@ -17,6 +19,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<InventoryTransaction> InventoryTransactions { get; set; }
 
+    public virtual DbSet<InventoryTransactionDetail> InventoryTransactionDetails { get; set; }
+
     public virtual DbSet<MenuItem> MenuItems { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -31,30 +35,24 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseNpgsql("Host=db.thmpdhrucfczexmfyxnl.supabase.co;Database=postgres;Username=postgres;Password=dYrvfTcxqbdrFCMz;SearchPath=phpcafe");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasPostgresEnum("auth", "factor_status", new[] { "unverified", "verified" })
             .HasPostgresEnum("auth", "factor_type", new[] { "totp", "webauthn", "phone" })
-            .HasPostgresEnum("auth", "one_time_token_type",
-                new[]
-                {
-                    "confirmation_token", "reauthentication_token", "recovery_token", "email_change_token_new",
-                    "email_change_token_current", "phone_change_token"
-                })
+            .HasPostgresEnum("auth", "one_time_token_type", new[] { "confirmation_token", "reauthentication_token", "recovery_token", "email_change_token_new", "email_change_token_current", "phone_change_token" })
             .HasPostgresEnum("pgsodium", "key_status", new[] { "default", "valid", "invalid", "expired" })
-            .HasPostgresEnum("pgsodium", "key_type",
-                new[]
-                {
-                    "aead-ietf", "aead-det", "hmacsha512", "hmacsha256", "auth", "shorthash", "generichash", "kdf",
-                    "secretbox", "secretstream", "stream_xchacha20"
-                })
+            .HasPostgresEnum("pgsodium", "key_type", new[] { "aead-ietf", "aead-det", "hmacsha512", "hmacsha256", "auth", "shorthash", "generichash", "kdf", "secretbox", "secretstream", "stream_xchacha20" })
             .HasPostgresEnum("realtime", "action", new[] { "INSERT", "UPDATE", "DELETE", "TRUNCATE", "ERROR" })
             .HasPostgresEnum("realtime", "equality_op", new[] { "eq", "neq", "lt", "lte", "gt", "gte", "in" })
             .HasPostgresExtension("extensions", "pg_stat_statements")
             .HasPostgresExtension("extensions", "pgcrypto")
             .HasPostgresExtension("extensions", "pgjwt")
             .HasPostgresExtension("extensions", "uuid-ossp")
+            .HasPostgresExtension("extensions", "wrappers")
             .HasPostgresExtension("graphql", "pg_graphql")
             .HasPostgresExtension("pgsodium", "pgsodium")
             .HasPostgresExtension("vault", "supabase_vault");
@@ -79,6 +77,10 @@ public partial class ApplicationDbContext : DbContext
                 .HasPrecision(10, 2)
                 .HasDefaultValueSql("0")
                 .HasColumnName("current_quantity");
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(255)
+                .HasDefaultValueSql("NULL::character varying")
+                .HasColumnName("image_url");
             entity.Property(e => e.IngredientName)
                 .HasMaxLength(100)
                 .HasColumnName("ingredient_name");
@@ -87,10 +89,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("unit");
 
-            entity.Property(e => e.ImagePath)
-                .HasMaxLength(255)
-                .HasColumnName("image_url");
-
             entity.HasOne(d => d.Supplier).WithMany(p => p.Ingredients)
                 .HasForeignKey(d => d.SupplierId)
                 .HasConstraintName("ingredients_supplier_id_fkey");
@@ -98,34 +96,45 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<InventoryTransaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("inventory_transactions_pkey");
+            entity.HasKey(e => e.TransactionId).HasName("inventory_transactions_pkey1");
 
             entity.ToTable("inventory_transactions", "phpcafe");
 
             entity.Property(e => e.TransactionId)
-                .HasDefaultValueSql("nextval('inventory_transactions_transaction_id_seq'::regclass)")
+                .ValueGeneratedNever()
                 .HasColumnName("transaction_id");
-            entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
-            entity.Property(e => e.Quantity)
-                .HasPrecision(10, 2)
-                .HasColumnName("quantity");
-            entity.Property(e => e.TotalCost)
-                .HasPrecision(10, 2)
-                .HasColumnName("total_cost");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(100)
+                .HasColumnName("created_by");
+            entity.Property(e => e.Notes).HasColumnName("notes");
             entity.Property(e => e.TransactionDate)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("now()")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("transaction_date");
             entity.Property(e => e.TransactionType)
-                .HasMaxLength(20)
+                .HasMaxLength(50)
                 .HasColumnName("transaction_type");
-            entity.Property(e => e.UnitPrice)
-                .HasPrecision(10, 2)
-                .HasColumnName("unit_price");
+        });
 
-            entity.HasOne(d => d.Ingredient).WithMany(p => p.InventoryTransactions)
+        modelBuilder.Entity<InventoryTransactionDetail>(entity =>
+        {
+            entity.HasKey(e => new { e.TransactionId, e.IngredientId }).HasName("inventory_transaction_details_pkey");
+
+            entity.ToTable("inventory_transaction_details", "phpcafe");
+
+            entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
+            entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
+            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.TotalCost).HasColumnName("total_cost");
+            entity.Property(e => e.UnitPrice).HasColumnName("unit_price");
+
+            entity.HasOne(d => d.Ingredient).WithMany(p => p.InventoryTransactionDetails)
                 .HasForeignKey(d => d.IngredientId)
-                .HasConstraintName("inventory_transactions_ingredient_id_fkey");
+                .HasConstraintName("inventory_transaction_details_ingredients_id_fkey");
+
+            entity.HasOne(d => d.Transaction).WithMany(p => p.InventoryTransactionDetails)
+                .HasForeignKey(d => d.TransactionId)
+                .HasConstraintName("inventory_transaction_details_new_transaction_id_fkey");
         });
 
         modelBuilder.Entity<MenuItem>(entity =>

@@ -25,7 +25,7 @@ public partial class IngredientMapper
             .GetPublicUrl(imagePath);
     }
 
-    [MapProperty(nameof(Ingredient.ImagePath), nameof(IngredientResponse.ImageUrl), Use = nameof(MapImagePathToUrl))]
+    [MapProperty(nameof(Ingredient.ImageUrl), nameof(IngredientResponse.ImageUrl), Use = nameof(MapImagePathToUrl))]
     public partial IngredientResponse IngredientToIngredientResponse(Ingredient ingredient);
 
     public partial IEnumerable<IngredientResponse>
@@ -33,17 +33,17 @@ public partial class IngredientMapper
 
     [MapperIgnoreTarget(nameof(Ingredient.IngredientId))]
     [MapperIgnoreTarget(nameof(Ingredient.CreatedAt))]
-    [MapperIgnoreTarget(nameof(Ingredient.ImagePath))]
+    [MapperIgnoreTarget(nameof(Ingredient.ImageUrl))]
     [MapperIgnoreTarget(nameof(Ingredient.RecipeIngredients))]
-    [MapperIgnoreTarget(nameof(Ingredient.InventoryTransactions))]
+    [MapperIgnoreTarget(nameof(Ingredient.InventoryTransactionDetails))]
     [MapperIgnoreTarget(nameof(Ingredient.Supplier))]
     public partial Ingredient CreateIngredientRequestToIngredient(CreateIngredientRequest ingredientRequest);
 
     [MapperIgnoreTarget(nameof(Ingredient.IngredientId))]
     [MapperIgnoreTarget(nameof(Ingredient.CreatedAt))]
-    [MapperIgnoreTarget(nameof(Ingredient.ImagePath))]
+    [MapperIgnoreTarget(nameof(Ingredient.ImageUrl))]
     [MapperIgnoreTarget(nameof(Ingredient.RecipeIngredients))]
-    [MapperIgnoreTarget(nameof(Ingredient.InventoryTransactions))]
+    [MapperIgnoreTarget(nameof(Ingredient.InventoryTransactionDetails))]
     [MapperIgnoreTarget(nameof(Ingredient.Supplier))]
     public partial void UpdateIngredientFromRequest(UpdateIngredientRequest updateIngredientRequest,
         Ingredient ingredient);

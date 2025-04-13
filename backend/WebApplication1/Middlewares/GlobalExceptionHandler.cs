@@ -7,7 +7,7 @@ using WebApplication1.Exceptions;
 
 namespace WebApplication1.Middlewares;
 
-internal sealed class GlobalExceptionHandler(IHostEnvironment env, ILogger<GlobalExceptionHandler> logger)
+internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
     : IExceptionHandler
 {
     private const string UnhandledExceptionMsg = "An unhandled exception has occurred while executing the request.";

@@ -90,7 +90,6 @@ public class IngredientController : ControllerBase
                 Detail = "Supplier not found",
                 Title = "Invalid Supplier ID",
                 Status = 400,
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
             });
         }
 
@@ -293,7 +292,7 @@ public class IngredientController : ControllerBase
 
         var imageUrl = await _ingredientImageService.UpsertIngredientImageAsync(file, ingredient.IngredientId);
 
-        ingredient.ImagePath = imageUrl;
+        ingredient.ImageUrl = imageUrl;
 
         try
         {
