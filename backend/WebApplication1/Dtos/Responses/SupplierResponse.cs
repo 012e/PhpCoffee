@@ -1,7 +1,7 @@
 
 namespace WebApplication1.Controllers
 {
-    public class SupplierResponses
+    public class SupplierResponse
     {
         public int SupplierId { get; set; }
 

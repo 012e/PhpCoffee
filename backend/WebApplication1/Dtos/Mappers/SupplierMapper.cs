@@ -10,8 +10,8 @@ namespace WebApplication1.Dtos.Mappers
     [Mapper(AllowNullPropertyAssignment = false)]
     public partial class SupplierMapper
     {
-        public partial SupplierResponses SupplierToSupplierResponse(Supplier supplier);
-        public partial IEnumerable<SupplierResponses> SuppliersToSupplierResponses(IEnumerable<Supplier> suppliers);
+        public partial SupplierResponse SupplierToSupplierResponse(Supplier supplier);
+        public partial IEnumerable<SupplierResponse> SuppliersToSupplierResponses(IEnumerable<Supplier> suppliers);
 
         [MapperIgnoreTarget(nameof(Supplier.SupplierId))]
         [MapperIgnoreTarget(nameof(Supplier.CreatedAt))]

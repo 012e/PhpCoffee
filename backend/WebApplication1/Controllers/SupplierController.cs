@@ -23,8 +23,8 @@ namespace WebApplication1.Controllers
 
         //Lấy tất cả các nhà cung cấp
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<SupplierResponses>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<SupplierResponses>>> GetSupplier()
+        [ProducesResponseType(typeof(IEnumerable<SupplierResponse>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<SupplierResponse>>> GetSupplier()
         {
             var supliers = await _context.Suppliers.ToArrayAsync();
             return Ok(_supplierMapper.SuppliersToSupplierResponses(supliers));
@@ -32,9 +32,9 @@ namespace WebApplication1.Controllers
 
         //Lấy thông tin theo id
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(SupplierResponses), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SupplierResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<SupplierResponses>> GetSupplierByID(int id)
+        public async Task<ActionResult<SupplierResponse>> GetSupplierByID(int id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null)
@@ -46,10 +46,10 @@ namespace WebApplication1.Controllers
 
         //Tạo mới thông tin của nhà cung cấp
         [HttpPost]
-        [ProducesResponseType(typeof(SupplierResponses), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SupplierResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-        public async Task<ActionResult<SupplierResponses>> CreateSupplier(CreateSupplierRequest supplierRequest)
+        public async Task<ActionResult<SupplierResponse>> CreateSupplier(CreateSupplierRequest supplierRequest)
         {
             var newSupplier = _supplierMapper.CreateSupplierRequestToSupplier(supplierRequest);
             _context.Add(newSupplier);

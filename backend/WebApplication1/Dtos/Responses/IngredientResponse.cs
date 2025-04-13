@@ -15,6 +15,6 @@ public class IngredientResponse
 
     public DateTime? CreatedAt { get; set; }
 
-    public SupplierResponses? Supplier { get; set; }
+    public SupplierResponse? Supplier { get; set; }
 
 }
