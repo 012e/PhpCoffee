@@ -68,4 +68,25 @@ public class MenuItemController : ControllerBase
         // Kiểm tra xem supplier có tồn tại trong database hay không
         return _context.Recipes.Any(e => e.Id == id);
     }
+
+    //Delete
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteMenuItem(int id)
+    {
+        var menuItem = await _context.MenuItems.FindAsync(id);
+        if (menuItem == null)
+        {
+            return NotFound(new ProblemDetails
+            {
+                Detail = $"MenuItem with ID {id} not found",
+                Title = "Resource Not Found",
+                Status = 404,
+            });
+        }
+        _context.MenuItems.Remove(menuItem);
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
 }

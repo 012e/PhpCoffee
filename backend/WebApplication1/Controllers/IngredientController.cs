@@ -292,7 +292,7 @@ public class IngredientController : ControllerBase
 
         var imageUrl = await _ingredientImageService.UpsertIngredientImageAsync(file, ingredient.IngredientId);
 
-        ingredient.ImagePath = imageUrl;
+        ingredient.ImageUrl = imageUrl;
 
         try
         {

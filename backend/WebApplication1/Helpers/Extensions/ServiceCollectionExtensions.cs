@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IngredientMapper>();
         services.AddSingleton<MenuItemMapper>();
-
+        services.AddSingleton<SupplierMapper>();
         return services;
     }
 

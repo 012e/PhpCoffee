@@ -1,4 +1,7 @@
-﻿namespace WebApplication1.Database;
+﻿using System;
+using System.Collections.Generic;
+
+namespace WebApplication1.Database;
 
 public partial class Ingredient
 {
@@ -16,10 +19,9 @@ public partial class Ingredient
 
     public DateTime? CreatedAt { get; set; }
 
-    public string? ImagePath { get; set; }
+    public string? ImageUrl { get; set; }
 
-    public virtual ICollection<InventoryTransaction> InventoryTransactions { get; set; } =
-        new List<InventoryTransaction>();
+    public virtual ICollection<InventoryTransactionDetail> InventoryTransactionDetails { get; set; } = new List<InventoryTransactionDetail>();
 
     public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } = new List<RecipeIngredient>();
 
