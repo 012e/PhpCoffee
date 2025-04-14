@@ -1,4 +1,6 @@
+using System.Numerics;
 using Riok.Mapperly.Abstractions;
+using WebApplication1.Controllers;
 using WebApplication1.Database;
 using WebApplication1.Dtos.Requests.InventoryTransaction;
 using WebApplication1.Dtos.Requests.InventoryTransactionDetail;
@@ -18,6 +20,11 @@ namespace WebApplication1.Dtos.Mappers
         [MapperIgnoreTarget(nameof(InventoryTransactionDetail.TransactionId))]
         public partial InventoryTransactionDetail CreateInventoryTransactionDetailToInventoryTransactionDetail(
             CreateInventoryTransactionDetailRequest detailRequest);
-        public partial List<InventoryTransactionDetail> MapDetails(List<CreateInventoryTransactionDetailRequest> detailRequests);
+
+        [MapperIgnoreTarget(nameof(InventoryTransactionResponse.inventoryTransactionDetailResponses))]
+        public partial InventoryTransactionResponse InventoryTransactionToInventoryTransactionResponse(InventoryTransaction inventoryTransaction);
+        public partial InventoryTransactionDetailResponse InventoryTransactionDetailToInventoryTransactionDetailResponse(InventoryTransactionDetail inventoryTransactionDetail);
+
+        public partial IEnumerable<InventoryTransactionResponse> InventoryTransactionsToInventoryTransactionResponses(IEnumerable<InventoryTransaction> inventoryTransactions);
     }
 }
