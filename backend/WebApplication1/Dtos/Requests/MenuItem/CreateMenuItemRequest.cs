@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApplication1.Dtos.Requests.Recipe;
 
 namespace WebApplication1.Dtos.Requests.MenuItem
 {
@@ -15,6 +16,6 @@ namespace WebApplication1.Dtos.Requests.MenuItem
 
         public bool? IsActive { get; set; }
 
-        public int RecipeId { get; set; }
+        public CreateRecipeRequest Recipe { get; set; } = new CreateRecipeRequest();
     }
 }
