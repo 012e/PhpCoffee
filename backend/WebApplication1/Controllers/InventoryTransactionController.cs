@@ -41,6 +41,7 @@ namespace WebApplication1.Controllers
                         _inventoryTransactionMapper.CreateInventoryTransactionDetailToInventoryTransactionDetail(
                             detailRequest);
                     detail.TransactionId = newitem.TransactionId;
+                    detail.TotalCost = detail.Quantity * detail.UnitPrice;
                     _context.InventoryTransactionDetails.Add(detail);
                 }
 

@@ -18,6 +18,7 @@ namespace WebApplication1.Dtos.Mappers
         [MapperIgnoreTarget(nameof(InventoryTransactionDetail.Ingredient))]
         [MapperIgnoreTarget(nameof(InventoryTransactionDetail.Transaction))]
         [MapperIgnoreTarget(nameof(InventoryTransactionDetail.TransactionId))]
+        [MapperIgnoreTarget(nameof(InventoryTransactionDetail.TotalCost))]
         public partial InventoryTransactionDetail CreateInventoryTransactionDetailToInventoryTransactionDetail(
             CreateInventoryTransactionDetailRequest detailRequest);
 

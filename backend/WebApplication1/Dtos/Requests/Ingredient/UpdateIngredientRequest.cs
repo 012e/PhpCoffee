@@ -8,8 +8,6 @@ public class UpdateIngredientRequest
 
     public decimal? CurrentQuantity { get; set; }
 
-    public decimal? CostPerUnit { get; set; }
-
     public string? IngredientDescription { get; set; }
     public int? SupplierId { get; set; }
 }

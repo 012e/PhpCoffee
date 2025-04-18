@@ -8,8 +8,6 @@ public class CreateIngredientRequest
 
     public decimal? CurrentQuantity { get; set; }
 
-    public decimal? CostPerUnit { get; set; }
-
     public string Name { get; set; } = null!;
 
     public decimal Quantity { get; set; }
