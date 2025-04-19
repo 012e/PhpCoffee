@@ -27,9 +27,11 @@ namespace WebApplication1.Controllers
         
         [HttpPost] 
         [ProducesResponseType(typeof(Order), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Order>> Create (CreateOrdersRequest createOrdersRequest)
         {
+            using var transaction= await _context.Database.BeginTransactionAsync();
+            try{
             var newOrder= _ordersMapper.CreateOrdersRequestToOrder(createOrdersRequest);
             _context.Orders.Add(newOrder);
             await _context.SaveChangesAsync();
@@ -57,6 +59,12 @@ namespace WebApplication1.Controllers
             _context.Update(newOrder);
             await _context.SaveChangesAsync();
             return Ok();
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return BadRequest("Failed to create orders: " + ex.Message);
+            }
         }
     }
 }

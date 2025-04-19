@@ -48,7 +48,10 @@ public class MenuItemController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<MenuItem>> CreateMenuItem(CreateMenuItemRequest menuItemRequest)
     {
-        var newRecipe = _menuItemMapper.CreteRecipeInMenu(menuItemRequest.Recipe);
+        using var transaction =await _context.Database.BeginTransactionAsync();
+        
+        try
+        {var newRecipe = _menuItemMapper.CreateRecipeInMenu(menuItemRequest.Recipe);
         _context.Recipes.Add(newRecipe);
         await _context.SaveChangesAsync();
         var newItem = _menuItemMapper.CreateMenuItemRequestToMenuItem(menuItemRequest);
@@ -63,7 +66,12 @@ public class MenuItemController : ControllerBase
         }
         await _context.SaveChangesAsync();
         var response = _menuItemMapper.MenuItemToMenuItemResponse(newItem);
-        return CreatedAtAction(nameof(GetMenuItem), new { id = newItem.ItemId }, response);
+        return CreatedAtAction(nameof(GetMenuItem), new { id = newItem.ItemId }, response);}
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            return BadRequest ("Failed to create menu item: " + ex.Message);
+        }
     }
     private bool Exists(int? id)
     {

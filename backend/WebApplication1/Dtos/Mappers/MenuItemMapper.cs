@@ -26,7 +26,7 @@ namespace WebApplication1.Dtos.Mappers
         [MapperIgnoreTarget(nameof(Recipe.MenuItems))]
         [MapperIgnoreTarget(nameof(Recipe.RecipeIngredients))]
         [MapperIgnoreTarget(nameof(Recipe.CreatedAt))]
-        public partial Recipe CreteRecipeInMenu(CreateRecipeRequest createRecipeRequest);
+        public partial Recipe CreateRecipeInMenu(CreateRecipeRequest createRecipeRequest);
         [MapperIgnoreTarget(nameof(RecipeIngredient.RecipeId))]
         [MapperIgnoreTarget(nameof(RecipeIngredient.Ingredient))]
         [MapperIgnoreTarget(nameof(RecipeIngredient.Recipe))]
