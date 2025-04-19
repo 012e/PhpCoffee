@@ -13,8 +13,6 @@ public partial class Ingredient
 
     public decimal? CurrentQuantity { get; set; }
 
-    public decimal? CostPerUnit { get; set; }
-
     public int? SupplierId { get; set; }
 
     public DateTime? CreatedAt { get; set; }

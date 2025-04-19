@@ -47,7 +47,7 @@ namespace WebApplication1.Controllers
         //Tạo mới thông tin của nhà cung cấp
         [HttpPost]
         [ProducesResponseType(typeof(SupplierResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         public async Task<ActionResult<SupplierResponse>> CreateSupplier(CreateSupplierRequest supplierRequest)
         {

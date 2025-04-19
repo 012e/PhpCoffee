@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using Supabase;
 using Swashbuckle.AspNetCore.Filters;
 using WebApplication1.Database;
@@ -24,13 +25,18 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IngredientMapper>();
         services.AddSingleton<MenuItemMapper>();
         services.AddSingleton<SupplierMapper>();
+        services.AddSingleton<InventoryTransactionMapper>();
+        services.AddSingleton<OrdersMapper>();
         return services;
     }
 
 
     public static IServiceCollection AddAppControllers(this IServiceCollection services)
     {
-        services.AddControllers().AddNewtonsoftJson();
+        services.AddControllers().AddNewtonsoftJson(options =>
+        {
+            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        });
 
         return services;
     }
