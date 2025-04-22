@@ -48,29 +48,31 @@ public class MenuItemController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<MenuItem>> CreateMenuItem(CreateMenuItemRequest menuItemRequest)
     {
-        using var transaction =await _context.Database.BeginTransactionAsync();
-        
+        using var transaction = await _context.Database.BeginTransactionAsync();
+
         try
-        {var newRecipe = _menuItemMapper.CreateRecipeInMenu(menuItemRequest.Recipe);
-        _context.Recipes.Add(newRecipe);
-        await _context.SaveChangesAsync();
-        var newItem = _menuItemMapper.CreateMenuItemRequestToMenuItem(menuItemRequest);
-        newItem.RecipeId = newRecipe.Id;
-        _context.MenuItems.Add(newItem);
-        await _context.SaveChangesAsync();
-        foreach (var i in menuItemRequest.Recipe.RecipeIngredients)
         {
-            var RecipeIngredientMap = _menuItemMapper.CreateRecipeIngredient(i);
-            RecipeIngredientMap.RecipeId = newRecipe.Id;
-            _context.RecipeIngredients.Add(RecipeIngredientMap);
+            var newRecipe = _menuItemMapper.CreateRecipeInMenu(menuItemRequest.Recipe);
+            _context.Recipes.Add(newRecipe);
+            await _context.SaveChangesAsync();
+            var newItem = _menuItemMapper.CreateMenuItemRequestToMenuItem(menuItemRequest);
+            newItem.RecipeId = newRecipe.Id;
+            _context.MenuItems.Add(newItem);
+            await _context.SaveChangesAsync();
+            foreach (var i in menuItemRequest.Recipe.RecipeIngredients)
+            {
+                var RecipeIngredientMap = _menuItemMapper.CreateRecipeIngredient(i);
+                RecipeIngredientMap.RecipeId = newRecipe.Id;
+                _context.RecipeIngredients.Add(RecipeIngredientMap);
+            }
+            await _context.SaveChangesAsync();
+            var response = _menuItemMapper.MenuItemToMenuItemResponse(newItem);
+            return CreatedAtAction(nameof(GetMenuItem), new { id = newItem.ItemId }, response);
         }
-        await _context.SaveChangesAsync();
-        var response = _menuItemMapper.MenuItemToMenuItemResponse(newItem);
-        return CreatedAtAction(nameof(GetMenuItem), new { id = newItem.ItemId }, response);}
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            return BadRequest ("Failed to create menu item: " + ex.Message);
+            return BadRequest("Failed to create menu item: " + ex.Message);
         }
     }
     private bool Exists(int? id)

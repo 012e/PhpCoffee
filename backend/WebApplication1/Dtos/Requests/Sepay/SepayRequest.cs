@@ -3,8 +3,8 @@ namespace WebApplication1.Dtos.Requests.Sepay
 {
     public class SepayRequest
     {
-        
-       [JsonPropertyName("amount")]
+
+        [JsonPropertyName("amount")]
         public decimal? Amount { get; set; }
 
         [JsonPropertyName("order_code")]
