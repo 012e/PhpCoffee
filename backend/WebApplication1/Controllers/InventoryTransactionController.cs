@@ -84,7 +84,7 @@ namespace WebApplication1.Controllers
         [ProducesResponseType(typeof(InventoryTransactionResponse), StatusCodes.Status200OK)]
         public async Task<ActionResult<InventoryTransactionResponse>> GetTransactionById(int id)
         {
-            var transaction = await _context.InventoryTransactions.Include(x => x.InventoryTransactionDetails) // Eager loading để tải sẵn thông tin Supplier
+            var transaction = await _context.InventoryTransactions.Include(x => x.InventoryTransactionDetails)
             .FirstOrDefaultAsync(x => x.TransactionId == id); ;
             if (transaction == null)
             {

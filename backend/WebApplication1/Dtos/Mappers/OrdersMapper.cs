@@ -16,8 +16,9 @@ namespace WebApplication1.Dtos.Mappers
         [MapperIgnoreTarget(nameof(Order.OrderId))]
         [MapperIgnoreTarget(nameof(Order.OrderDate))]
         [MapperIgnoreTarget(nameof(Order.OrderItems))]
-        [MapperIgnoreTarget(nameof(Order.Payment))]
+        [MapperIgnoreTarget(nameof(Order.Payments))]
         [MapperIgnoreTarget(nameof(Order.TotalAmount))]
+        [MapperIgnoreTarget(nameof (Order.Remaining))]
         public partial Order CreateOrdersRequestToOrder(CreateOrdersRequest createOrdersRequest);
 
         [MapperIgnoreTarget(nameof(OrderItem.OrderId))]
@@ -30,7 +31,7 @@ namespace WebApplication1.Dtos.Mappers
         [MapperIgnoreTarget(nameof(Payment.Amount))]
         [MapperIgnoreTarget(nameof(Payment.PaymentDate))]
         [MapperIgnoreTarget(nameof(Payment.Order))]
-
+        [MapperIgnoreTarget(nameof(Payment.PaymentId))]
         public partial Payment CreatePaymentRequestInOrders(CreatePaymentRequest createPaymentRequest);
 
     }

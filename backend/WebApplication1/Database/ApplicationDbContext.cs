@@ -175,9 +175,9 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValueSql("'unpaid'::character varying")
                 .HasColumnName("payment_status");
+            entity.Property(e => e.Remaining).HasColumnName("remaining");
             entity.Property(e => e.TotalAmount)
                 .HasPrecision(10, 2)
-                .HasDefaultValueSql("0")
                 .HasColumnName("total_amount");
         });
 
@@ -212,16 +212,15 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("payments_pkey");
+            entity.HasKey(e => e.PaymentId).HasName("payments_pkey");
 
             entity.ToTable("payments", "phpcafe");
 
-            entity.Property(e => e.OrderId)
-                .ValueGeneratedNever()
-                .HasColumnName("order_id");
+            entity.Property(e => e.PaymentId).HasColumnName("payment_id");
             entity.Property(e => e.Amount)
                 .HasPrecision(10, 2)
                 .HasColumnName("amount");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.PaymentDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
@@ -230,8 +229,8 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("payment_method");
 
-            entity.HasOne(d => d.Order).WithOne(p => p.Payment)
-                .HasForeignKey<Payment>(d => d.OrderId)
+            entity.HasOne(d => d.Order).WithMany(p => p.Payments)
+                .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("payments_order_id_fkey");
         });

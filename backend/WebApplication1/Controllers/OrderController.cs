@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using WebApplication1.Database;
 using WebApplication1.Dtos.Mappers;
 using WebApplication1.Dtos.Requests.Orders;
+using WebApplication1.Dtos.Requests.Sepay;
 
 namespace WebApplication1.Controllers
 {
@@ -43,10 +45,12 @@ namespace WebApplication1.Controllers
                 _context.OrderItems.Add(newItem);
                 newOrder.TotalAmount+=newItem.TotalPrice;
             }
+            newOrder.Remaining=newOrder.TotalAmount;
             _context.Orders.Update(newOrder);
             await _context.SaveChangesAsync();
             var newPayment= _ordersMapper.CreatePaymentRequestInOrders(createOrdersRequest.CreatePaymentRequest);
             newPayment.OrderId=newOrder.OrderId;
+            newPayment.Amount=newOrder.Remaining;
             _context.Payments.Add(newPayment);
             if (newPayment.PaymentMethod=="Tien mat")
             {
@@ -58,8 +62,9 @@ namespace WebApplication1.Controllers
             }
             _context.Update(newOrder);
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
             return Ok();
-            }
+            } 
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();

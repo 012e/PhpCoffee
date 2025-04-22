@@ -96,7 +96,7 @@ public class IngredientController : ControllerBase
         // Chuyển đổi từ DTO sang entity
         var newIngredient = _ingredientMapper.CreateIngredientRequestToIngredient(createIngredientRequest);
 
-        // Thêm entity vào DbContext
+        // Thêm entity vào DbContex
         _context.Ingredients.Add(newIngredient);
 
         // Lưu thay đổi vào database

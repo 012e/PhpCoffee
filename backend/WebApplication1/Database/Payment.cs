@@ -13,5 +13,7 @@ public partial class Payment
 
     public DateTime? PaymentDate { get; set; }
 
+    public int PaymentId { get; set; }
+
     public virtual Order Order { get; set; } = null!;
 }
