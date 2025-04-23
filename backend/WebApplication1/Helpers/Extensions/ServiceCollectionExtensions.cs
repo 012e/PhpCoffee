@@ -1,3 +1,4 @@
+using Auth0.ManagementApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -109,6 +110,15 @@ public static class ServiceCollectionExtensions
             var supabaseKey = configuration["Supabase:Key"];
             return new Client(supabaseUrl, supabaseKey);
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuth0Admin(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddSingleton((_) =>
+            new ManagementApiClient(configuration["Auth0:Token"], new Uri(configuration["Auth0:ManagementApiUrl"]!)));
 
         return services;
     }
