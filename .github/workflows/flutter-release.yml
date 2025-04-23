@@ -1,14 +1,11 @@
 name: Flutter Release
-
 defaults:
   run:
     working-directory: ./frontend
-
 on:
   push:
     branches:
       - main
-
 jobs:
   build-linux:
     runs-on: ubuntu-latest
@@ -17,9 +14,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libblkid-dev liblzma-dev
+        shell: bash
+        working-directory: .
+      
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          cache: true
           channel: stable
           flutter-version: 3.29.1
       
