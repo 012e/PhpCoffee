@@ -6,14 +6,14 @@ on:
       - main
 
 jobs:
+  defaults:
+    run:
+      working-directory: ./frontend
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-    defaults:
-      run:
-        working-directory: ./frontend
     
 
     steps:
