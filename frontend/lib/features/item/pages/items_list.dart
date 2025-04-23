@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/shared/riverpods/items_provider.dart';
 
-@RoutePage()
 class ItemsList extends ConsumerWidget {
   const ItemsList({super.key});
 
@@ -48,7 +47,7 @@ class HoverableCard extends ConsumerStatefulWidget {
   const HoverableCard({Key? key, required this.item}) : super(key: key);
 
   @override
-  State<HoverableCard> createState() => _HoverableCardState();
+  ConsumerState<HoverableCard> createState() => _HoverableCardState();
 }
 
 class _HoverableCardState extends ConsumerState<HoverableCard> {
