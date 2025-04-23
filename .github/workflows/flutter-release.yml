@@ -1,12 +1,15 @@
 name: Flutter Release
+
+defaults:
+  run:
+    working-directory: ./frontend
+
 on:
   push:
     branches:
       - main
+
 jobs:
-  defaults:
-    run:
-      working-directory: ./frontend
   build:
     runs-on: ubuntu-latest
     strategy:
