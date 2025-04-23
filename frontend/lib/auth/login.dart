@@ -26,6 +26,7 @@ class LoginScreen extends ConsumerWidget {
     var authenticator = Authenticator(
       client,
       scopes: scopes,
+      additionalParameters: {'audience': 'phpcoffeebackend'},
       port: 4000,
       urlLancher: urlLauncher,
     );
