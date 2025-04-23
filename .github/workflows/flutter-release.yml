@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
 
 jobs:
   build-linux:
@@ -79,6 +81,7 @@ jobs:
   release:
     needs: [build-linux, build-windows]
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Download Linux artifact
         uses: actions/download-artifact@v4
@@ -97,9 +100,15 @@ jobs:
           zip -r linux-build.zip linux-artifacts
           zip -r windows-build.zip windows-artifacts
       
+      - name: Get tag name
+        id: get_tag
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          name: Release ${{ steps.get_tag.outputs.TAG }}
+          tag_name: ${{ github.ref_name }}
           files: |
             linux-build.zip
             windows-build.zip
