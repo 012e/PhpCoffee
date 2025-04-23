@@ -12,8 +12,10 @@ class Shell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.surface;
     return Scaffold(
       key: _key,
+      backgroundColor: background,
       drawer: Sidebar(controller: _controller),
       body: Row(
         children: [

@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^6.3.1
   sidebarx: ^0.17.1
   auto_route: ^10.0.1
+  settings_ui: ^2.0.2
 
 dev_dependencies:
   flutter_test:

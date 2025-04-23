@@ -5,6 +5,8 @@ import 'package:frontend/features/employee/employee_page.dart';
 import 'package:frontend/features/item/items_page.dart';
 import 'package:frontend/features/root.dart';
 import 'package:frontend/features/setting/setting_page.dart';
+import 'package:frontend/features/setting/pages/profile_page.dart';
+import 'package:frontend/features/setting/pages/setting_list_page.dart';
 import 'package:frontend/shared/guards/auth_guards.dart';
 
 part 'routes.gr.dart';
@@ -25,7 +27,14 @@ class AppRouter extends RootStackRouter {
         AutoRoute(path: 'dashboard', page: DashboardRoute.page),
         AutoRoute(path: 'items', page: ItemsRoute.page),
         AutoRoute(path: 'employees', page: EmployeesRoute.page),
-        AutoRoute(path: 'settings', page: SettingRoute.page),
+        AutoRoute(
+          path: 'settings',
+          page: SettingRoute.page,
+          children: [
+            AutoRoute(path: "", page: SettingListRoute.page),
+            AutoRoute(path: "profile", page: ProfileRoute.page),
+          ],
+        ),
       ],
     ),
   ];
