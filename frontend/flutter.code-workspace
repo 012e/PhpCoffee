@@ -1,0 +1,14 @@
+{
+    "folders": [
+        {
+            "path": "."
+        },
+        // OTHER PATHS
+    ],
+    "settings": {
+        "problems.decorations.enabled": false,
+        "dart.analysisExcludedFolders": [
+          "./api"
+        ]
+    },
+}

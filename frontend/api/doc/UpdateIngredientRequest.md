@@ -1,0 +1,19 @@
+# api_client.model.UpdateIngredientRequest
+
+## Load the model package
+```dart
+import 'package:api_client/api.dart';
+```
+
+## Properties
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**ingredientName** | **String** |  | [optional] 
+**unit** | **String** |  | [optional] 
+**currentQuantity** | **double** |  | [optional] 
+**ingredientDescription** | **String** |  | [optional] 
+**supplierId** | **int** |  | [optional] 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+
