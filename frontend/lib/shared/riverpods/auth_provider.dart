@@ -1,5 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/shared/services/token_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -7,15 +6,11 @@ part 'auth_provider.g.dart';
 
 @riverpod
 class AuthNotifier extends _$AuthNotifier {
-  late final FlutterSecureStorage _storage;
-
-  AuthNotifier() {
-    _storage = GetIt.I<FlutterSecureStorage>();
-  }
+  final _tokenService = GetIt.I<TokenService>();
 
   @override
   String? build() {
-    return null; // Default: not authenticated
+    return null;
   }
 
   bool isLoggedIn() {
@@ -23,11 +18,12 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   login({required String accessToken}) async {
-    await _storage.write(key: "access_token", value: accessToken);
+    await _tokenService.setToken(accessToken);
     state = accessToken;
   }
 
-  void logout() {
+  void logout() async {
+    await _tokenService.removetoken();
     state = null;
   }
 }

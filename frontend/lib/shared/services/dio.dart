@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/shared/services/init.dart';
+import 'package:frontend/shared/services/token_service.dart';
 
 Dio createDio() {
   final dio = Dio(
@@ -14,9 +14,8 @@ Dio createDio() {
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final token = await getIt<FlutterSecureStorage>().read(
-          key: "access_token",
-        );
+        final tokenService = getIt<TokenService>();
+        final token = await tokenService.getToken();
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
         }

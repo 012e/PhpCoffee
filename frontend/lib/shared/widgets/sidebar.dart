@@ -41,7 +41,7 @@ class Sidebar extends StatelessWidget {
       ),
       SidebarXItem(
         icon: Icons.settings,
-        label: 'Search',
+        label: 'Settings',
         onTap: () {
           router.navigatePath("/settings");
         },

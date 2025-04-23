@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/shared/routes.dart';
 import 'package:frontend/shared/services/init.dart';
 
-void main() {
-  setupLocator();
+void main() async {
+  await setupLocator();
   runApp(MyApp());
 }
 

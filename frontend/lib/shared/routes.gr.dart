@@ -108,18 +108,36 @@ class RootRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [SettingListPage]
-class SettingListRoute extends PageRouteInfo<void> {
-  const SettingListRoute({List<PageRouteInfo>? children})
-    : super(SettingListRoute.name, initialChildren: children);
+class SettingListRoute extends PageRouteInfo<SettingListRouteArgs> {
+  SettingListRoute({Key? key, List<PageRouteInfo>? children})
+    : super(
+        SettingListRoute.name,
+        args: SettingListRouteArgs(key: key),
+        initialChildren: children,
+      );
 
   static const String name = 'SettingListRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const SettingListPage();
+      final args = data.argsAs<SettingListRouteArgs>(
+        orElse: () => const SettingListRouteArgs(),
+      );
+      return SettingListPage(key: args.key);
     },
   );
+}
+
+class SettingListRouteArgs {
+  const SettingListRouteArgs({this.key});
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'SettingListRouteArgs{key: $key}';
+  }
 }
 
 /// generated route for

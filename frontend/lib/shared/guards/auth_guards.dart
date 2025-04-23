@@ -1,17 +1,15 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/shared/routes.dart';
+import 'package:frontend/shared/services/token_service.dart';
 import 'package:get_it/get_it.dart';
 
 class AuthGuard extends AutoRouteGuard {
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) async {
-    final storage = GetIt.I<FlutterSecureStorage>();
-    var authenticated = await storage.read(key: "access_token");
+    final storage = GetIt.I<TokenService>();
+    var token = await storage.getToken();
 
-    // the navigation is paused until resolver.next() is called with either
-    // true to resume/continue navigation or false to abort navigation
-    if (authenticated != null) {
+    if (token != null) {
       // if user is authenticated we continue
       resolver.next(true);
     } else {
