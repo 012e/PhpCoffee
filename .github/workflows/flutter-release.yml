@@ -1,0 +1,76 @@
+name: Flutter Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Enable desktop support
+        run: flutter config --enable-linux-desktop --enable-windows-desktop
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build executable
+        run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            flutter build linux
+          else
+            flutter build windows
+          fi
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: |
+            build/linux/runner/**/*.*
+            build/windows/runner/**/*.*
+  
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-ubuntu-latest
+          path: linux-artifacts
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-windows-latest
+          path: windows-artifacts
+
+      - name: Zip artifacts
+        run: |
+          zip -r linux-build.zip linux-artifacts
+          zip -r windows-build.zip windows-artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            linux-build.zip
+            windows-build.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
