@@ -16,7 +16,7 @@ jobs:
 
       - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: libgtk-3-0 libblkid1 liblzma5 libwebkit2gtk-4.1-dev libsecret
+          packages: libgtk-3-0 libblkid1 liblzma5 libwebkit2gtk-4.1-dev libsecret-1-dev
           version: 1.0
       
       - name: Set up Flutter
