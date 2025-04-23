@@ -11,6 +11,38 @@
 part of 'routes.dart';
 
 /// generated route for
+/// [DashboardPage]
+class DashboardRoute extends PageRouteInfo<void> {
+  const DashboardRoute({List<PageRouteInfo>? children})
+    : super(DashboardRoute.name, initialChildren: children);
+
+  static const String name = 'DashboardRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const DashboardPage();
+    },
+  );
+}
+
+/// generated route for
+/// [EmployeesPage]
+class EmployeesRoute extends PageRouteInfo<void> {
+  const EmployeesRoute({List<PageRouteInfo>? children})
+    : super(EmployeesRoute.name, initialChildren: children);
+
+  static const String name = 'EmployeesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const EmployeesPage();
+    },
+  );
+}
+
+/// generated route for
 /// [ItemsPage]
 class ItemsRoute extends PageRouteInfo<void> {
   const ItemsRoute({List<PageRouteInfo>? children})

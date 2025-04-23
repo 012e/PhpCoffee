@@ -1,11 +1,8 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/features/setting/setting.dart';
 import 'package:frontend/shared/riverpods/auth_provider.dart';
 import 'package:frontend/shared/routes.dart';
-import 'package:go_router/go_router.dart';
 import 'package:openid_client/openid_client_io.dart';
 import 'package:url_launcher/url_launcher.dart';
 

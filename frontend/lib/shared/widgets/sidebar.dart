@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/shared/routes.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 class Sidebar extends StatelessWidget {
@@ -18,30 +17,35 @@ class Sidebar extends StatelessWidget {
     final sidebarBackground = theme.colorScheme.surfaceContainerHighest;
     final router = AutoRouter.of(context);
 
-    var items = [
+    final items = [
       SidebarXItem(
-        icon: Icons.home,
-        label: 'Home',
+        icon: Icons.dashboard,
+        label: 'Dashboard',
         onTap: () {
-          router.navigate(const SettingRoute());
+          router.navigatePath("/dashboard");
         },
       ),
       SidebarXItem(
-        icon: Icons.search,
-        label: 'Search',
+        icon: Icons.coffee,
+        label: 'Item',
         onTap: () {
-          router.navigate(const ItemsRoute());
+          router.navigatePath("/items");
         },
       ),
       SidebarXItem(
         icon: Icons.people,
-        label: 'People',
+        label: 'Employee',
         onTap: () {
-          router.navigate(const ItemsRoute());
+          router.navigatePath("/employees");
         },
       ),
-      SidebarXItem(icon: Icons.favorite, label: 'Favorites', onTap: () {}),
-      const SidebarXItem(icon: Icons.access_alarm, label: 'Flutter'),
+      SidebarXItem(
+        icon: Icons.settings,
+        label: 'Search',
+        onTap: () {
+          router.navigatePath("/settings");
+        },
+      ),
     ];
     return SidebarX(
       controller: _controller,
@@ -77,20 +81,27 @@ class Sidebar extends StatelessWidget {
         decoration: BoxDecoration(color: sidebarBackground),
       ),
       footerDivider: divider,
-      headerBuilder: (context, extended) => SizedBox(height: 100),
+      headerBuilder:
+          (context, extended) => Padding(
+            padding: EdgeInsets.only(bottom: 30),
+            child: SizedBox(
+              height: 100,
+              child: Image(image: AssetImage("assets/logo.png")),
+            ),
+          ),
       items: items,
     );
   }
 
-  void _showDisabledAlert(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Item disabled for selecting',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Colors.white,
-      ),
-    );
-  }
+  // void _showDisabledAlert(BuildContext context) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(
+  //       content: Text(
+  //         'Item disabled for selecting',
+  //         style: TextStyle(color: Colors.black),
+  //       ),
+  //       backgroundColor: Colors.white,
+  //     ),
+  //   );
+  // }
 }
