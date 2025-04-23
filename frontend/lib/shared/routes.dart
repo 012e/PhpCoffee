@@ -1,33 +1,29 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/auth/pages/login.dart';
-import 'package:frontend/auth/pages/login_oidc.dart';
-import 'package:frontend/setting/pages/setting_home.dart';
-import 'package:frontend/shared/riverpods/authProvider.dart';
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:frontend/auth/login.dart';
+import 'package:frontend/features/items/items_page.dart';
+import 'package:frontend/features/root.dart';
+import 'package:frontend/features/setting/setting.dart';
+import 'package:frontend/shared/guards/auth_guards.dart';
 
-typedef HomePage = SettingPage;
+part 'routes.gr.dart';
 
-final router = GoRouter(
-  routes: [
-    GoRoute(path: '/', builder: (context, state) => const _AuthGuard()),
-    GoRoute(
-      path: '/auth/login',
-      builder: (context, state) => const LoginScreen(),
-    ),
-  ],
-);
-
-class _AuthGuard extends ConsumerWidget {
-  const _AuthGuard();
+@AutoRouterConfig(replaceInRouteName: 'Page|Screen,Route')
+class AppRouter extends RootStackRouter {
+  @override
+  RouteType get defaultRouteType => RouteType.material();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isAuthenticated = ref.watch(authProvider);
-    if (isAuthenticated) {
-      return const HomePage();
-    } else {
-      return const LoginScreen();
-    }
-  }
+  List<AutoRoute> get routes => [
+    AutoRoute(path: '/auth/login', page: LoginRoute.page),
+    AutoRoute(
+      path: '/',
+      page: RootRoute.page,
+      guards: [AuthGuard()],
+      children: [
+        AutoRoute(path: 'test', page: SettingRoute.page),
+        AutoRoute(path: 'home', page: ItemsRoute.page),
+        AutoRoute(path: 'settings', page: SettingRoute.page),
+      ],
+    ),
+  ];
 }

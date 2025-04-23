@@ -9,10 +9,13 @@ void main() {
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
+  final _router = AppRouter();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(child: MaterialApp.router(routerConfig: router));
+    return ProviderScope(
+      child: MaterialApp.router(routerConfig: _router.config()),
+    );
   }
 }
