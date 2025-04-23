@@ -1,19 +1,20 @@
 name: Flutter Release
-defaults:
-  run:
-    working-directory: frontend
+
 on:
   push:
     branches:
       - main
+
 jobs:
   build-linux:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: libgtk-3-0 libblkid1 liblzma5 libwebkit2gtk-4.1-dev libsecret-1-dev
@@ -44,6 +45,9 @@ jobs:
   
   build-windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: frontend
     
     steps:
       - name: Checkout repository
