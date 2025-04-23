@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:frontend/shared/services/api.dart';
 import 'package:frontend/shared/services/dio.dart';
 import 'package:frontend/shared/services/token_service.dart';
 import 'package:get_it/get_it.dart';
@@ -14,5 +15,6 @@ Future<void> setupLocator() async {
   await GetIt.instance.isReady<SharedPreferences>();
   getIt.registerSingleton<TokenService>(TokenService());
   getIt.registerLazySingleton<Dio>(() => createDio());
+  setupApis();
   await getIt.allReady();
 }
