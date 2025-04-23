@@ -36,7 +36,8 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=db.thmpdhrucfczexmfyxnl.supabase.co;Database=postgres;Username=postgres;Password=dYrvfTcxqbdrFCMz;SearchPath=phpcafe");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=db.thmpdhrucfczexmfyxnl.supabase.co;Database=postgres;Username=postgres;Password=dYrvfTcxqbdrFCMz");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -63,12 +64,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("ingredients", "phpcafe");
 
-            entity.Property(e => e.IngredientId)
-                .HasDefaultValueSql("nextval('ingredients_ingredient_id_seq'::regclass)")
-                .HasColumnName("ingredient_id");
-            entity.Property(e => e.CostPerUnit)
-                .HasPrecision(10, 2)
-                .HasColumnName("cost_per_unit");
+            entity.Property(e => e.IngredientId).HasColumnName("ingredient_id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
@@ -96,13 +92,11 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<InventoryTransaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("inventory_transactions_pkey1");
+            entity.HasKey(e => e.TransactionId).HasName("inventory_transactions_pkey");
 
             entity.ToTable("inventory_transactions", "phpcafe");
 
-            entity.Property(e => e.TransactionId)
-                .ValueGeneratedNever()
-                .HasColumnName("transaction_id");
+            entity.Property(e => e.TransactionId).HasColumnName("transaction_id");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(100)
                 .HasColumnName("created_by");
@@ -134,7 +128,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasOne(d => d.Transaction).WithMany(p => p.InventoryTransactionDetails)
                 .HasForeignKey(d => d.TransactionId)
-                .HasConstraintName("inventory_transaction_details_new_transaction_id_fkey");
+                .HasConstraintName("inventory_transaction_details_transaction_id_fkey");
         });
 
         modelBuilder.Entity<MenuItem>(entity =>
@@ -143,9 +137,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("menu_items", "phpcafe");
 
-            entity.Property(e => e.ItemId)
-                .HasDefaultValueSql("nextval('menu_items_item_id_seq'::regclass)")
-                .HasColumnName("item_id");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.BasePrice)
                 .HasPrecision(10, 2)
                 .HasColumnName("base_price");
@@ -174,9 +166,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("orders", "phpcafe");
 
-            entity.Property(e => e.OrderId)
-                .HasDefaultValueSql("nextval('orders_order_id_seq'::regclass)")
-                .HasColumnName("order_id");
+            entity.Property(e => e.OrderId).HasColumnName("order_id");
             entity.Property(e => e.OrderDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
@@ -185,23 +175,20 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValueSql("'unpaid'::character varying")
                 .HasColumnName("payment_status");
+            entity.Property(e => e.Remaining).HasColumnName("remaining");
             entity.Property(e => e.TotalAmount)
                 .HasPrecision(10, 2)
-                .HasDefaultValueSql("0")
                 .HasColumnName("total_amount");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
         {
-            entity.HasKey(e => e.OrderItemId).HasName("order_items_pkey");
+            entity.HasKey(e => new { e.OrderId, e.ItemId }).HasName("order_items_pkey");
 
             entity.ToTable("order_items", "phpcafe");
 
-            entity.Property(e => e.OrderItemId)
-                .HasDefaultValueSql("nextval('order_items_order_item_id_seq'::regclass)")
-                .HasColumnName("order_item_id");
-            entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.OrderId).HasColumnName("order_id");
+            entity.Property(e => e.ItemId).HasColumnName("item_id");
             entity.Property(e => e.Quantity)
                 .HasDefaultValue(1)
                 .HasColumnName("quantity");
@@ -214,10 +201,12 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasOne(d => d.Item).WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.ItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("order_items_item_id_fkey");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
                 .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("order_items_order_id_fkey");
         });
 
@@ -227,9 +216,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("payments", "phpcafe");
 
-            entity.Property(e => e.PaymentId)
-                .HasDefaultValueSql("nextval('payments_payment_id_seq'::regclass)")
-                .HasColumnName("payment_id");
+            entity.Property(e => e.PaymentId).HasColumnName("payment_id");
             entity.Property(e => e.Amount)
                 .HasPrecision(10, 2)
                 .HasColumnName("amount");
@@ -244,6 +231,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("payments_order_id_fkey");
         });
 
@@ -253,9 +241,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("recipes", "phpcafe");
 
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("nextval('recipes_id_seq'::regclass)")
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
@@ -294,9 +280,7 @@ public partial class ApplicationDbContext : DbContext
 
             entity.ToTable("suppliers", "phpcafe");
 
-            entity.Property(e => e.SupplierId)
-                .HasDefaultValueSql("nextval('suppliers_supplier_id_seq'::regclass)")
-                .HasColumnName("supplier_id");
+            entity.Property(e => e.SupplierId).HasColumnName("supplier_id");
             entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.ContactPhone)
                 .HasMaxLength(20)

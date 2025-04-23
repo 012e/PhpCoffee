@@ -96,7 +96,7 @@ public class IngredientController : ControllerBase
         // Chuyển đổi từ DTO sang entity
         var newIngredient = _ingredientMapper.CreateIngredientRequestToIngredient(createIngredientRequest);
 
-        // Thêm entity vào DbContext
+        // Thêm entity vào DbContex
         _context.Ingredients.Add(newIngredient);
 
         // Lưu thay đổi vào database
@@ -254,7 +254,6 @@ public class IngredientController : ControllerBase
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4"
             });
         }
-
         _context.Ingredients.Remove(ingredient);
         await _context.SaveChangesAsync();
 

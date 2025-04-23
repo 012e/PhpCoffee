@@ -1,6 +1,8 @@
+using WebApplication1.Controllers;
 using WebApplication1.Helpers.Extensions;
 using WebApplication1.Middlewares;
 using WebApplication1.Services;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +16,6 @@ builder.Services
     .AddAppDbContext(builder.Configuration)
     .AddExceptionHandler<GlobalExceptionHandler>()
     .AddAppAuthentication(builder.Configuration);
-
 
 var app = builder.Build();
 
