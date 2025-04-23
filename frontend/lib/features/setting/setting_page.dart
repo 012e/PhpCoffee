@@ -10,22 +10,25 @@ import 'package:get_it/get_it.dart';
 class SettingPage extends ConsumerWidget {
   const SettingPage({super.key});
 
-  void _logout(WidgetRef ref) {
-    GetIt.I<FlutterSecureStorage>().delete(key: "access_token");
-    ref.read(authNotifierProvider.notifier).logout();
-  }
+  // void _logout(WidgetRef ref) {
+  //   GetIt.I<FlutterSecureStorage>().delete(key: "access_token");
+  //   ref.read(authNotifierProvider.notifier).logout();
+  // }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = AutoRouter.of(context);
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          _logout(ref);
-          router.navigate(const LoginRoute());
-        },
-        child: Text('Logout'),
+    var showGoBack = true;
+    if (router.currentChild?.name == "") {
+      showGoBack = false;
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Settings"),
+        leading: showGoBack ? AutoLeadingButton() : null,
       ),
+      body: AutoRouter(),
     );
   }
 }

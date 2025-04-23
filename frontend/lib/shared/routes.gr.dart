@@ -11,6 +11,38 @@
 part of 'routes.dart';
 
 /// generated route for
+/// [DashboardPage]
+class DashboardRoute extends PageRouteInfo<void> {
+  const DashboardRoute({List<PageRouteInfo>? children})
+    : super(DashboardRoute.name, initialChildren: children);
+
+  static const String name = 'DashboardRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const DashboardPage();
+    },
+  );
+}
+
+/// generated route for
+/// [EmployeesPage]
+class EmployeesRoute extends PageRouteInfo<void> {
+  const EmployeesRoute({List<PageRouteInfo>? children})
+    : super(EmployeesRoute.name, initialChildren: children);
+
+  static const String name = 'EmployeesRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const EmployeesPage();
+    },
+  );
+}
+
+/// generated route for
 /// [ItemsPage]
 class ItemsRoute extends PageRouteInfo<void> {
   const ItemsRoute({List<PageRouteInfo>? children})
@@ -43,6 +75,22 @@ class LoginRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ProfilePage]
+class ProfileRoute extends PageRouteInfo<void> {
+  const ProfileRoute({List<PageRouteInfo>? children})
+    : super(ProfileRoute.name, initialChildren: children);
+
+  static const String name = 'ProfileRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ProfilePage();
+    },
+  );
+}
+
+/// generated route for
 /// [RootScreen]
 class RootRoute extends PageRouteInfo<void> {
   const RootRoute({List<PageRouteInfo>? children})
@@ -54,6 +102,22 @@ class RootRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const RootScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [SettingListPage]
+class SettingListRoute extends PageRouteInfo<void> {
+  const SettingListRoute({List<PageRouteInfo>? children})
+    : super(SettingListRoute.name, initialChildren: children);
+
+  static const String name = 'SettingListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SettingListPage();
     },
   );
 }
