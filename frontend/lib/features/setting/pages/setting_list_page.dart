@@ -1,12 +1,20 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/shared/riverpods/auth_provider.dart';
+import 'package:frontend/shared/services/token_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 @RoutePage()
 class SettingListPage extends ConsumerWidget {
-  const SettingListPage({super.key});
+  SettingListPage({super.key});
+  final tokenStorage = GetIt.I<TokenService>();
+
+  Future<void> _logout(WidgetRef ref) async {
+    await tokenStorage.removetoken();
+    ref.read(authNotifierProvider.notifier).logout();
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +31,7 @@ class SettingListPage extends ConsumerWidget {
             leading: Icon(Icons.settings),
             description: Text('UI created to show plugin\'s possibilities'),
             onPressed: (context) {
-              router.pushPath("/settings/profile");
+              router.navigatePath("/settings/profile");
             },
           ),
         ],
@@ -36,7 +44,7 @@ class SettingListPage extends ConsumerWidget {
             leading: Icon(Icons.group),
             description: Text('See information of current logged in user'),
             onPressed: (context) {
-              router.pushPath("/settings/profile");
+              router.navigatePath("/settings/profile");
             },
           ),
           SettingsTile.navigation(
@@ -46,7 +54,9 @@ class SettingListPage extends ConsumerWidget {
               "Dangerous: Logout of current account",
               style: TextStyle(color: dangerColor),
             ),
-            onPressed: (context) {},
+            onPressed: (context) {
+              _showDialog(context, ref, dangerColor);
+            },
           ),
         ],
       ),
@@ -55,6 +65,34 @@ class SettingListPage extends ConsumerWidget {
     return SettingsList(
       applicationType: ApplicationType.material,
       sections: sections,
+    );
+  }
+
+  void _showDialog(BuildContext context, WidgetRef ref, Color dangerColor) {
+    final router = AutoRouter.of(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text("Confirm Logout"),
+          content: Text("Are you sure you want to log out?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(), // cancel
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(dialogContext).pop(); // close dialog
+                await _logout(ref); // perform logout
+                router.navigatePath("/auth/login");
+              },
+              style: TextButton.styleFrom(foregroundColor: dangerColor),
+              child: Text("Logout"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
