@@ -4,14 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ItemCard extends ConsumerStatefulWidget {
   final MenuItemResponse item;
-  final bool isSelected;
+  // amount is now used to indicate selection and display the quantity
+  final int amount;
   final VoidCallback? onTap;
 
   const ItemCard({
     super.key,
     required this.item,
     this.onTap,
-    this.isSelected = false,
+    this.amount = 0, // Default amount is 0 (not selected)
   });
 
   @override
@@ -21,8 +22,48 @@ class ItemCard extends ConsumerStatefulWidget {
 class _ItemCardState extends ConsumerState<ItemCard> {
   bool isHovering = false;
 
+  Widget _buildCardInfo() {
+    return Container(
+      // color: Theme.of(context).colorScheme.secondaryContainer, // Consider if you still need this
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Divider(), // Use const with Divider
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              widget.item.itemName ?? 'Unnamed',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color:
+                    Theme.of(context).textTheme.titleLarge?.color ??
+                    Colors.black,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          if (widget.item.basePrice != null)
+            Text(
+              '\$${widget.item.basePrice!.toStringAsFixed(2)}',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Determine if the item is selected based on the amount
+    final isSelected = widget.amount > 0;
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => isHovering = true),
@@ -35,13 +76,13 @@ class _ItemCardState extends ConsumerState<ItemCard> {
           child: Card(
             elevation: isHovering ? 8 : 4,
             color:
-                widget.isSelected
+                isSelected
                     ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
                     : Theme.of(context).cardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
               side:
-                  widget.isSelected
+                  isSelected
                       ? BorderSide(
                         color: Theme.of(context).colorScheme.primary,
                         width: 2,
@@ -65,40 +106,27 @@ class _ItemCardState extends ConsumerState<ItemCard> {
                               )
                               : const Icon(Icons.fastfood, size: 50),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        widget.item.itemName ?? 'Unnamed',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    if (widget.item.basePrice != null)
-                      Text(
-                        '\$${widget.item.basePrice!.toStringAsFixed(2)}',
-                        style: const TextStyle(fontSize: 14),
-                        textAlign: TextAlign.center,
-                      ),
-                    const SizedBox(height: 8),
+                    _buildCardInfo(),
                   ],
                 ),
-                if (widget.isSelected)
+                if (isSelected)
                   Positioned(
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.all(2),
+                      padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.primary,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
-                        Icons.check_circle,
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 24,
+                      child: Text(
+                        widget.amount.toString(),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
