@@ -43,6 +43,51 @@ class EmployeesRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ItemsListPage]
+class ItemsListRoute extends PageRouteInfo<ItemsListRouteArgs> {
+  ItemsListRoute({
+    Key? key,
+    dynamic Function(SelectedItemsWithAmount)? onSelectionChanged,
+    List<PageRouteInfo>? children,
+  }) : super(
+         ItemsListRoute.name,
+         args: ItemsListRouteArgs(
+           key: key,
+           onSelectionChanged: onSelectionChanged,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'ItemsListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ItemsListRouteArgs>(
+        orElse: () => const ItemsListRouteArgs(),
+      );
+      return ItemsListPage(
+        key: args.key,
+        onSelectionChanged: args.onSelectionChanged,
+      );
+    },
+  );
+}
+
+class ItemsListRouteArgs {
+  const ItemsListRouteArgs({this.key, this.onSelectionChanged});
+
+  final Key? key;
+
+  final dynamic Function(SelectedItemsWithAmount)? onSelectionChanged;
+
+  @override
+  String toString() {
+    return 'ItemsListRouteArgs{key: $key, onSelectionChanged: $onSelectionChanged}';
+  }
+}
+
+/// generated route for
 /// [ItemsPage]
 class ItemsRoute extends PageRouteInfo<void> {
   const ItemsRoute({List<PageRouteInfo>? children})
@@ -70,6 +115,22 @@ class LoginRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const LoginScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [OrderPage]
+class OrderRoute extends PageRouteInfo<void> {
+  const OrderRoute({List<PageRouteInfo>? children})
+    : super(OrderRoute.name, initialChildren: children);
+
+  static const String name = 'OrderRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const OrderPage();
     },
   );
 }

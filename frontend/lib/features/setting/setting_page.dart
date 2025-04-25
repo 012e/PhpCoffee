@@ -8,20 +8,14 @@ class SettingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = AutoRouter.of(context);
-    var showGoBack = true;
-    if (router.currentPath == "settings") {
-      showGoBack = false;
-    }
-
     return Scaffold(
-      appBar:
-          showGoBack
-              ? AppBar(title: Text("Settings"), leading: AutoLeadingButton())
-              : AppBar(
-                title: Text("Settings"),
-                automaticallyImplyLeading: false,
-              ),
+      appBar: AppBar(
+        title: Text("Settings"),
+        leading: AutoLeadingButton(
+          showIfParentCanPop: false,
+          ignorePagelessRoutes: true,
+        ),
+      ),
       body: AutoRouter(),
     );
   }

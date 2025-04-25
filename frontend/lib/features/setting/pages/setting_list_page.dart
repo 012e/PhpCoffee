@@ -21,6 +21,20 @@ class SettingListPage extends ConsumerWidget {
     final router = AutoRouter.of(context);
     final theme = Theme.of(context);
     final dangerColor = theme.colorScheme.error;
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
+    final SettingsThemeData defaultSettingsTheme = SettingsThemeData(
+      settingsListBackground: colorScheme.surface,
+      settingsSectionBackground: colorScheme.surface,
+      tileHighlightColor: colorScheme.primary.withAlpha(50),
+      leadingIconsColor: colorScheme.onSurfaceVariant,
+      settingsTileTextColor: textTheme.bodyMedium?.color,
+      tileDescriptionTextColor: textTheme.bodySmall?.color,
+      titleTextColor: textTheme.titleLarge?.color,
+      trailingTextColor: textTheme.bodyMedium?.color,
+      dividerColor: theme.dividerColor,
+    );
 
     var sections = [
       SettingsSection(
@@ -63,6 +77,7 @@ class SettingListPage extends ConsumerWidget {
     ];
 
     return SettingsList(
+      lightTheme: defaultSettingsTheme,
       applicationType: ApplicationType.material,
       sections: sections,
     );
