@@ -4,6 +4,7 @@ import 'package:frontend/auth/login.dart';
 import 'package:frontend/features/dashboard/dashboard_page.dart';
 import 'package:frontend/features/employee/employee_page.dart';
 import 'package:frontend/features/item/items_page.dart';
+import 'package:frontend/features/item/pages/confirm_cash.dart';
 import 'package:frontend/features/item/pages/items_list.dart';
 import 'package:frontend/features/item/pages/order.dart';
 import 'package:frontend/features/root.dart';
@@ -34,6 +35,11 @@ class AppRouter extends RootStackRouter {
           page: ItemsRoute.page,
           children: [
             AutoRoute(path: '', page: ItemsListRoute.page),
+            CustomRoute(
+              path: 'confirm',
+              page: ConfirmCashPaymentRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+            ),
             CustomRoute(
               path: 'order',
               page: OrderRoute.page,

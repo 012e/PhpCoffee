@@ -33,10 +33,7 @@ typedef SelectedItemsWithDetailsRef =
 String _$selectedItemsNotifierHash() =>
     r'46c684333326290e7bd2c2e1934ed976b10c1cca';
 
-/// A Notifier that manages the selected menu items by their ID and amount.
-/// The state is Map<int, int> where the key is itemId and the value is amount.
-///
-/// Copied from [SelectedItemsNotifier].
+/// See also [SelectedItemsNotifier].
 @ProviderFor(SelectedItemsNotifier)
 final selectedItemsNotifierProvider =
     AutoDisposeNotifierProvider<SelectedItemsNotifier, Map<int, int>>.internal(

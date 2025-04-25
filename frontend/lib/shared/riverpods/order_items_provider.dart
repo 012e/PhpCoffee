@@ -7,42 +7,35 @@ part 'order_items_provider.g.dart';
 
 typedef SelectedItemsWithAmount = Map<MenuItemResponse, int>;
 
-/// A Notifier that manages the selected menu items by their ID and amount.
-/// The state is Map<int, int> where the key is itemId and the value is amount.
 @riverpod
 class SelectedItemsNotifier extends _$SelectedItemsNotifier {
   @override
   Map<int, int> build() {
-    // Initial state is an empty map
     return {};
   }
 
-  /// Increments the amount of a selected item or adds it if not selected.
   void addItem(int itemId) {
     state = {
-      ...state, // Copy existing state
+      ...state,
       itemId: (state[itemId] ?? 0) + 1, // Increment or set to 1
     };
   }
 
-  /// Decrements the amount of a selected item. Removes the item if amount becomes 0 or less.
   void decrementItem(int itemId) {
     if (!state.containsKey(itemId)) {
-      return; // Item not selected, nothing to do
+      return;
     }
 
     int currentAmount = state[itemId] ?? 0;
     if (currentAmount > 1) {
       state = {...state, itemId: currentAmount - 1};
     } else {
-      // Amount is 1 or less, remove the item
-      state = Map.from(state)..remove(itemId); // Create new map and remove
+      state = Map.from(state)..remove(itemId);
     }
   }
 
-  /// Clears all selected items.
   void clearItems() {
-    state = {}; // Set state to an empty map
+    state = {};
   }
 }
 

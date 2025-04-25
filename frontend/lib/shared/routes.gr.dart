@@ -11,6 +11,22 @@
 part of 'routes.dart';
 
 /// generated route for
+/// [ConfirmCashPaymentPage]
+class ConfirmCashPaymentRoute extends PageRouteInfo<void> {
+  const ConfirmCashPaymentRoute({List<PageRouteInfo>? children})
+    : super(ConfirmCashPaymentRoute.name, initialChildren: children);
+
+  static const String name = 'ConfirmCashPaymentRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ConfirmCashPaymentPage();
+    },
+  );
+}
+
+/// generated route for
 /// [DashboardPage]
 class DashboardRoute extends PageRouteInfo<void> {
   const DashboardRoute({List<PageRouteInfo>? children})

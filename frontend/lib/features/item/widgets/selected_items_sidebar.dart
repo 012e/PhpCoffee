@@ -2,6 +2,7 @@ import 'package:api_client/api_client.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/features/item/widgets/payment_card.dart';
 import 'package:frontend/shared/riverpods/order_items_provider.dart';
 
 class SelectedItemsSidebar extends ConsumerWidget {
@@ -23,6 +24,95 @@ class SelectedItemsSidebar extends ConsumerWidget {
     // Call the notifier method to clear selections
     ref.read(selectedItemsNotifierProvider.notifier).clearItems();
     // State update and notification happens within the notifier/derived provider
+  }
+
+  void _showPaymentMethodDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          child: _buildPaymentMethodContent(context),
+        );
+      },
+    );
+  }
+
+  Widget _buildPaymentMethodContent(BuildContext context) {
+    final router = AutoRouter.of(context);
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      margin: EdgeInsets.only(top: 8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10.0,
+            offset: const Offset(0.0, 10.0),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment:
+            CrossAxisAlignment.start, // Align content to the start
+        children: <Widget>[
+          Text(
+            "Payment Method",
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
+          ),
+          SizedBox(height: 8.0),
+          Text(
+            "Select a payment method to proceed with the order.",
+            style: TextStyle(fontSize: 14.0),
+          ),
+          SizedBox(height: 20.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              PaymentCard(
+                icon: Icons.money,
+                text: "Cash",
+                onTap: () {
+                  Navigator.of(context).pop();
+                  router.navigatePath("/items/confirm");
+                },
+              ),
+              PaymentCard(
+                icon: Icons.qr_code_2,
+                text: "Bank",
+                onTap: () {
+                  Navigator.of(context).pop();
+                  router.navigatePath("/items/order");
+                },
+              ),
+            ],
+          ),
+          SizedBox(height: 16.0),
+          Row(
+            // Use a Row to align the button to the end
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text("CANCEL"),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -128,14 +218,9 @@ class SelectedItemsSidebar extends ConsumerWidget {
             onPressed:
                 selectedItemsList.isNotEmpty
                     ? () {
-                      // Disable button if no items selected
-                      final router = AutoRouter.of(context);
-                      // Navigation logic remains here as it depends on context and route
-                      router.navigatePath(
-                        "/items/order",
-                      ); // Assuming the route gets data differently or access the provider directly
+                      _showPaymentMethodDialog(context);
                     }
-                    : null, // Disable button when selectedItemsList is empty
+                    : null,
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero,
