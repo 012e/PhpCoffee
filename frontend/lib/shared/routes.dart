@@ -11,13 +11,14 @@ import 'package:frontend/features/setting/setting_page.dart';
 import 'package:frontend/features/setting/pages/profile_page.dart';
 import 'package:frontend/features/setting/pages/setting_list_page.dart';
 import 'package:frontend/shared/guards/auth_guards.dart';
+import 'package:frontend/shared/riverpods/order_items_provider.dart';
 
 part 'routes.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Page|Screen,Route')
 class AppRouter extends RootStackRouter {
   @override
-  RouteType get defaultRouteType => RouteType.material();
+  RouteType get defaultRouteType => RouteType.adaptive();
 
   @override
   List<AutoRoute> get routes => [
@@ -33,7 +34,11 @@ class AppRouter extends RootStackRouter {
           page: ItemsRoute.page,
           children: [
             AutoRoute(path: '', page: ItemsListRoute.page),
-            AutoRoute(path: 'order', page: OrderRoute.page),
+            CustomRoute(
+              path: 'order',
+              page: OrderRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+            ),
           ],
         ),
         AutoRoute(path: 'employees', page: EmployeesRoute.page),
@@ -42,7 +47,11 @@ class AppRouter extends RootStackRouter {
           page: SettingRoute.page,
           children: [
             AutoRoute(path: "", page: SettingListRoute.page),
-            AutoRoute(path: "profile", page: ProfileRoute.page),
+            CustomRoute(
+              path: "profile",
+              page: ProfileRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+            ),
           ],
         ),
       ],

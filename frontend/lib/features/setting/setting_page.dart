@@ -11,7 +11,10 @@ class SettingPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings"),
-        leading: AutoLeadingButton(showIfParentCanPop: false),
+        leading: AutoLeadingButton(
+          showIfParentCanPop: false,
+          ignorePagelessRoutes: true,
+        ),
       ),
       body: AutoRouter(),
     );

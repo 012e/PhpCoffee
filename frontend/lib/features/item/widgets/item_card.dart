@@ -81,7 +81,7 @@ class _ItemCardState extends ConsumerState<ItemCard> {
             elevation: isHovering ? 8 : 4,
             color:
                 isSelected
-                    ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+                    ? Theme.of(context).colorScheme.primary.withAlpha(50)
                     : Theme.of(context).cardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
