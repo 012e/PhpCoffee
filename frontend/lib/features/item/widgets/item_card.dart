@@ -7,12 +7,15 @@ class ItemCard extends ConsumerStatefulWidget {
   // amount is now used to indicate selection and display the quantity
   final int amount;
   final VoidCallback? onTap;
+  // Callback for secondary (right) tap
+  final VoidCallback? onSecondaryTap;
 
   const ItemCard({
     super.key,
     required this.item,
     this.onTap,
     this.amount = 0, // Default amount is 0 (not selected)
+    this.onSecondaryTap,
   });
 
   @override
@@ -73,6 +76,7 @@ class _ItemCardState extends ConsumerState<ItemCard> {
         duration: const Duration(milliseconds: 200),
         child: GestureDetector(
           onTap: widget.onTap,
+          onSecondaryTap: widget.onSecondaryTap, // Handle right-click
           child: Card(
             elevation: isHovering ? 8 : 4,
             color:
@@ -114,18 +118,26 @@ class _ItemCardState extends ConsumerState<ItemCard> {
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(6), // Increased padding
+                      constraints: const BoxConstraints(
+                        minWidth: 28, // Increased minimum size
+                        minHeight: 28,
+                      ),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primary,
                         shape: BoxShape.circle,
                       ),
-                      child: Text(
-                        widget.amount.toString(),
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          fontWeight: FontWeight.bold,
+                      child: Center(
+                        // Center the text within the circle
+                        child: Text(
+                          widget.amount.toString(),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall?.copyWith(
+                            // Adjusted text style size
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),

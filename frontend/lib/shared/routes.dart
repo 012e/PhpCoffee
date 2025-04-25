@@ -4,6 +4,8 @@ import 'package:frontend/auth/login.dart';
 import 'package:frontend/features/dashboard/dashboard_page.dart';
 import 'package:frontend/features/employee/employee_page.dart';
 import 'package:frontend/features/item/items_page.dart';
+import 'package:frontend/features/item/pages/items_list.dart';
+import 'package:frontend/features/item/pages/order.dart';
 import 'package:frontend/features/root.dart';
 import 'package:frontend/features/setting/setting_page.dart';
 import 'package:frontend/features/setting/pages/profile_page.dart';
@@ -26,7 +28,14 @@ class AppRouter extends RootStackRouter {
       guards: [AuthGuard()],
       children: [
         AutoRoute(path: 'dashboard', page: DashboardRoute.page),
-        AutoRoute(path: 'items', page: ItemsRoute.page),
+        AutoRoute(
+          path: 'items',
+          page: ItemsRoute.page,
+          children: [
+            AutoRoute(path: '', page: ItemsListRoute.page),
+            AutoRoute(path: 'order', page: OrderRoute.page),
+          ],
+        ),
         AutoRoute(path: 'employees', page: EmployeesRoute.page),
         AutoRoute(
           path: 'settings',

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,20 +6,19 @@ import 'package:frontend/features/item/widgets/item_card.dart';
 import 'package:frontend/shared/riverpods/items_provider.dart';
 import 'package:api_client/api_client.dart';
 
-// Define a type for the selected items with amount
 typedef SelectedItemsWithAmount = Map<MenuItemResponse, int>;
 
-class ItemsList extends ConsumerStatefulWidget {
-  // Updated the callback signature to provide selected items with their amounts
+@RoutePage()
+class ItemsListPage extends ConsumerStatefulWidget {
   final Function(SelectedItemsWithAmount selectedItems)? onSelectionChanged;
 
-  const ItemsList({super.key, this.onSelectionChanged});
+  const ItemsListPage({super.key, this.onSelectionChanged});
 
   @override
-  ConsumerState<ItemsList> createState() => _ItemsListState();
+  ConsumerState<ItemsListPage> createState() => _ItemsListState();
 }
 
-class _ItemsListState extends ConsumerState<ItemsList> {
+class _ItemsListState extends ConsumerState<ItemsListPage> {
   // Use a Map to store item ID and its amount
   final Map<int, int> _selectedItemIdsWithAmount = {};
   final TextEditingController _searchController = TextEditingController();
@@ -43,6 +43,7 @@ class _ItemsListState extends ConsumerState<ItemsList> {
     });
   }
 
+  // Handle primary (left) tap - increments amount
   void _handleItemTap(MenuItemResponse item) {
     setState(() {
       final itemId = item.itemId;
@@ -60,23 +61,28 @@ class _ItemsListState extends ConsumerState<ItemsList> {
     _notifySelectionChanged();
   }
 
-  void _decrementItemAmount(MenuItemResponse item) {
+  // Handle secondary (right) tap - decrements amount
+  void _handleItemSecondaryTap(MenuItemResponse item) {
     setState(() {
-      final itemId = item.itemId;
-      if (itemId == null) return;
-
-      if (_selectedItemIdsWithAmount.containsKey(itemId)) {
-        int currentAmount = _selectedItemIdsWithAmount[itemId] ?? 0;
-        if (currentAmount > 1) {
-          // Decrease amount if greater than 1
-          _selectedItemIdsWithAmount[itemId] = currentAmount - 1;
-        } else {
-          // Remove item if amount is 1
-          _selectedItemIdsWithAmount.remove(itemId);
-        }
-      }
+      _decrementItemAmount(item); // Reuse the decrement logic
     });
-    _notifySelectionChanged();
+  }
+
+  void _decrementItemAmount(MenuItemResponse item) {
+    final itemId = item.itemId;
+    if (itemId == null) return;
+
+    if (_selectedItemIdsWithAmount.containsKey(itemId)) {
+      int currentAmount = _selectedItemIdsWithAmount[itemId] ?? 0;
+      if (currentAmount > 1) {
+        // Decrease amount if greater than 1
+        _selectedItemIdsWithAmount[itemId] = currentAmount - 1;
+      } else {
+        // Remove item if amount is 1
+        _selectedItemIdsWithAmount.remove(itemId);
+      }
+    }
+    _notifySelectionChanged(); // Notify parent after state change
   }
 
   void _notifySelectionChanged() {
@@ -86,9 +92,18 @@ class _ItemsListState extends ConsumerState<ItemsList> {
         if (items != null) {
           // Build the map of selected items with their current amounts
           final SelectedItemsWithAmount selectedItemsMap = {};
-          for (final itemId in _selectedItemIdsWithAmount.keys) {
-            final item = items.firstWhere((item) => item.itemId == itemId);
-            selectedItemsMap[item] = _selectedItemIdsWithAmount[itemId] ?? 0;
+          // Ensure we only include items currently in the `items` list
+          final currentItemsMap = {for (var item in items) item.itemId: item};
+
+          for (final itemId in _selectedItemIdsWithAmount.keys.toList()) {
+            // .toList() to avoid modifying while iterating
+            final item = currentItemsMap[itemId];
+            if (item != null) {
+              selectedItemsMap[item] = _selectedItemIdsWithAmount[itemId] ?? 0;
+            } else {
+              // If an item in the selected map is no longer in the items list, remove it
+              _selectedItemIdsWithAmount.remove(itemId);
+            }
           }
           widget.onSelectionChanged!(selectedItemsMap);
         }
@@ -130,12 +145,19 @@ class _ItemsListState extends ConsumerState<ItemsList> {
           key: ValueKey(item.itemId),
           amount: amount, // Pass the amount to ItemCard
           onTap: () => _handleItemTap(item),
+          onSecondaryTap:
+              () => _handleItemSecondaryTap(
+                item,
+              ), // Pass the secondary tap handler
         );
       },
     );
   }
 
-  Widget _buildSidebar(SelectedItemsWithAmount selectedItemsMap) {
+  Widget _buildSidebar(
+    SelectedItemsWithAmount selectedItemsMap,
+    BuildContext context,
+  ) {
     final selectedItemsList = selectedItemsMap.entries.toList();
 
     if (selectedItemsList.isEmpty) {
@@ -144,6 +166,10 @@ class _ItemsListState extends ConsumerState<ItemsList> {
 
     // Sidebar to show selected items
 
+    var fold = selectedItemsMap.entries.fold(
+      0.0,
+      (sum, entry) => sum + ((entry.key.basePrice ?? 0) * entry.value),
+    );
     return Column(
       children: [
         Padding(
@@ -217,8 +243,22 @@ class _ItemsListState extends ConsumerState<ItemsList> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Total: \$${selectedItemsMap.entries.fold(0.0, (sum, entry) => sum + ((entry.key.basePrice ?? 0) * entry.value)).toStringAsFixed(2)}',
+            'Total: \$${fold.toStringAsFixed(2)}',
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+        ),
+        SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: FilledButton(
+            onPressed: () {
+              final router = AutoRouter.of(context);
+              router.navigatePath("/items/order");
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            ),
+            child: Text("Order ${selectedItemsList.length} items"),
           ),
         ),
       ],
@@ -237,9 +277,16 @@ class _ItemsListState extends ConsumerState<ItemsList> {
 
         // Construct the map of selected items with amounts for the sidebar
         final SelectedItemsWithAmount selectedItemsMap = {};
-        for (final itemId in _selectedItemIdsWithAmount.keys) {
-          final item = items.firstWhere((item) => item.itemId == itemId);
-          selectedItemsMap[item] = _selectedItemIdsWithAmount[itemId] ?? 0;
+        final currentItemsMap = {for (var item in items) item.itemId: item};
+        for (final itemId in _selectedItemIdsWithAmount.keys.toList()) {
+          // .toList() to avoid modifying while iterating
+          final item = currentItemsMap[itemId];
+          if (item != null) {
+            selectedItemsMap[item] = _selectedItemIdsWithAmount[itemId] ?? 0;
+          } else {
+            // If an item in the selected map is no longer in the items list, remove it
+            _selectedItemIdsWithAmount.remove(itemId);
+          }
         }
 
         return Row(
@@ -299,7 +346,7 @@ class _ItemsListState extends ConsumerState<ItemsList> {
                               ),
                             ),
                           ),
-                          child: _buildSidebar(selectedItemsMap),
+                          child: _buildSidebar(selectedItemsMap, context),
                         ),
                       )
                       : const SizedBox(key: ValueKey('empty'), width: 0),
