@@ -56,7 +56,7 @@ class Profile extends StatelessWidget {
 }
 
 class _ProfileInfoRow extends StatelessWidget {
-  const _ProfileInfoRow({Key? key}) : super(key: key);
+  const _ProfileInfoRow({super.key});
 
   final List<ProfileInfoItem> _items = const [
     ProfileInfoItem("Posts", 900),
@@ -110,7 +110,7 @@ class ProfileInfoItem {
 }
 
 class _TopPortion extends StatelessWidget {
-  const _TopPortion({Key? key}) : super(key: key);
+  const _TopPortion({super.key});
 
   @override
   Widget build(BuildContext context) {
