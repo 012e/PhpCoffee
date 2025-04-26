@@ -20,22 +20,28 @@ class IngredientCard extends ConsumerStatefulWidget {
 }
 
 class _IngredientCardState extends ConsumerState<IngredientCard> {
+  // Centralized color constant for fallback text color
+  static const Color _fallbackTextColor = Colors.black;
+
   bool isHovering = false;
 
   Widget _buildCardInfo() {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Divider(), // Use const with Divider
+        const Divider(height: 1, thickness: 1),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: Text(
             widget.ingredient.ingredientName ?? 'Unnamed',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
+              // Use the centralized fallback color
               color:
-                  Theme.of(context).textTheme.titleLarge?.color ?? Colors.black,
+                  Theme.of(context).textTheme.titleLarge?.color ??
+                  _fallbackTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -47,6 +53,14 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
 
   @override
   Widget build(BuildContext context) {
+    // Define centralized variables for colors used in this component
+    final Color cardBackgroundColor = Theme.of(context).cardColor;
+    final Color cardBorderColor = Theme.of(context).colorScheme.surfaceVariant;
+    const double cardBorderWidth = 1.0;
+
+    // The text color fallback is already centralized as _fallbackTextColor.
+    // The text color itself comes from the theme textTheme.
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => isHovering = true),
@@ -56,12 +70,15 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
         duration: const Duration(milliseconds: 200),
         child: GestureDetector(
           onTap: widget.onTap,
-          onSecondaryTap: widget.onSecondaryTap, // Handle right-click
+          onSecondaryTap: widget.onSecondaryTap,
           child: Card(
             elevation: isHovering ? 8 : 4,
-            color: Theme.of(context).cardColor,
+            // Use centralized color variables
+            color: cardBackgroundColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
+              // Use centralized color variables
+              side: BorderSide(color: cardBorderColor, width: cardBorderWidth),
             ),
             child: Stack(
               children: [

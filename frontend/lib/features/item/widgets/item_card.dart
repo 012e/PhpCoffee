@@ -21,13 +21,15 @@ class ItemCard extends ConsumerStatefulWidget {
 }
 
 class _ItemCardState extends ConsumerState<ItemCard> {
+  static const Color _fallbackTextColor = Colors.black;
+
   bool isHovering = false;
 
   Widget _buildCardInfo() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Divider(), // Use const with Divider
+        const Divider(),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
@@ -36,7 +38,8 @@ class _ItemCardState extends ConsumerState<ItemCard> {
               fontSize: 18,
               fontWeight: FontWeight.w600,
               color:
-                  Theme.of(context).textTheme.titleLarge?.color ?? Colors.black,
+                  Theme.of(context).textTheme.titleLarge?.color ??
+                  _fallbackTextColor,
             ),
             textAlign: TextAlign.center,
           ),
@@ -58,8 +61,21 @@ class _ItemCardState extends ConsumerState<ItemCard> {
 
   @override
   Widget build(BuildContext context) {
-    // Determine if the item is selected based on the amount
     final isSelected = widget.amount > 0;
+
+    final Color selectedCardColor = Theme.of(
+      context,
+    ).colorScheme.primary.withAlpha(50);
+    final Color defaultCardColor = Theme.of(context).cardColor;
+    final Color selectedBorderColor = Theme.of(context).colorScheme.primary;
+    final Color defaultBorderColor =
+        Theme.of(
+          context,
+        ).colorScheme.surfaceVariant; // Color for the border when not selected
+    const double defaultBorderWidth =
+        1.0; // Width for the border when not selected
+    final Color quantityCircleColor = Theme.of(context).colorScheme.primary;
+    final Color quantityTextColor = Theme.of(context).colorScheme.onPrimary;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -70,22 +86,20 @@ class _ItemCardState extends ConsumerState<ItemCard> {
         duration: const Duration(milliseconds: 200),
         child: GestureDetector(
           onTap: widget.onTap,
-          onSecondaryTap: widget.onSecondaryTap, // Handle right-click
+          onSecondaryTap: widget.onSecondaryTap,
           child: Card(
             elevation: isHovering ? 8 : 4,
-            color:
-                isSelected
-                    ? Theme.of(context).colorScheme.primary.withAlpha(50)
-                    : Theme.of(context).cardColor,
+            color: isSelected ? selectedCardColor : defaultCardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
+              // Add a subtle border when not selected
               side:
                   isSelected
-                      ? BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2,
-                      )
-                      : BorderSide.none,
+                      ? BorderSide(color: selectedBorderColor, width: 2)
+                      : BorderSide(
+                        color: defaultBorderColor,
+                        width: defaultBorderWidth,
+                      ),
             ),
             child: Stack(
               children: [
@@ -96,7 +110,8 @@ class _ItemCardState extends ConsumerState<ItemCard> {
                       child:
                           widget.item.itemName != null
                               ? Image.network(
-                                widget.item.itemId.toString(), // TODO
+                                widget.item.itemId
+                                    .toString(), // TODO: Verify this is the correct image URL
                                 fit: BoxFit.cover,
                                 errorBuilder:
                                     (context, error, stackTrace) =>
@@ -112,24 +127,22 @@ class _ItemCardState extends ConsumerState<ItemCard> {
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.all(6), // Increased padding
+                      padding: const EdgeInsets.all(6),
                       constraints: const BoxConstraints(
-                        minWidth: 28, // Increased minimum size
+                        minWidth: 28,
                         minHeight: 28,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: quantityCircleColor,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
-                        // Center the text within the circle
                         child: Text(
                           widget.amount.toString(),
                           style: Theme.of(
                             context,
                           ).textTheme.titleSmall?.copyWith(
-                            // Adjusted text style size
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            color: quantityTextColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

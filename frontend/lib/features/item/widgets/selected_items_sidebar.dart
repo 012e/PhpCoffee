@@ -10,20 +10,21 @@ class SelectedItemsSidebar extends ConsumerWidget {
 
   const SelectedItemsSidebar({super.key, required this.selectedItemsMap});
 
-  // Handle secondary (right) tap - decrements amount
+  // Centralized color variables
+  static const Color _dialogBackgroundColor = Colors.transparent;
+  static const Color _dialogShadowColor = Colors.black26;
+  // Using theme color for sidebar border (defined in build method)
+  const double _sidebarBorderWidth = 1.0;
+
   void _handleItemSecondaryTap(WidgetRef ref, MenuItemResponse item) {
     final itemId = item.itemId;
     if (itemId == null) return;
 
-    // Call the notifier method
     ref.read(selectedItemsNotifierProvider.notifier).decrementItem(itemId);
-    // State update and notification happens within the notifier
   }
 
   void _clearSelections(WidgetRef ref) {
-    // Call the notifier method to clear selections
     ref.read(selectedItemsNotifierProvider.notifier).clearItems();
-    // State update and notification happens within the notifier/derived provider
   }
 
   void _showPaymentMethodDialog(BuildContext context) {
@@ -34,8 +35,8 @@ class SelectedItemsSidebar extends ConsumerWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
+          elevation: 16.0,
+          backgroundColor: _dialogBackgroundColor,
           child: _buildPaymentMethodContent(context),
         );
       },
@@ -44,16 +45,18 @@ class SelectedItemsSidebar extends ConsumerWidget {
 
   Widget _buildPaymentMethodContent(BuildContext context) {
     final router = AutoRouter.of(context);
+    final Color dialogContainerColor = Theme.of(context).cardColor;
+
     return Container(
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.only(top: 8.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: dialogContainerColor,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black26,
+            color: _dialogShadowColor,
             blurRadius: 10.0,
             offset: const Offset(0.0, 10.0),
           ),
@@ -62,16 +65,23 @@ class SelectedItemsSidebar extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment:
-            CrossAxisAlignment.start, // Align content to the start
+            CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             "Payment Method",
-            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.w700,
+              color: Theme.of(context).textTheme.titleLarge?.color,
+            ),
           ),
           SizedBox(height: 8.0),
           Text(
             "Select a payment method to proceed with the order.",
-            style: TextStyle(fontSize: 14.0),
+            style: TextStyle(
+              fontSize: 14.0,
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+            ),
           ),
           SizedBox(height: 20.0),
           Row(
@@ -98,13 +108,12 @@ class SelectedItemsSidebar extends ConsumerWidget {
           ),
           SizedBox(height: 16.0),
           Row(
-            // Use a Row to align the button to the end
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
             children: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                 },
                 child: Text("CANCEL"),
               ),
@@ -120,8 +129,6 @@ class SelectedItemsSidebar extends ConsumerWidget {
     final selectedItemsList = selectedItemsMap.entries.toList();
 
     if (selectedItemsList.isEmpty) {
-      // This case should ideally be handled by the parent not showing the sidebar,
-      // but it's a safe fallback.
       return const SizedBox.shrink();
     }
 
@@ -130,106 +137,128 @@ class SelectedItemsSidebar extends ConsumerWidget {
       (sum, entry) => sum + ((entry.key.basePrice ?? 0) * entry.value),
     );
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Selected Items (${selectedItemsList.length})',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => _clearSelections(ref), // Use ref to clear
-                tooltip: 'Clear Selection',
-              ),
-            ],
-          ),
-        ),
-        const Divider(height: 1),
-        Expanded(
-          child: ListView.builder(
-            itemCount: selectedItemsList.length,
-            itemBuilder: (context, index) {
-              final entry = selectedItemsList[index];
-              final item = entry.key;
-              final amount = entry.value;
+    final Color removeIconColor = Theme.of(context).colorScheme.error;
+    final Color totalTextColor = Theme.of(context).textTheme.titleMedium?.color ?? Theme.of(context).colorScheme.onSurface;
+    final Color sidebarBackgroundColor = Theme.of(context).colorScheme.surfaceContainer;
+    // Define sidebar border color using theme
+    final Color sidebarBorderColor = Theme.of(context).colorScheme.outline;
 
-              return ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 4.0,
-                ),
-                leading: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Image.network(
-                    item.itemId
-                        .toString(), // TODO: Replace with actual image URL
-                    fit: BoxFit.cover,
-                    errorBuilder:
-                        (context, error, stackTrace) =>
-                            const Icon(Icons.fastfood),
+
+    return Material(
+      color: sidebarBackgroundColor,
+      elevation: 2.0,
+      // Add border using shape
+      shape: RoundedRectangleBorder(
+         side: BorderSide(
+           color: sidebarBorderColor, // Use theme-derived border color
+           width: _sidebarBorderWidth, // Use defined border width
+         ),
+         borderRadius: BorderRadius.zero, // Keep sharp corners
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Selected Items (${selectedItemsList.length})',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
-                title: Text(
-                  item.itemName ?? 'Unnamed',
-                  style: const TextStyle(fontSize: 14),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => _clearSelections(ref),
+                  tooltip: 'Clear Selection',
                 ),
-                subtitle: Text(
-                  // Display price per item and total for this item
-                  '\$${item.basePrice?.toStringAsFixed(2) ?? '0.00'} x $amount = \$${((item.basePrice ?? 0) * amount).toStringAsFixed(2)}',
-                  style: const TextStyle(fontSize: 12),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(
-                    Icons.remove_circle_outline,
-                    color: Colors.red,
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          Expanded(
+            child: ListView.builder(
+              itemCount: selectedItemsList.length,
+              itemBuilder: (context, index) {
+                final entry = selectedItemsList[index];
+                final item = entry.key;
+                final amount = entry.value;
+
+                return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 4.0,
                   ),
-                  onPressed:
-                      () => _handleItemSecondaryTap(
-                        ref,
-                        item,
-                      ), // Use ref and item
-                  tooltip: 'Remove one',
+                  leading: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Image.network(
+                      item.itemId
+                          .toString(), // TODO: Verify this is the correct image URL
+                      fit: BoxFit.cover,
+                      errorBuilder:
+                          (context, error, stackTrace) =>
+                              const Icon(Icons.fastfood),
+                    ),
+                  ),
+                  title: Text(
+                    item.itemName ?? 'Unnamed',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                  subtitle: Text(
+                    '\$${item.basePrice?.toStringAsFixed(2) ?? '0.00'} x $amount = \$${((item.basePrice ?? 0) * amount).toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(
+                      Icons.remove_circle_outline,
+                      color: removeIconColor,
+                    ),
+                    onPressed:
+                        () => _handleItemSecondaryTap(
+                            ref,
+                            item,
+                        ),
+                    tooltip: 'Remove one',
+                  ),
                 ),
-              );
-            },
+              },
+            ),
           ),
-        ),
-        const Divider(height: 1),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            'Total: \$${total.toStringAsFixed(2)}',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        ),
-        SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: FilledButton(
-            onPressed:
-                selectedItemsList.isNotEmpty
-                    ? () {
-                      _showPaymentMethodDialog(context);
-                    }
-                    : null,
-            style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Total: \$${total.toStringAsFixed(2)}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: totalTextColor,
               ),
             ),
-            child: Text("Order ${selectedItemsList.length} items"),
           ),
-        ),
-      ],
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: FilledButton(
+              onPressed:
+                  selectedItemsList.isNotEmpty
+                      ? () {
+                          _showPaymentMethodDialog(context);
+                        }
+                      : null,
+              style: ElevatedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+              child: Text("Order ${selectedItemsList.length} items"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
