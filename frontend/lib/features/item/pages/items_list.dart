@@ -90,8 +90,6 @@ class _ItemsListState extends ConsumerState<ItemsListPage> {
     );
   }
 
-  // Removed the _buildSidebar method
-
   @override
   Widget build(BuildContext context) {
     final asyncItems = ref.watch(itemListProvider);

@@ -8,7 +8,6 @@ import 'package:frontend/shared/riverpods/ingredient_provider.dart';
 
 @RoutePage()
 class IngredientListPage extends ConsumerStatefulWidget {
-  // Convert to stateful widget
   const IngredientListPage({super.key});
 
   @override
@@ -16,9 +15,7 @@ class IngredientListPage extends ConsumerStatefulWidget {
 }
 
 class _IngredientListPageState extends ConsumerState<IngredientListPage> {
-  // Controller for the search text field
   late TextEditingController _searchController;
-  // State variable to hold the current search query
   String _searchQuery = '';
 
   @override
@@ -29,78 +26,111 @@ class _IngredientListPageState extends ConsumerState<IngredientListPage> {
 
   @override
   void dispose() {
-    // Dispose the controller when the widget is removed
     _searchController.dispose();
     super.dispose();
   }
 
-  // Method to filter ingredients based on the search query
   BuiltList<IngredientResponse> _filterIngredients(
     BuiltList<IngredientResponse> ingredients,
   ) {
     if (_searchQuery.isEmpty) {
-      return ingredients; // If query is empty, show all ingredients
+      return ingredients;
     }
-    // Filter ingredients where the name contains the search query (case-insensitive)
     return ingredients.where((ingredient) {
       final ingredientName = ingredient.ingredientName?.toLowerCase() ?? '';
       return ingredientName.contains(_searchQuery.toLowerCase());
     }).toBuiltList();
   }
 
+  void _onAddButtonPressed() {
+    // TODO: Implement logic to display the create new ingredient form
+    debugPrint('Add Ingredient button pressed');
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Watch the ingredient list provider
     final ingredientListAsyncValue = ref.watch(ingredientListProvider);
+
+    final Color addButtonBackgroundColor =
+        Theme.of(context).colorScheme.secondaryContainer;
+    final Color addButtonForegroundColor =
+        Theme.of(context).colorScheme.onSecondaryContainer;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ingredientListAsyncValue.when(
         data: (ingredients) {
-          // Filter the ingredients based on the current search query
           final filteredIngredients = _filterIngredients(ingredients);
 
           return Column(
             children: [
-              // Search Bar
-              TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search Ingredients...',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide.none,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Search Ingredients...',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 15.0,
+                          horizontal: 10.0,
+                        ),
+                      ),
+                      onChanged: (query) {
+                        setState(() {
+                          _searchQuery = query;
+                        });
+                      },
+                    ),
                   ),
-                  filled: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15.0,
-                    horizontal: 10.0,
+                  const SizedBox(width: 8.0),
+                  SizedBox(
+                    width: 120.0,
+                    height: 50.0,
+                    child: FilledButton(
+                      onPressed: _onAddButtonPressed,
+                      style: FilledButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        backgroundColor: addButtonBackgroundColor,
+                        foregroundColor: addButtonForegroundColor,
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add),
+                          SizedBox(width: 4.0),
+                          Text('Add'),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                onChanged: (query) {
-                  // Update the search query and trigger a rebuild
-                  setState(() {
-                    _searchQuery = query;
-                  });
-                },
+                ],
               ),
               const SizedBox(height: 16.0),
-              // GridView showing filtered ingredients
               Expanded(
                 child: GridView.builder(
-                  itemCount:
-                      filteredIngredients
-                          .length, // Use the count of filtered ingredients
+                  // Add clipBehavior: Clip.none to the GridView itself
+                  clipBehavior: Clip.none,
+                  itemCount: filteredIngredients.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5,
-                    childAspectRatio: 0.75,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+                    crossAxisCount: 5, // Adjust the number of columns as needed
+                    childAspectRatio:
+                        0.75, // Adjust aspect ratio to fit content
+                    crossAxisSpacing: 10, // Adjust spacing for visual layout
+                    mainAxisSpacing: 10, // Adjust spacing for visual layout
                   ),
                   itemBuilder: (context, index) {
-                    final ingredient =
-                        filteredIngredients[index]; // Use the filtered list
+                    final ingredient = filteredIngredients[index];
                     return IngredientCard(
                       ingredient: ingredient,
                       key: ValueKey(ingredient.ingredientId),
