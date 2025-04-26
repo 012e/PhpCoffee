@@ -14,12 +14,12 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeNotifierProvider); // <-- Watch theme
+    final themeMode = ref.watch(themeNotifierProvider);
 
-    final _router = AppRouter();
+    final router = AppRouter();
 
     return MaterialApp.router(
-      routerConfig: _router.config(),
+      routerConfig: router.config(),
       themeMode: themeMode,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
