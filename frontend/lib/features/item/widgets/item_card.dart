@@ -69,9 +69,9 @@ class _ItemCardState extends ConsumerState<ItemCard> {
     final Color defaultCardColor = Theme.of(context).cardColor;
     final Color selectedBorderColor = Theme.of(context).colorScheme.primary;
     final Color defaultBorderColor =
-        Theme.of(
-          context,
-        ).colorScheme.surfaceVariant; // Color for the border when not selected
+        Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest; // Color for the border when not selected
     const double defaultBorderWidth =
         1.0; // Width for the border when not selected
     final Color quantityCircleColor = Theme.of(context).colorScheme.primary;

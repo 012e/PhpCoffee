@@ -40,7 +40,6 @@ class ThemeNotifier extends _$ThemeNotifier {
       case ThemeMode.light:
         return 'light';
       case ThemeMode.system:
-      default:
         return 'system';
     }
   }

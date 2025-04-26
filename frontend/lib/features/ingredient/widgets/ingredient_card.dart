@@ -20,7 +20,6 @@ class IngredientCard extends ConsumerStatefulWidget {
 }
 
 class _IngredientCardState extends ConsumerState<IngredientCard> {
-  // Centralized color constant for fallback text color
   static const Color _fallbackTextColor = Colors.black;
 
   bool isHovering = false;
@@ -53,13 +52,10 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
 
   @override
   Widget build(BuildContext context) {
-    // Define centralized variables for colors used in this component
     final Color cardBackgroundColor = Theme.of(context).cardColor;
-    final Color cardBorderColor = Theme.of(context).colorScheme.surfaceVariant;
+    final Color cardBorderColor =
+        Theme.of(context).colorScheme.surfaceContainerHighest;
     const double cardBorderWidth = 1.0;
-
-    // The text color fallback is already centralized as _fallbackTextColor.
-    // The text color itself comes from the theme textTheme.
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,

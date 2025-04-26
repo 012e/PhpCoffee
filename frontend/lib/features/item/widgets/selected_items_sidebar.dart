@@ -14,7 +14,7 @@ class SelectedItemsSidebar extends ConsumerWidget {
   static const Color _dialogBackgroundColor = Colors.transparent;
   static const Color _dialogShadowColor = Colors.black26;
   // Using theme color for sidebar border (defined in build method)
-  const double _sidebarBorderWidth = 1.0;
+  static const double _sidebarBorderWidth = 1.0;
 
   void _handleItemSecondaryTap(WidgetRef ref, MenuItemResponse item) {
     final itemId = item.itemId;
@@ -64,8 +64,7 @@ class SelectedItemsSidebar extends ConsumerWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             "Payment Method",
@@ -138,22 +137,24 @@ class SelectedItemsSidebar extends ConsumerWidget {
     );
 
     final Color removeIconColor = Theme.of(context).colorScheme.error;
-    final Color totalTextColor = Theme.of(context).textTheme.titleMedium?.color ?? Theme.of(context).colorScheme.onSurface;
-    final Color sidebarBackgroundColor = Theme.of(context).colorScheme.surfaceContainer;
+    final Color totalTextColor =
+        Theme.of(context).textTheme.titleMedium?.color ??
+        Theme.of(context).colorScheme.onSurface;
+    final Color sidebarBackgroundColor =
+        Theme.of(context).colorScheme.surfaceContainer;
     // Define sidebar border color using theme
     final Color sidebarBorderColor = Theme.of(context).colorScheme.outline;
-
 
     return Material(
       color: sidebarBackgroundColor,
       elevation: 2.0,
       // Add border using shape
       shape: RoundedRectangleBorder(
-         side: BorderSide(
-           color: sidebarBorderColor, // Use theme-derived border color
-           width: _sidebarBorderWidth, // Use defined border width
-         ),
-         borderRadius: BorderRadius.zero, // Keep sharp corners
+        side: BorderSide(
+          color: sidebarBorderColor, // Use theme-derived border color
+          width: _sidebarBorderWidth, // Use defined border width
+        ),
+        borderRadius: BorderRadius.zero, // Keep sharp corners
       ),
       child: Column(
         children: [
@@ -216,14 +217,10 @@ class SelectedItemsSidebar extends ConsumerWidget {
                       Icons.remove_circle_outline,
                       color: removeIconColor,
                     ),
-                    onPressed:
-                        () => _handleItemSecondaryTap(
-                            ref,
-                            item,
-                        ),
+                    onPressed: () => _handleItemSecondaryTap(ref, item),
                     tooltip: 'Remove one',
                   ),
-                ),
+                );
               },
             ),
           ),
@@ -246,8 +243,8 @@ class SelectedItemsSidebar extends ConsumerWidget {
               onPressed:
                   selectedItemsList.isNotEmpty
                       ? () {
-                          _showPaymentMethodDialog(context);
-                        }
+                        _showPaymentMethodDialog(context);
+                      }
                       : null,
               style: ElevatedButton.styleFrom(
                 shape: const RoundedRectangleBorder(
