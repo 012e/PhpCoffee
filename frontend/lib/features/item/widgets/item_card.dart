@@ -4,17 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ItemCard extends ConsumerStatefulWidget {
   final MenuItemResponse item;
-  // amount is now used to indicate selection and display the quantity
   final int amount;
   final VoidCallback? onTap;
-  // Callback for secondary (right) tap
   final VoidCallback? onSecondaryTap;
 
   const ItemCard({
     super.key,
     required this.item,
     this.onTap,
-    this.amount = 0, // Default amount is 0 (not selected)
+    this.amount = 0,
     this.onSecondaryTap,
   });
 
@@ -26,39 +24,35 @@ class _ItemCardState extends ConsumerState<ItemCard> {
   bool isHovering = false;
 
   Widget _buildCardInfo() {
-    return Container(
-      // color: Theme.of(context).colorScheme.secondaryContainer, // Consider if you still need this
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Divider(), // Use const with Divider
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              widget.item.itemName ?? 'Unnamed',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color:
-                    Theme.of(context).textTheme.titleLarge?.color ??
-                    Colors.black,
-              ),
-              textAlign: TextAlign.center,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Divider(), // Use const with Divider
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            widget.item.itemName ?? 'Unnamed',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color:
+                  Theme.of(context).textTheme.titleLarge?.color ?? Colors.black,
             ),
+            textAlign: TextAlign.center,
           ),
-          if (widget.item.basePrice != null)
-            Text(
-              '\$${widget.item.basePrice!.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-              textAlign: TextAlign.center,
+        ),
+        if (widget.item.basePrice != null)
+          Text(
+            '\$${widget.item.basePrice!.toStringAsFixed(2)}',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.secondary,
             ),
-          const SizedBox(height: 8),
-        ],
-      ),
+            textAlign: TextAlign.center,
+          ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 

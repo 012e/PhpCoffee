@@ -59,6 +59,38 @@ class EmployeesRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [IngredientListPage]
+class IngredientListRoute extends PageRouteInfo<void> {
+  const IngredientListRoute({List<PageRouteInfo>? children})
+    : super(IngredientListRoute.name, initialChildren: children);
+
+  static const String name = 'IngredientListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const IngredientListPage();
+    },
+  );
+}
+
+/// generated route for
+/// [IngredientPage]
+class IngredientRoute extends PageRouteInfo<void> {
+  const IngredientRoute({List<PageRouteInfo>? children})
+    : super(IngredientRoute.name, initialChildren: children);
+
+  static const String name = 'IngredientRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const IngredientPage();
+    },
+  );
+}
+
+/// generated route for
 /// [ItemsListPage]
 class ItemsListRoute extends PageRouteInfo<ItemsListRouteArgs> {
   ItemsListRoute({

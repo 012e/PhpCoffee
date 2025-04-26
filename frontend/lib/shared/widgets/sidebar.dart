@@ -1,7 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/features/employee/employee_page.dart';
-import 'package:frontend/shared/extensions/auto_router.dart';
 import 'package:frontend/shared/routes.dart';
 import 'package:sidebarx/sidebarx.dart';
 
@@ -33,6 +31,13 @@ class Sidebar extends StatelessWidget {
         label: 'Item',
         onTap: () async {
           await router.replaceAll([ItemsRoute()]);
+        },
+      ),
+      SidebarXItem(
+        icon: Icons.food_bank,
+        label: 'Ingredients',
+        onTap: () async {
+          await router.replaceAll([IngredientRoute()]);
         },
       ),
       SidebarXItem(
