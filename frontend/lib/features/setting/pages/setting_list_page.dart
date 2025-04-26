@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/shared/riverpods/auth_provider.dart';
+import 'package:frontend/shared/riverpods/theme_provider.dart';
 import 'package:frontend/shared/services/token_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -36,10 +37,21 @@ class SettingListPage extends ConsumerWidget {
       dividerColor: theme.dividerColor,
     );
 
+    final themeMode = ref.watch(themeNotifierProvider);
+    final isDarkMode = themeMode == ThemeMode.dark;
+
     var sections = [
       SettingsSection(
         title: Text('General'),
         tiles: [
+          SettingsTile.switchTile(
+            title: Text('Dark Mode'),
+            leading: Icon(Icons.dark_mode),
+            initialValue: isDarkMode,
+            onToggle: (value) {
+              ref.read(themeNotifierProvider.notifier).toggle();
+            },
+          ),
           SettingsTile.navigation(
             title: Text('Abstract settings screen'),
             leading: Icon(Icons.settings),

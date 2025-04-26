@@ -4,17 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ItemCard extends ConsumerStatefulWidget {
   final MenuItemResponse item;
-  // amount is now used to indicate selection and display the quantity
   final int amount;
   final VoidCallback? onTap;
-  // Callback for secondary (right) tap
   final VoidCallback? onSecondaryTap;
 
   const ItemCard({
     super.key,
     required this.item,
     this.onTap,
-    this.amount = 0, // Default amount is 0 (not selected)
+    this.amount = 0,
     this.onSecondaryTap,
   });
 
@@ -23,49 +21,61 @@ class ItemCard extends ConsumerStatefulWidget {
 }
 
 class _ItemCardState extends ConsumerState<ItemCard> {
+  static const Color _fallbackTextColor = Colors.black;
+
   bool isHovering = false;
 
   Widget _buildCardInfo() {
-    return Container(
-      // color: Theme.of(context).colorScheme.secondaryContainer, // Consider if you still need this
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Divider(), // Use const with Divider
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              widget.item.itemName ?? 'Unnamed',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color:
-                    Theme.of(context).textTheme.titleLarge?.color ??
-                    Colors.black,
-              ),
-              textAlign: TextAlign.center,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            widget.item.itemName ?? 'Unnamed',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color:
+                  Theme.of(context).textTheme.titleLarge?.color ??
+                  _fallbackTextColor,
             ),
+            textAlign: TextAlign.center,
           ),
-          if (widget.item.basePrice != null)
-            Text(
-              '\$${widget.item.basePrice!.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-              textAlign: TextAlign.center,
+        ),
+        if (widget.item.basePrice != null)
+          Text(
+            '\$${widget.item.basePrice!.toStringAsFixed(2)}',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.secondary,
             ),
-          const SizedBox(height: 8),
-        ],
-      ),
+            textAlign: TextAlign.center,
+          ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Determine if the item is selected based on the amount
     final isSelected = widget.amount > 0;
+
+    final Color selectedCardColor = Theme.of(
+      context,
+    ).colorScheme.primary.withAlpha(50);
+    final Color defaultCardColor = Theme.of(context).cardColor;
+    final Color selectedBorderColor = Theme.of(context).colorScheme.primary;
+    final Color defaultBorderColor =
+        Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest; // Color for the border when not selected
+    const double defaultBorderWidth =
+        1.0; // Width for the border when not selected
+    final Color quantityCircleColor = Theme.of(context).colorScheme.primary;
+    final Color quantityTextColor = Theme.of(context).colorScheme.onPrimary;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -76,22 +86,20 @@ class _ItemCardState extends ConsumerState<ItemCard> {
         duration: const Duration(milliseconds: 200),
         child: GestureDetector(
           onTap: widget.onTap,
-          onSecondaryTap: widget.onSecondaryTap, // Handle right-click
+          onSecondaryTap: widget.onSecondaryTap,
           child: Card(
             elevation: isHovering ? 8 : 4,
-            color:
-                isSelected
-                    ? Theme.of(context).colorScheme.primary.withAlpha(50)
-                    : Theme.of(context).cardColor,
+            color: isSelected ? selectedCardColor : defaultCardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
+              // Add a subtle border when not selected
               side:
                   isSelected
-                      ? BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2,
-                      )
-                      : BorderSide.none,
+                      ? BorderSide(color: selectedBorderColor, width: 2)
+                      : BorderSide(
+                        color: defaultBorderColor,
+                        width: defaultBorderWidth,
+                      ),
             ),
             child: Stack(
               children: [
@@ -102,7 +110,8 @@ class _ItemCardState extends ConsumerState<ItemCard> {
                       child:
                           widget.item.itemName != null
                               ? Image.network(
-                                widget.item.itemId.toString(), // TODO
+                                widget.item.itemId
+                                    .toString(), // TODO: Verify this is the correct image URL
                                 fit: BoxFit.cover,
                                 errorBuilder:
                                     (context, error, stackTrace) =>
@@ -118,24 +127,22 @@ class _ItemCardState extends ConsumerState<ItemCard> {
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.all(6), // Increased padding
+                      padding: const EdgeInsets.all(6),
                       constraints: const BoxConstraints(
-                        minWidth: 28, // Increased minimum size
+                        minWidth: 28,
                         minHeight: 28,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: quantityCircleColor,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
-                        // Center the text within the circle
                         child: Text(
                           widget.amount.toString(),
                           style: Theme.of(
                             context,
                           ).textTheme.titleSmall?.copyWith(
-                            // Adjusted text style size
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            color: quantityTextColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

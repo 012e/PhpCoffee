@@ -59,7 +59,8 @@ class LoginScreen extends ConsumerWidget {
             ref
                 .read(authNotifierProvider.notifier)
                 .login(accessToken: tokenResponse.accessToken);
-            await router.navigate(const SettingRoute());
+            await Future.delayed(const Duration(milliseconds: 500));
+            await router.navigatePath("/");
           },
           child: Text(accessToken ?? 'Login'),
         ),

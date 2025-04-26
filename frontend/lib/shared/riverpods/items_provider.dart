@@ -17,4 +17,8 @@ class ItemList extends _$ItemList {
     }
     return response.data ?? BuiltList<MenuItemResponse>();
   }
+
+  Future<void> placeCashOrder(data) async {}
+
+  Future<void> placeBankingOrder(data) async {}
 }

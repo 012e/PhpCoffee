@@ -42,14 +42,11 @@ class _ItemsListState extends ConsumerState<ItemsListPage> {
     });
   }
 
-  // Handle primary (left) tap - increments amount
   void _handleItemTap(MenuItemResponse item) {
     final itemId = item.itemId;
-    if (itemId == null) return; // Cannot select item without ID
+    if (itemId == null) return;
 
-    // Call the notifier method
     ref.read(selectedItemsNotifierProvider.notifier).addItem(itemId);
-    // State update and notification happens within the notifier
   }
 
   void _handleItemSecondaryTap(MenuItemResponse item) {
@@ -92,8 +89,6 @@ class _ItemsListState extends ConsumerState<ItemsListPage> {
       },
     );
   }
-
-  // Removed the _buildSidebar method
 
   @override
   Widget build(BuildContext context) {

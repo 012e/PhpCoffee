@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/shared/routes.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 class Sidebar extends StatelessWidget {
@@ -21,29 +22,36 @@ class Sidebar extends StatelessWidget {
       SidebarXItem(
         icon: Icons.dashboard,
         label: 'Dashboard',
-        onTap: () {
-          router.navigatePath("/dashboard");
+        onTap: () async {
+          await router.replaceAll([DashboardRoute()]);
         },
       ),
       SidebarXItem(
         icon: Icons.coffee,
         label: 'Item',
-        onTap: () {
-          router.navigatePath("/items");
+        onTap: () async {
+          await router.replaceAll([ItemsRoute()]);
+        },
+      ),
+      SidebarXItem(
+        icon: Icons.food_bank,
+        label: 'Ingredients',
+        onTap: () async {
+          await router.replaceAll([IngredientRoute()]);
         },
       ),
       SidebarXItem(
         icon: Icons.people,
         label: 'Employee',
-        onTap: () {
-          router.navigatePath("/employees");
+        onTap: () async {
+          router.replaceAll([EmployeesRoute()]);
         },
       ),
       SidebarXItem(
         icon: Icons.settings,
         label: 'Settings',
-        onTap: () {
-          router.navigatePath("/settings");
+        onTap: () async {
+          await router.replaceAll([SettingRoute()]);
         },
       ),
     ];

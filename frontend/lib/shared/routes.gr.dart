@@ -11,6 +11,22 @@
 part of 'routes.dart';
 
 /// generated route for
+/// [ConfirmCashPaymentPage]
+class ConfirmCashPaymentRoute extends PageRouteInfo<void> {
+  const ConfirmCashPaymentRoute({List<PageRouteInfo>? children})
+    : super(ConfirmCashPaymentRoute.name, initialChildren: children);
+
+  static const String name = 'ConfirmCashPaymentRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ConfirmCashPaymentPage();
+    },
+  );
+}
+
+/// generated route for
 /// [DashboardPage]
 class DashboardRoute extends PageRouteInfo<void> {
   const DashboardRoute({List<PageRouteInfo>? children})
@@ -38,6 +54,38 @@ class EmployeesRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const EmployeesPage();
+    },
+  );
+}
+
+/// generated route for
+/// [IngredientListPage]
+class IngredientListRoute extends PageRouteInfo<void> {
+  const IngredientListRoute({List<PageRouteInfo>? children})
+    : super(IngredientListRoute.name, initialChildren: children);
+
+  static const String name = 'IngredientListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const IngredientListPage();
+    },
+  );
+}
+
+/// generated route for
+/// [IngredientPage]
+class IngredientRoute extends PageRouteInfo<void> {
+  const IngredientRoute({List<PageRouteInfo>? children})
+    : super(IngredientRoute.name, initialChildren: children);
+
+  static const String name = 'IngredientRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const IngredientPage();
     },
   );
 }
