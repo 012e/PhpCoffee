@@ -177,24 +177,28 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
   List<Widget> get _buildCard {
     return [
       Expanded(
-        child:
-            widget.ingredient.ingredientName != null
-                ? CachedNetworkImage(
-                  imageUrl: widget.ingredient.imageUrl ?? '',
-                  fit: BoxFit.cover,
-                  placeholder:
-                      (context, url) => Center(
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child:
+              widget.ingredient.imageUrl != null &&
+                      widget.ingredient.imageUrl!.isNotEmpty
+                  ? CachedNetworkImage(
+                    imageUrl: widget.ingredient.imageUrl!,
+                    fit: BoxFit.cover,
+                    placeholder:
+                        (context, url) => const Center(
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
-                      ),
-                  errorWidget:
-                      (context, error, stackTrace) =>
-                          const Icon(Icons.fastfood, size: 50),
-                )
-                : const Icon(Icons.fastfood, size: 50),
+                    errorWidget:
+                        (context, error, stackTrace) =>
+                            const Icon(Icons.fastfood, size: 50),
+                  )
+                  : const Icon(Icons.fastfood, size: 50),
+        ),
       ),
       _buildCardInfo(),
     ];
