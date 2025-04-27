@@ -10,6 +10,7 @@ import 'package:frontend/features/item/pages/confirm_cash.dart';
 import 'package:frontend/features/item/pages/items_list.dart';
 import 'package:frontend/features/item/pages/order.dart';
 import 'package:frontend/features/root.dart';
+import 'package:frontend/features/setting/pages/backend_setting_url_page.dart';
 import 'package:frontend/features/setting/setting_page.dart';
 import 'package:frontend/features/setting/pages/profile_page.dart';
 import 'package:frontend/features/setting/pages/setting_list_page.dart';
