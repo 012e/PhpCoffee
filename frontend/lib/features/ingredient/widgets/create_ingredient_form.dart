@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:api_client/api_client.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:file_picker/file_picker.dart';
@@ -21,12 +22,28 @@ class _CreateIngredientDialogState
   final _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
   late final StackRouter _router;
+  FilePickerResult? _selectedImage;
+  String? _imagePath;
 
   @override
   void initState() {
     super.initState();
     _formKey.currentState?.reset();
     _router = AutoRouter.of(context);
+  }
+
+  Future<void> _pickImage() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedImage = result;
+        _imagePath = result.files.single.path;
+      });
+    }
   }
 
   void _submitForm() async {
@@ -55,15 +72,32 @@ class _CreateIngredientDialogState
             .read(ingredientListProvider.notifier)
             .createIngredient(createIngredientRequest);
 
-        final image = await FilePicker.platform.pickFiles(
-          type: FileType.image,
-          allowMultiple: false,
+        // Upload the already selected image if available
+        if (_selectedImage != null && _imagePath != null) {
+          await ref
+              .read(ingredientListProvider.notifier)
+              .uploadImage(
+                ingredientId: createdResponse.ingredientId!,
+                imagePath: _imagePath!,
+              );
+        } else {
+          toastification.show(
+            title: const Text('No image selected'),
+            type: ToastificationType.warning,
+            autoCloseDuration: const Duration(seconds: 5),
+          );
+        }
+
+        toastification.show(
+          title: const Text('Ingredient created successfully'),
+          type: ToastificationType.success,
+          autoCloseDuration: const Duration(seconds: 5),
         );
-        await _addImage(image, createdResponse);
+        _router.pop(formData);
       } catch (e) {
         debugPrint('Error creating ingredient: $e');
         toastification.show(
-          title: Text('Failed to create ingredient $e'),
+          title: Text('Failed to create ingredient: $e'),
           type: ToastificationType.error,
           autoCloseDuration: const Duration(seconds: 5),
         );
@@ -71,34 +105,66 @@ class _CreateIngredientDialogState
         setState(() {
           _isLoading = false;
         });
-        _router.pop(formData);
       }
-      toastification.show(
-        title: const Text('Ingredient created successfully'),
-        type: ToastificationType.success,
-        autoCloseDuration: const Duration(seconds: 5),
-      );
     }
   }
 
-  Future<void> _addImage(
-    FilePickerResult? image,
-    IngredientResponse createdResponse,
-  ) async {
-    if (image == null) {
-      toastification.show(
-        title: const Text('No image selected'),
-        type: ToastificationType.error,
-        autoCloseDuration: const Duration(seconds: 5),
-      );
-      throw Exception('No image selected');
-    }
-    await ref
-        .read(ingredientListProvider.notifier)
-        .uploadImage(
-          ingredientId: createdResponse.ingredientId!,
-          imagePath: image.files.single.path!,
-        );
+  Widget _buildImagePreview() {
+    return Container(
+      height: 200,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child:
+          _imagePath != null
+              ? ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.file(File(_imagePath!), fit: BoxFit.cover),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            _selectedImage = null;
+                            _imagePath = null;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.black45,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.image, size: 48, color: Colors.grey),
+                  const SizedBox(height: 8),
+                  ElevatedButton.icon(
+                    onPressed: _pickImage,
+                    icon: const Icon(Icons.upload),
+                    label: const Text('Select Image'),
+                  ),
+                ],
+              ),
+    );
   }
 
   @override
@@ -199,6 +265,38 @@ class _CreateIngredientDialogState
                           FormBuilderValidators.required(),
                           FormBuilderValidators.numeric(),
                         ]),
+                      ),
+                      const SizedBox(height: 16),
+                      FormBuilderField(
+                        name: 'image',
+                        builder: (FormFieldState field) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Ingredient Image',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              _buildImagePreview(),
+                              if (field.hasError)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    field.errorText!,
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
                       ),
                     ],
                   ),

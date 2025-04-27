@@ -2,17 +2,21 @@ import 'package:api_client/api_client.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/shared/riverpods/ingredient_provider.dart';
+import 'package:toastification/toastification.dart';
 
 class IngredientCard extends ConsumerStatefulWidget {
   final IngredientResponse ingredient;
   final VoidCallback? onTap;
   final VoidCallback? onSecondaryTap;
+  final Function(String)? onMenuItemSelected;
 
   const IngredientCard({
     super.key,
     required this.ingredient,
     this.onTap,
     this.onSecondaryTap,
+    this.onMenuItemSelected,
   });
 
   @override
@@ -21,8 +25,67 @@ class IngredientCard extends ConsumerStatefulWidget {
 
 class _IngredientCardState extends ConsumerState<IngredientCard> {
   static const Color _fallbackTextColor = Colors.black;
-
   bool isHovering = false;
+
+  void _showContextMenu(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(const Offset(0, 0), ancestor: overlay),
+        button.localToGlobal(
+          button.size.bottomRight(Offset.zero),
+          ancestor: overlay,
+        ),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu<String>(
+      context: context,
+      position: position,
+      items: [
+        const PopupMenuItem<String>(
+          value: 'edit',
+          child: Row(
+            children: [
+              Icon(Icons.edit, size: 18),
+              SizedBox(width: 8),
+              Text('Edit'),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'delete',
+          onTap: () async {
+            await ref
+                .read(ingredientListProvider.notifier)
+                .deleteIngredient(widget.ingredient.ingredientId!);
+            ref.invalidate(ingredientListProvider);
+            toastification.show(
+              type: ToastificationType.success,
+              title: Text('Ingredient deleted'),
+              description: Text(
+                'Ingredient ${widget.ingredient.ingredientName} deleted successfully',
+              ),
+            );
+          },
+          child: const Row(
+            children: [
+              Icon(Icons.delete, size: 18, color: Colors.red),
+              SizedBox(width: 8),
+              Text('Delete', style: TextStyle(color: Colors.red)),
+            ],
+          ),
+        ),
+      ],
+    ).then((value) {
+      if (value != null && widget.onMenuItemSelected != null) {
+        widget.onMenuItemSelected!(value);
+      }
+    });
+  }
 
   Widget _buildCardInfo() {
     return Column(
@@ -37,7 +100,6 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              // Use the centralized fallback color
               color:
                   Theme.of(context).textTheme.titleLarge?.color ??
                   _fallbackTextColor,
@@ -69,11 +131,9 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
           onSecondaryTap: widget.onSecondaryTap,
           child: Card(
             elevation: isHovering ? 8 : 4,
-            // Use centralized color variables
             color: cardBackgroundColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
-              // Use centralized color variables
               side: BorderSide(color: cardBorderColor, width: cardBorderWidth),
             ),
             child: Stack(
@@ -81,6 +141,30 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: _buildCard,
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Builder(
+                    builder: (BuildContext menuContext) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withAlpha(150),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.more_vert,
+                            color: Colors.white,
+                          ),
+                          padding: const EdgeInsets.all(4),
+                          constraints: const BoxConstraints(),
+                          iconSize: 20,
+                          onPressed: () => _showContextMenu(menuContext),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
