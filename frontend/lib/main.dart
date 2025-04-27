@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/shared/riverpods/theme_provider.dart';
 import 'package:frontend/shared/routes.dart';
 import 'package:frontend/shared/services/init.dart';
+import 'package:toastification/toastification.dart';
 
 void main() async {
   await setupLocator();
@@ -14,15 +15,18 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeNotifierProvider); // <-- Watch theme
+    final themeMode = ref.watch(themeNotifierProvider);
 
     final router = AppRouter();
 
-    return MaterialApp.router(
-      routerConfig: router.config(),
-      themeMode: themeMode,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+    return ToastificationWrapper(
+      config: const ToastificationConfig(alignment: Alignment.bottomRight),
+      child: MaterialApp.router(
+        routerConfig: router.config(),
+        themeMode: themeMode,
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
+      ),
     );
   }
 }
