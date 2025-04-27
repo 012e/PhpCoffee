@@ -115,18 +115,16 @@ class _IngredientListPageState extends ConsumerState<IngredientListPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16.0),
               Expanded(
                 child: GridView.builder(
-                  // Add clipBehavior: Clip.none to the GridView itself
-                  clipBehavior: Clip.none,
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
                   itemCount: filteredIngredients.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5, // Adjust the number of columns as needed
-                    childAspectRatio:
-                        0.75, // Adjust aspect ratio to fit content
-                    crossAxisSpacing: 10, // Adjust spacing for visual layout
-                    mainAxisSpacing: 10, // Adjust spacing for visual layout
+                    crossAxisCount: 5,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
                   ),
                   itemBuilder: (context, index) {
                     final ingredient = filteredIngredients[index];
