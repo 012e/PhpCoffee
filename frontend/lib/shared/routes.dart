@@ -64,6 +64,11 @@ class AppRouter extends RootStackRouter {
               page: ProfileRoute.page,
               transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
             ),
+            CustomRoute(
+              path: "backendUrl",
+              page: BackendUrlSettingRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
+            ),
           ],
         ),
       ],

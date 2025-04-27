@@ -53,6 +53,14 @@ class SettingListPage extends ConsumerWidget {
             },
           ),
           SettingsTile.navigation(
+            title: Text('Backend URL'),
+            leading: Icon(Icons.cloud),
+            value: Text('Change backend URL'),
+            onPressed: (context) {
+              router.navigatePath("/settings/backendUrl");
+            },
+          ),
+          SettingsTile.navigation(
             title: Text('Abstract settings screen'),
             leading: Icon(Icons.settings),
             description: Text('UI created to show plugin\'s possibilities'),
@@ -90,6 +98,7 @@ class SettingListPage extends ConsumerWidget {
 
     return SettingsList(
       lightTheme: defaultSettingsTheme,
+      darkTheme: defaultSettingsTheme,
       applicationType: ApplicationType.material,
       sections: sections,
     );
