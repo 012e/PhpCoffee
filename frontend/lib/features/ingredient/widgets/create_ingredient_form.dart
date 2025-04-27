@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,9 +51,15 @@ class _CreateIngredientDialogState
           );
 
       try {
-        await ref
+        final createdResponse = await ref
             .read(ingredientListProvider.notifier)
             .createIngredient(createIngredientRequest);
+
+        final image = await FilePicker.platform.pickFiles(
+          type: FileType.image,
+          allowMultiple: false,
+        );
+        await _addImage(image, createdResponse);
       } catch (e) {
         debugPrint('Error creating ingredient: $e');
         toastification.show(
@@ -72,6 +79,26 @@ class _CreateIngredientDialogState
         autoCloseDuration: const Duration(seconds: 5),
       );
     }
+  }
+
+  Future<void> _addImage(
+    FilePickerResult? image,
+    IngredientResponse createdResponse,
+  ) async {
+    if (image == null) {
+      toastification.show(
+        title: const Text('No image selected'),
+        type: ToastificationType.error,
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+      throw Exception('No image selected');
+    }
+    await ref
+        .read(ingredientListProvider.notifier)
+        .uploadImage(
+          ingredientId: createdResponse.ingredientId!,
+          imagePath: image.files.single.path!,
+        );
   }
 
   @override
@@ -213,6 +240,7 @@ class _CreateIngredientDialogState
 Future<void> showIngredientFormDialog(BuildContext context) async {
   await showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (context) => const CreateIngredientDialog(),
   );
 }
