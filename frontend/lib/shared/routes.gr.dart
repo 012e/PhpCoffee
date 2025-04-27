@@ -11,6 +11,22 @@
 part of 'routes.dart';
 
 /// generated route for
+/// [BackendUrlSettingPage]
+class BackendUrlSettingRoute extends PageRouteInfo<void> {
+  const BackendUrlSettingRoute({List<PageRouteInfo>? children})
+    : super(BackendUrlSettingRoute.name, initialChildren: children);
+
+  static const String name = 'BackendUrlSettingRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const BackendUrlSettingPage();
+    },
+  );
+}
+
+/// generated route for
 /// [ConfirmCashPaymentPage]
 class ConfirmCashPaymentRoute extends PageRouteInfo<void> {
   const ConfirmCashPaymentRoute({List<PageRouteInfo>? children})

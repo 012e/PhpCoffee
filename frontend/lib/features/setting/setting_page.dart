@@ -16,7 +16,10 @@ class SettingPage extends ConsumerWidget {
           ignorePagelessRoutes: true,
         ),
       ),
-      body: AutoRouter(),
+      body: Align(
+        alignment: Alignment.center,
+        child: SizedBox(width: 900, child: AutoRouter()),
+      ),
     );
   }
 }

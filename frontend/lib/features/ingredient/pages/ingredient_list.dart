@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/features/ingredient/widgets/create_ingredient_form.dart';
 import 'package:frontend/features/ingredient/widgets/ingredient_card.dart';
 import 'package:frontend/shared/riverpods/ingredient_provider.dart';
 
@@ -40,11 +41,6 @@ class _IngredientListPageState extends ConsumerState<IngredientListPage> {
       final ingredientName = ingredient.ingredientName?.toLowerCase() ?? '';
       return ingredientName.contains(_searchQuery.toLowerCase());
     }).toBuiltList();
-  }
-
-  void _onAddButtonPressed() {
-    // TODO: Implement logic to display the create new ingredient form
-    debugPrint('Add Ingredient button pressed');
   }
 
   @override
@@ -95,7 +91,10 @@ class _IngredientListPageState extends ConsumerState<IngredientListPage> {
                     width: 120.0,
                     height: 50.0,
                     child: FilledButton(
-                      onPressed: _onAddButtonPressed,
+                      onPressed: () async {
+                        await showIngredientFormDialog(context);
+                        ref.invalidate(ingredientListProvider);
+                      },
                       style: FilledButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -116,18 +115,16 @@ class _IngredientListPageState extends ConsumerState<IngredientListPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16.0),
               Expanded(
                 child: GridView.builder(
-                  // Add clipBehavior: Clip.none to the GridView itself
-                  clipBehavior: Clip.none,
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
                   itemCount: filteredIngredients.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5, // Adjust the number of columns as needed
-                    childAspectRatio:
-                        0.75, // Adjust aspect ratio to fit content
-                    crossAxisSpacing: 10, // Adjust spacing for visual layout
-                    mainAxisSpacing: 10, // Adjust spacing for visual layout
+                    crossAxisCount: 5,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
                   ),
                   itemBuilder: (context, index) {
                     final ingredient = filteredIngredients[index];

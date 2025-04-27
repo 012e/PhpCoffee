@@ -1,8 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:frontend/shared/services/base_url_service.dart';
 import 'package:frontend/shared/services/init.dart';
 import 'package:frontend/shared/services/token_service.dart';
 
 Dio createDio() {
+  final tokenService = getIt<TokenService>();
+  final BaseUrlService baseUrlService = getIt<BaseUrlService>();
+
   final dio = Dio(
     BaseOptions(
       baseUrl: 'http://localhost:5045',
@@ -14,8 +18,8 @@ Dio createDio() {
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final tokenService = getIt<TokenService>();
         final token = await tokenService.getToken();
+        options.baseUrl = baseUrlService.getBaseUrl();
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
         }

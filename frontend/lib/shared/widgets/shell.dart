@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/shared/widgets/sidebar.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:toastification/toastification.dart';
 
 class Shell extends StatelessWidget {
   final Widget child;
@@ -13,15 +14,19 @@ class Shell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final background = Theme.of(context).colorScheme.surface;
-    return Scaffold(
-      key: _key,
-      backgroundColor: background,
-      drawer: Sidebar(controller: _controller),
-      body: Row(
-        children: [
-          Sidebar(controller: _controller),
-          Expanded(child: Center(child: child)),
-        ],
+    return ToastificationWrapper(
+      config: const ToastificationConfig(alignment: Alignment.bottomRight),
+
+      child: Scaffold(
+        key: _key,
+        backgroundColor: background,
+        drawer: Sidebar(controller: _controller),
+        body: Row(
+          children: [
+            Sidebar(controller: _controller),
+            Expanded(child: Center(child: child)),
+          ],
+        ),
       ),
     );
   }
