@@ -252,7 +252,7 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
                 backgroundColor:
                     isDarkMode
                         ? Colors.white10
-                        : Colors.black.withOpacity(0.05),
+                        : Colors.black.withValues(alpha: 0.05),
                 foregroundColor: isDarkMode ? Colors.white : Colors.black87,
               ),
             ),
@@ -268,7 +268,7 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
                 backgroundColor:
                     isDarkMode
                         ? Colors.white10
-                        : Colors.black.withOpacity(0.05),
+                        : Colors.black.withValues(alpha: 0.05),
                 foregroundColor: isDarkMode ? Colors.white : Colors.black87,
               ),
             ),
@@ -286,7 +286,7 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -423,7 +423,7 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: color.withOpacity(0.1),
+                      color: color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(icon, color: color, size: 24),
@@ -480,7 +480,7 @@ class MenuItemsDataTable extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -495,8 +495,8 @@ class MenuItemsDataTable extends StatelessWidget {
         headingRowHeight: 60,
         dataRowHeight: 70,
         showCheckboxColumn: false,
-        headingRowColor: MaterialStateProperty.resolveWith<Color>(
-          (Set<MaterialState> states) =>
+        headingRowColor: WidgetStateProperty.resolveWith<Color>(
+          (Set<WidgetState> states) =>
               isDarkMode ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
         ),
         border: TableBorder(
@@ -597,15 +597,13 @@ class _MenuItemDataSource extends DataTableSource {
     final item = _menuItems[index];
 
     return DataRow2(
-      color: MaterialStateProperty.resolveWith<Color?>((
-        Set<MaterialState> states,
-      ) {
+      color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
         // Alternate row colors for better readability
         return index.isEven
             ? Colors.transparent
             : Theme.of(_context).brightness == Brightness.dark
-            ? Colors.white.withOpacity(0.02)
-            : Colors.black.withOpacity(0.02);
+            ? Colors.white.withValues(alpha: 0.02)
+            : Colors.black.withValues(alpha: 0.02);
       }),
       cells: [
         DataCell(_buildIdCell(item.itemId?.toString() ?? 'N/A')),
@@ -623,7 +621,7 @@ class _MenuItemDataSource extends DataTableSource {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF6366F1).withOpacity(0.1),
+        color: const Color(0xFF6366F1).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
@@ -669,8 +667,8 @@ class _MenuItemDataSource extends DataTableSource {
       decoration: BoxDecoration(
         color:
             isActive == true
-                ? const Color(0xFF059669).withOpacity(0.1)
-                : const Color(0xFFDC2626).withOpacity(0.1),
+                ? const Color(0xFF059669).withValues(alpha: 0.1)
+                : const Color(0xFFDC2626).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -751,7 +749,7 @@ class _MenuItemDataSource extends DataTableSource {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: IconButton(
