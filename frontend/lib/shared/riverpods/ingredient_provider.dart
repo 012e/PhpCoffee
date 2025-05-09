@@ -29,6 +29,7 @@ class IngredientList extends _$IngredientList {
       if (response.statusCode != 201) {
         throw AsyncError('Failed to create ingredient', StackTrace.current);
       }
+      ref.invalidateSelf();
       return response.data!;
     } catch (e) {
       throw AsyncError('Failed to create ingredient', StackTrace.current);
@@ -48,6 +49,7 @@ class IngredientList extends _$IngredientList {
       if (response.statusCode != 201 && response.statusCode != 200) {
         throw AsyncError('Failed to upload image', StackTrace.current);
       }
+      ref.invalidateSelf();
     } catch (e) {
       throw AsyncError('Failed to upload image', StackTrace.current);
     }
@@ -59,8 +61,27 @@ class IngredientList extends _$IngredientList {
       if (response.statusCode != 204) {
         throw AsyncError('Failed to delete ingredient', StackTrace.current);
       }
+      ref.invalidateSelf();
     } catch (e) {
       throw AsyncError('Failed to delete ingredient', StackTrace.current);
+    }
+  }
+
+  Future<void> updateIngredient(
+    int ingredientId,
+    UpdateIngredientRequest updateIngredientRequest,
+  ) async {
+    try {
+      final response = await api.ingredientIdPatch(
+        id: ingredientId,
+        updateIngredientRequest: updateIngredientRequest,
+      );
+      if (response.statusCode != 200) {
+        throw AsyncError('Failed to update ingredient', StackTrace.current);
+      }
+      ref.invalidateSelf();
+    } catch (e) {
+      throw AsyncError('Failed to update ingredient', StackTrace.current);
     }
   }
 }

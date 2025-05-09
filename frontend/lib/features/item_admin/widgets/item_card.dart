@@ -2,25 +2,25 @@ import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ItemCard extends ConsumerStatefulWidget {
-  final MenuItemResponse item;
+class IngredientCard extends ConsumerStatefulWidget {
+  final IngredientResponse ingredient;
   final int amount;
   final VoidCallback? onTap;
   final VoidCallback? onSecondaryTap;
 
-  const ItemCard({
+  const IngredientCard({
     super.key,
-    required this.item,
+    required this.ingredient,
     this.onTap,
     this.amount = 0,
     this.onSecondaryTap,
   });
 
   @override
-  ConsumerState<ItemCard> createState() => _ItemCardState();
+  ConsumerState<IngredientCard> createState() => _ItemCardState();
 }
 
-class _ItemCardState extends ConsumerState<ItemCard> {
+class _ItemCardState extends ConsumerState<IngredientCard> {
   static const Color _fallbackTextColor = Colors.black;
 
   bool isHovering = false;
@@ -33,7 +33,7 @@ class _ItemCardState extends ConsumerState<ItemCard> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            widget.item.itemName ?? 'Unnamed',
+            widget.ingredient.ingredientName ?? 'Unnamed',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -44,17 +44,6 @@ class _ItemCardState extends ConsumerState<ItemCard> {
             textAlign: TextAlign.center,
           ),
         ),
-        if (widget.item.basePrice != null)
-          Text(
-            '\$${widget.item.basePrice!.toStringAsFixed(2)}',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(context).cardTheme.color,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        const SizedBox(height: 8),
       ],
     );
   }
@@ -108,10 +97,9 @@ class _ItemCardState extends ConsumerState<ItemCard> {
                   children: [
                     Expanded(
                       child:
-                          widget.item.itemName != null
+                          widget.ingredient.imageUrl != null
                               ? Image.network(
-                                widget.item.itemId
-                                    .toString(), // TODO: Verify this is the correct image URL
+                                widget.ingredient.imageUrl.toString(),
                                 fit: BoxFit.cover,
                                 errorBuilder:
                                     (context, error, stackTrace) =>
@@ -127,7 +115,7 @@ class _ItemCardState extends ConsumerState<ItemCard> {
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
                       constraints: const BoxConstraints(
                         minWidth: 28,
                         minHeight: 28,

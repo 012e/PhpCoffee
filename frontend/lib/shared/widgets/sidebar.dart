@@ -44,7 +44,14 @@ class Sidebar extends StatelessWidget {
         icon: Icons.people,
         label: 'Employee',
         onTap: () async {
-          router.replaceAll([EmployeesRoute()]);
+          await router.replaceAll([EmployeesRoute()]);
+        },
+      ),
+      SidebarXItem(
+        icon: Icons.food_bank,
+        label: 'Manage Items',
+        onTap: () async {
+          await router.replaceAll([ItemAdminListRoute()]);
         },
       ),
       SidebarXItem(

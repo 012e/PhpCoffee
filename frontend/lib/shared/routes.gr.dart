@@ -107,6 +107,22 @@ class IngredientRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ItemAdminListPage]
+class ItemAdminListRoute extends PageRouteInfo<void> {
+  const ItemAdminListRoute({List<PageRouteInfo>? children})
+    : super(ItemAdminListRoute.name, initialChildren: children);
+
+  static const String name = 'ItemAdminListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ItemAdminListPage();
+    },
+  );
+}
+
+/// generated route for
 /// [ItemsListPage]
 class ItemsListRoute extends PageRouteInfo<ItemsListRouteArgs> {
   ItemsListRoute({
@@ -184,6 +200,22 @@ class LoginRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [NewItemPage]
+class NewItemRoute extends PageRouteInfo<void> {
+  const NewItemRoute({List<PageRouteInfo>? children})
+    : super(NewItemRoute.name, initialChildren: children);
+
+  static const String name = 'NewItemRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const NewItemPage();
+    },
+  );
+}
+
+/// generated route for
 /// [OrderPage]
 class OrderRoute extends PageRouteInfo<void> {
   const OrderRoute({List<PageRouteInfo>? children})
@@ -227,6 +259,22 @@ class RootRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const RootScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [SelectIngredientsPage]
+class SelectIngredientsRoute extends PageRouteInfo<void> {
+  const SelectIngredientsRoute({List<PageRouteInfo>? children})
+    : super(SelectIngredientsRoute.name, initialChildren: children);
+
+  static const String name = 'SelectIngredientsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SelectIngredientsPage();
     },
   );
 }

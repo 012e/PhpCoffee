@@ -53,6 +53,11 @@ dependencies:
   form_builder_validators: ^11.1.2
   toastification: ^3.0.2
   file_picker: ^10.1.2
+  easy_stepper: ^0.8.5+1
+  data_table_2: ^2.6.0
+  intl: ^0.19.0
+  flutter_animate: ^4.5.2
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

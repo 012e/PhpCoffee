@@ -2,6 +2,7 @@ import 'package:api_client/api_client.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/features/ingredient/widgets/ingredient_form.dart';
 import 'package:frontend/shared/riverpods/ingredient_provider.dart';
 import 'package:toastification/toastification.dart';
 
@@ -46,7 +47,7 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
       context: context,
       position: position,
       items: [
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: 'edit',
           child: Row(
             children: [
@@ -55,6 +56,12 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
               Text('Edit'),
             ],
           ),
+          onTap: () async {
+            await showIngredientFormDialog(
+              context,
+              ingredient: widget.ingredient,
+            );
+          },
         ),
         PopupMenuItem<String>(
           value: 'delete',
@@ -62,7 +69,6 @@ class _IngredientCardState extends ConsumerState<IngredientCard> {
             await ref
                 .read(ingredientListProvider.notifier)
                 .deleteIngredient(widget.ingredient.ingredientId!);
-            ref.invalidate(ingredientListProvider);
             toastification.show(
               type: ToastificationType.success,
               title: Text('Ingredient deleted'),
