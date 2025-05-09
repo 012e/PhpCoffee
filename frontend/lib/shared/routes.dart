@@ -9,6 +9,9 @@ import 'package:frontend/features/item/items_page.dart';
 import 'package:frontend/features/item/pages/confirm_cash.dart';
 import 'package:frontend/features/item/pages/items_list.dart';
 import 'package:frontend/features/item/pages/order.dart';
+import 'package:frontend/features/item_admin/pages/item_admin_list.dart';
+import 'package:frontend/features/item_admin/pages/new_item.dart';
+import 'package:frontend/features/item_admin/pages/select_ingredients.dart';
 import 'package:frontend/features/root.dart';
 import 'package:frontend/features/setting/pages/backend_setting_url_page.dart';
 import 'package:frontend/features/setting/setting_page.dart';
@@ -33,6 +36,19 @@ class AppRouter extends RootStackRouter {
       guards: [AuthGuard()],
       children: [
         AutoRoute(path: 'dashboard', page: DashboardRoute.page),
+        AutoRoute(
+          path: 'admin/item',
+          page: ItemAdminListRoute.page,
+          children: [
+        ]
+
+        ),
+        AutoRoute(path: 'admin/item/new', page: NewItemRoute.page),
+        AutoRoute(
+          path: 'admin/item/new/step2',
+          page: SelectIngredientsRoute.page,
+        ),
+
         AutoRoute(
           path: 'items',
           page: ItemsRoute.page,

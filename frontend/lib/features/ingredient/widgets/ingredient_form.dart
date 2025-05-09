@@ -9,27 +9,33 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:frontend/shared/riverpods/ingredient_provider.dart';
 import 'package:toastification/toastification.dart';
 
-class CreateIngredientDialog extends ConsumerStatefulWidget {
-  const CreateIngredientDialog({super.key});
+class IngredientFormDialog extends ConsumerStatefulWidget {
+  final IngredientResponse? ingredient; // Optional ingredient for edit mode
+  const IngredientFormDialog({super.key, this.ingredient});
 
   @override
-  ConsumerState<CreateIngredientDialog> createState() =>
-      _CreateIngredientDialogState();
+  ConsumerState<IngredientFormDialog> createState() =>
+      _IngredientFormDialogState();
 }
 
-class _CreateIngredientDialogState
-    extends ConsumerState<CreateIngredientDialog> {
+class _IngredientFormDialogState extends ConsumerState<IngredientFormDialog> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
   late final StackRouter _router;
   FilePickerResult? _selectedImage;
   String? _imagePath;
+  String? _existingImageUrl;
+  bool get _isEditMode => widget.ingredient != null;
 
   @override
   void initState() {
     super.initState();
-    _formKey.currentState?.reset();
     _router = AutoRouter.of(context);
+
+    // If in edit mode, initialize with existing image if available
+    if (_isEditMode && widget.ingredient?.imageUrl != null) {
+      _existingImageUrl = widget.ingredient!.imageUrl;
+    }
   }
 
   Future<void> _pickImage() async {
@@ -42,11 +48,13 @@ class _CreateIngredientDialogState
       setState(() {
         _selectedImage = result;
         _imagePath = result.files.single.path;
+        _existingImageUrl =
+            null; // Clear existing image when new one is selected
       });
     }
   }
 
-  void _submitForm() async {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       final formData = _formKey.currentState!.value;
 
@@ -55,49 +63,97 @@ class _CreateIngredientDialogState
       });
 
       debugPrint('Form data: $formData');
-      final CreateIngredientRequest createIngredientRequest =
-          CreateIngredientRequest(
-            (b) =>
-                b
-                  ..name = formData['name'] as String
-                  ..ingredientName = formData['ingredientName'] as String
-                  ..unit = formData['unit'] as String
-                  ..currentQuantity = double.parse(formData['currentQuantity'])
-                  ..quantity = double.parse(formData['quantity'])
-                  ..supplierId = int.parse(formData['supplierId']),
-          );
 
       try {
-        final createdResponse = await ref
-            .read(ingredientListProvider.notifier)
-            .createIngredient(createIngredientRequest);
+        if (_isEditMode) {
+          // Handle update
+          final UpdateIngredientRequest updateIngredientRequest =
+              UpdateIngredientRequest(
+                (b) =>
+                    b
+                      ..ingredientName = formData['ingredientName'] as String
+                      ..unit = formData['unit'] as String
+                      ..currentQuantity = double.parse(
+                        formData['currentQuantity'],
+                      )
+                      ..currentQuantity = double.parse(formData['quantity'])
+                      ..supplierId = int.parse(formData['supplierId']),
+              );
 
-        // Upload the already selected image if available
-        if (_selectedImage != null && _imagePath != null) {
           await ref
               .read(ingredientListProvider.notifier)
-              .uploadImage(
-                ingredientId: createdResponse.ingredientId!,
-                imagePath: _imagePath!,
+              .updateIngredient(
+                widget.ingredient!.ingredientId!,
+                updateIngredientRequest,
               );
-        } else {
+
+          // Upload the new image if selected in edit mode
+          if (_selectedImage != null && _imagePath != null) {
+            await ref
+                .read(ingredientListProvider.notifier)
+                .uploadImage(
+                  ingredientId: widget.ingredient!.ingredientId!,
+                  imagePath: _imagePath!,
+                );
+          }
+
           toastification.show(
-            title: const Text('No image selected'),
-            type: ToastificationType.warning,
+            title: const Text('Ingredient updated successfully'),
+            type: ToastificationType.success,
+            autoCloseDuration: const Duration(seconds: 5),
+          );
+        } else {
+          // Handle create
+          final CreateIngredientRequest createIngredientRequest =
+              CreateIngredientRequest(
+                (b) =>
+                    b
+                      ..name = formData['name'] as String
+                      ..ingredientName = formData['ingredientName'] as String
+                      ..unit = formData['unit'] as String
+                      ..currentQuantity = double.parse(
+                        formData['currentQuantity'],
+                      )
+                      ..quantity = double.parse(formData['quantity'])
+                      ..supplierId = int.parse(formData['supplierId']),
+              );
+
+          final createdResponse = await ref
+              .read(ingredientListProvider.notifier)
+              .createIngredient(createIngredientRequest);
+
+          // Upload the image if available for new ingredient
+          if (_selectedImage != null && _imagePath != null) {
+            await ref
+                .read(ingredientListProvider.notifier)
+                .uploadImage(
+                  ingredientId: createdResponse.ingredientId!,
+                  imagePath: _imagePath!,
+                );
+          } else {
+            toastification.show(
+              title: const Text('No image selected'),
+              type: ToastificationType.warning,
+              autoCloseDuration: const Duration(seconds: 5),
+            );
+          }
+
+          toastification.show(
+            title: const Text('Ingredient created successfully'),
+            type: ToastificationType.success,
             autoCloseDuration: const Duration(seconds: 5),
           );
         }
 
-        toastification.show(
-          title: const Text('Ingredient created successfully'),
-          type: ToastificationType.success,
-          autoCloseDuration: const Duration(seconds: 5),
-        );
         _router.pop(formData);
       } catch (e) {
-        debugPrint('Error creating ingredient: $e');
+        debugPrint(
+          'Error ${_isEditMode ? "updating" : "creating"} ingredient: $e',
+        );
         toastification.show(
-          title: Text('Failed to create ingredient: $e'),
+          title: Text(
+            'Failed to ${_isEditMode ? "update" : "create"} ingredient: $e',
+          ),
           type: ToastificationType.error,
           autoCloseDuration: const Duration(seconds: 5),
         );
@@ -119,51 +175,75 @@ class _CreateIngredientDialogState
       ),
       child:
           _imagePath != null
-              ? ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.file(File(_imagePath!), fit: BoxFit.cover),
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            _selectedImage = null;
-                            _imagePath = null;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.black45,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.close,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-              : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.image, size: 48, color: Colors.grey),
-                  const SizedBox(height: 8),
-                  ElevatedButton.icon(
-                    onPressed: _pickImage,
-                    icon: const Icon(Icons.upload),
-                    label: const Text('Select Image'),
-                  ),
-                ],
-              ),
+              ? _buildLocalImagePreview()
+              : _existingImageUrl != null
+              ? _buildNetworkImagePreview()
+              : _buildImageSelector(),
+    );
+  }
+
+  Widget _buildLocalImagePreview() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.file(File(_imagePath!), fit: BoxFit.cover),
+          _buildImageRemoveButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNetworkImagePreview() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.network(_existingImageUrl!, fit: BoxFit.cover),
+          _buildImageRemoveButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImageRemoveButton() {
+    return Positioned(
+      top: 8,
+      right: 8,
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedImage = null;
+            _imagePath = null;
+            _existingImageUrl = null;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: const BoxDecoration(
+            color: Colors.black45,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageSelector() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.image, size: 48, color: Colors.grey),
+        const SizedBox(height: 8),
+        ElevatedButton.icon(
+          onPressed: _pickImage,
+          icon: const Icon(Icons.upload),
+          label: const Text('Select Image'),
+        ),
+      ],
     );
   }
 
@@ -179,13 +259,31 @@ class _CreateIngredientDialogState
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Ingredient Form',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Text(
+                  _isEditMode ? 'Edit Ingredient' : 'Create Ingredient',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 FormBuilder(
                   key: _formKey,
+                  initialValue:
+                      _isEditMode
+                          ? {
+                            'name': widget.ingredient!.ingredientName,
+                            'ingredientName': widget.ingredient!.ingredientName,
+                            'unit': widget.ingredient!.unit,
+                            'currentQuantity':
+                                widget.ingredient!.currentQuantity.toString(),
+                            'quantity':
+                                widget.ingredient!.currentQuantity.toString(),
+                            'supplierId':
+                                widget.ingredient!.supplier!.supplierId
+                                    .toString(),
+                          }
+                          : {},
                   autovalidateMode: AutovalidateMode.disabled,
                   child: Column(
                     children: [
@@ -322,7 +420,7 @@ class _CreateIngredientDialogState
                                   strokeWidth: 2,
                                 ),
                               )
-                              : const Text('SUBMIT'),
+                              : Text(_isEditMode ? 'UPDATE' : 'SUBMIT'),
                     ),
                   ],
                 ),
@@ -335,10 +433,13 @@ class _CreateIngredientDialogState
   }
 }
 
-Future<void> showIngredientFormDialog(BuildContext context) async {
+Future<void> showIngredientFormDialog(
+  BuildContext context, {
+  IngredientResponse? ingredient,
+}) async {
   await showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (context) => const CreateIngredientDialog(),
+    builder: (context) => IngredientFormDialog(ingredient: ingredient),
   );
 }

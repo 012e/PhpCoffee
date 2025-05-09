@@ -3,7 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/features/ingredient/widgets/create_ingredient_form.dart';
+import 'package:frontend/features/ingredient/widgets/ingredient_form.dart';
 import 'package:frontend/features/ingredient/widgets/ingredient_card.dart';
 import 'package:frontend/shared/riverpods/ingredient_provider.dart';
 
@@ -93,7 +93,6 @@ class _IngredientListPageState extends ConsumerState<IngredientListPage> {
                     child: FilledButton(
                       onPressed: () async {
                         await showIngredientFormDialog(context);
-                        ref.invalidate(ingredientListProvider);
                       },
                       style: FilledButton.styleFrom(
                         shape: RoundedRectangleBorder(
