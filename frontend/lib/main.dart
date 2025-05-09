@@ -70,7 +70,7 @@ class MyApp extends ConsumerWidget {
     iconButtonTheme: IconButtonThemeData(
       style: IconButton.styleFrom(
         backgroundColor: Colors.black.withValues(
-          alpha: 20,
+          alpha: 0.05,
         ), // Used for header icons
         foregroundColor: Colors.black87,
       ),
