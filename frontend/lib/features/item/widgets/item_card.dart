@@ -50,7 +50,7 @@ class _ItemCardState extends ConsumerState<ItemCard> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: Theme.of(context).colorScheme.secondary,
+              color: Theme.of(context).cardTheme.color,
             ),
             textAlign: TextAlign.center,
           ),
