@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.Database;
 using WebApplication1.Dtos.Mappers;
 using WebApplication1.Dtos.Requests.Orders;
@@ -19,9 +20,9 @@ public class OrderController : Controller
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(Order), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Order>> Create(CreateOrdersRequest createOrdersRequest)
+    public async Task<ActionResult<OrderResponse>> Create(CreateOrdersRequest createOrdersRequest)
     {
         await using var transaction = await _context.Database.BeginTransactionAsync();
         try
@@ -58,12 +59,157 @@ public class OrderController : Controller
             _context.Update(newOrder);
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
-            return Ok();
+
+            // Load related data for the response
+            var completeOrder = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
+                .Include(o => o.Payments)
+                .FirstOrDefaultAsync(o => o.OrderId == newOrder.OrderId);
+
+            // Map to response DTO
+            var orderResponse = _ordersMapper.OrderToOrderResponse(completeOrder);
+
+            return CreatedAtAction(nameof(GetOrderById), new { id = newOrder.OrderId }, orderResponse);
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            return BadRequest("Failed to create orders: " + ex.Message);
+            return BadRequest(new ProblemDetails
+            {
+                Detail = "Failed to create order: " + ex.Message,
+                Title = "Order Creation Failed",
+                Status = 400
+            });
         }
+    }
+
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<OrderResponse>> GetOrderById(int id)
+    {
+        var order = await _context.Orders
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Item)
+            .Include(o => o.Payments)
+            .FirstOrDefaultAsync(o => o.OrderId == id);
+
+        if (order == null)
+        {
+            return NotFound(new ProblemDetails
+            {
+                Detail = $"Order with ID {id} not found",
+                Title = "Resource Not Found",
+                Status = 404
+            });
+        }
+
+        var orderResponse = _ordersMapper.OrderToOrderResponse(order);
+        return Ok(orderResponse);
+    }
+
+    [HttpGet("{id}/payment-status")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status408RequestTimeout)]
+    public async Task<ActionResult<object>> ValidatePaymentStatus(int id, [FromQuery] int timeoutSeconds = 30)
+    {
+        // Set a maximum timeout limit to prevent excessive resource usage
+        if (timeoutSeconds > 120)
+        {
+            timeoutSeconds = 120;
+        }
+
+        // Create a cancellation token that will timeout after specified seconds
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+
+        try
+        {
+            // Check if the order exists
+            var orderExists = await _context.Orders.AnyAsync(o => o.OrderId == id);
+            if (!orderExists)
+            {
+                return NotFound(new ProblemDetails
+                {
+                    Detail = $"Order with ID {id} not found",
+                    Title = "Resource Not Found",
+                    Status = 404
+                });
+            }
+
+            // Poll for payment status changes
+            var startTime = DateTime.UtcNow;
+            string currentStatus = await GetCurrentPaymentStatus(id);
+
+            // If already paid, return immediately
+            if (currentStatus == "Da thanh toan")
+            {
+                return Ok(new { paymentStatus = currentStatus, orderId = id, isPaid = true });
+            }
+
+            // Long polling loop
+            while (!cts.Token.IsCancellationRequested)
+            {
+                // Wait a short time before checking again to avoid hammering the database
+                await Task.Delay(1000, cts.Token);
+
+                // Get latest payment status
+                string latestStatus = await GetCurrentPaymentStatus(id);
+
+                // If status changed to paid, return immediately
+                if (latestStatus == "Da thanh toan")
+                {
+                    return Ok(new { paymentStatus = latestStatus, orderId = id, isPaid = true });
+                }
+
+                // If status changed at all, return the new status
+                if (latestStatus != currentStatus)
+                {
+                    return Ok(new { paymentStatus = latestStatus, orderId = id, isPaid = false });
+                }
+            }
+
+            // If we reach here, we timed out without a status change
+            return StatusCode(StatusCodes.Status408RequestTimeout, new
+            {
+                paymentStatus = currentStatus,
+                orderId = id,
+                isPaid = currentStatus == "Da thanh toan",
+                message = "Long polling timed out. No payment status change detected."
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            // Handle timeout
+            string finalStatus = await GetCurrentPaymentStatus(id);
+            return StatusCode(StatusCodes.Status408RequestTimeout, new
+            {
+                paymentStatus = finalStatus,
+                orderId = id,
+                isPaid = finalStatus == "Da thanh toan",
+                message = "Request timed out"
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new ProblemDetails
+            {
+                Detail = "Error checking payment status: " + ex.Message,
+                Title = "Internal Server Error",
+                Status = 500
+            });
+        }
+    }
+
+    private async Task<string> GetCurrentPaymentStatus(int orderId)
+    {
+        var order = await _context.Orders
+            .AsNoTracking()
+            .Where(o => o.OrderId == orderId)
+            .Select(o => o.PaymentStatus)
+            .FirstOrDefaultAsync();
+
+        return order ?? "Unknown";
     }
 }
