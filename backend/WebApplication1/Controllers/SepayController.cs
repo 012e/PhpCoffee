@@ -38,7 +38,6 @@ namespace WebApplication1.Controllers
                 {
                     payment.Order.PaymentStatus = "Da thanh toan";
                     _context.Update(payment.Order);
-                    await _context.SaveChangesAsync();
                 }
                 else
                 {
@@ -49,8 +48,9 @@ namespace WebApplication1.Controllers
                     newPayment.OrderId = payment.Order.OrderId;
                     newPayment.PaymentMethod = "Chuyen khoan";
                     _context.Add(newPayment);
-                    await _context.SaveChangesAsync();
                 }
+
+                await _context.SaveChangesAsync();
             }
             return StatusCode(201, new { success = true }); ;
         }
