@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.Database;
 using WebApplication1.Dtos.Mappers;
 using WebApplication1.Dtos.Requests.Orders;
+using WebApplication1.Dtos.Responses;
 
 namespace WebApplication1.Controllers;
 
@@ -110,10 +111,11 @@ public class OrderController : Controller
     }
 
     [HttpGet("{id}/payment-status")]
-    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaymentStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status408RequestTimeout)]
-    public async Task<ActionResult<object>> ValidatePaymentStatus(int id, [FromQuery] int timeoutSeconds = 30)
+    public async Task<ActionResult<PaymentStatusResponse>> ValidatePaymentStatus(int id,
+        [FromQuery] int timeoutSeconds = 30)
     {
         // Set a maximum timeout limit to prevent excessive resource usage
         if (timeoutSeconds > 120)
@@ -145,7 +147,12 @@ public class OrderController : Controller
             // If already paid, return immediately
             if (currentStatus == "Da thanh toan")
             {
-                return Ok(new { paymentStatus = currentStatus, orderId = id, isPaid = true });
+                return Ok(new PaymentStatusResponse
+                {
+                    PaymentStatus = currentStatus,
+                    OrderId = id,
+                    IsPaid = true
+                });
             }
 
             // Long polling loop
@@ -160,35 +167,45 @@ public class OrderController : Controller
                 // If status changed to paid, return immediately
                 if (latestStatus == "Da thanh toan")
                 {
-                    return Ok(new { paymentStatus = latestStatus, orderId = id, isPaid = true });
+                    return Ok(new PaymentStatusResponse
+                    {
+                        PaymentStatus = latestStatus,
+                        OrderId = id,
+                        IsPaid = true
+                    });
                 }
 
                 // If status changed at all, return the new status
                 if (latestStatus != currentStatus)
                 {
-                    return Ok(new { paymentStatus = latestStatus, orderId = id, isPaid = false });
+                    return Ok(new PaymentStatusResponse
+                    {
+                        PaymentStatus = latestStatus,
+                        OrderId = id,
+                        IsPaid = false
+                    });
                 }
             }
 
             // If we reach here, we timed out without a status change
-            return StatusCode(StatusCodes.Status408RequestTimeout, new
+            return StatusCode(StatusCodes.Status408RequestTimeout, new PaymentStatusResponse
             {
-                paymentStatus = currentStatus,
-                orderId = id,
-                isPaid = currentStatus == "Da thanh toan",
-                message = "Long polling timed out. No payment status change detected."
+                PaymentStatus = currentStatus,
+                OrderId = id,
+                IsPaid = currentStatus == "Da thanh toan",
+                Message = "Long polling timed out. No payment status change detected."
             });
         }
         catch (OperationCanceledException)
         {
             // Handle timeout
-            string finalStatus = await GetCurrentPaymentStatus(id);
-            return StatusCode(StatusCodes.Status408RequestTimeout, new
+            var finalStatus = await GetCurrentPaymentStatus(id);
+            return StatusCode(StatusCodes.Status408RequestTimeout, new PaymentStatusResponse
             {
-                paymentStatus = finalStatus,
-                orderId = id,
-                isPaid = finalStatus == "Da thanh toan",
-                message = "Request timed out"
+                PaymentStatus = finalStatus,
+                OrderId = id,
+                IsPaid = finalStatus == "Da thanh toan",
+                Message = "Request timed out"
             });
         }
         catch (Exception ex)
