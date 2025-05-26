@@ -81,6 +81,8 @@ Class | Method | HTTP request | Description
 [*MenuItemApi*](doc/MenuItemApi.md) | [**menuItemIdDelete**](doc/MenuItemApi.md#menuitemiddelete) | **DELETE** /MenuItem/{id} | 
 [*MenuItemApi*](doc/MenuItemApi.md) | [**menuItemIdGet**](doc/MenuItemApi.md#menuitemidget) | **GET** /MenuItem/{id} | 
 [*MenuItemApi*](doc/MenuItemApi.md) | [**menuItemPost**](doc/MenuItemApi.md#menuitempost) | **POST** /MenuItem | 
+[*OrderApi*](doc/OrderApi.md) | [**orderIdGet**](doc/OrderApi.md#orderidget) | **GET** /Order/{id} | 
+[*OrderApi*](doc/OrderApi.md) | [**orderIdPaymentStatusGet**](doc/OrderApi.md#orderidpaymentstatusget) | **GET** /Order/{id}/payment-status | 
 [*OrderApi*](doc/OrderApi.md) | [**orderPost**](doc/OrderApi.md#orderpost) | **POST** /Order | 
 [*SepayApi*](doc/SepayApi.md) | [**sepayPost**](doc/SepayApi.md#sepaypost) | **POST** /Sepay | 
 [*SupplierApi*](doc/SupplierApi.md) | [**supplierGet**](doc/SupplierApi.md#supplierget) | **GET** /Supplier | 
@@ -113,7 +115,11 @@ Class | Method | HTTP request | Description
  - [MenuItemResponse](doc/MenuItemResponse.md)
  - [Order](doc/Order.md)
  - [OrderItem](doc/OrderItem.md)
+ - [OrderItemResponse](doc/OrderItemResponse.md)
+ - [OrderResponse](doc/OrderResponse.md)
  - [Payment](doc/Payment.md)
+ - [PaymentResponse](doc/PaymentResponse.md)
+ - [PaymentStatusResponse](doc/PaymentStatusResponse.md)
  - [ProblemDetails](doc/ProblemDetails.md)
  - [Recipe](doc/Recipe.md)
  - [RecipeIngredient](doc/RecipeIngredient.md)

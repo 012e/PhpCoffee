@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Riok.Mapperly.Abstractions;
-using Supabase;
 using WebApplication1.Controllers;
 using WebApplication1.Database;
 using WebApplication1.Dtos.Requests.OrderItems;
@@ -10,7 +7,7 @@ using WebApplication1.Dtos.Requests.Payment;
 
 namespace WebApplication1.Dtos.Mappers
 {
-    [Mapper(AllowNullPropertyAssignment=false)]
+    [Mapper(AllowNullPropertyAssignment = false)]
     public partial class OrdersMapper
     {
         [MapperIgnoreTarget(nameof(Order.OrderId))]
@@ -18,7 +15,7 @@ namespace WebApplication1.Dtos.Mappers
         [MapperIgnoreTarget(nameof(Order.OrderItems))]
         [MapperIgnoreTarget(nameof(Order.Payments))]
         [MapperIgnoreTarget(nameof(Order.TotalAmount))]
-        [MapperIgnoreTarget(nameof (Order.Remaining))]
+        [MapperIgnoreTarget(nameof(Order.Remaining))]
         public partial Order CreateOrdersRequestToOrder(CreateOrdersRequest createOrdersRequest);
 
         [MapperIgnoreTarget(nameof(OrderItem.OrderId))]
@@ -34,5 +31,9 @@ namespace WebApplication1.Dtos.Mappers
         [MapperIgnoreTarget(nameof(Payment.PaymentId))]
         public partial Payment CreatePaymentRequestInOrders(CreatePaymentRequest createPaymentRequest);
 
+        // New methods for mapping to response DTOs
+        public partial OrderResponse OrderToOrderResponse(Order order);
+        public partial OrderItemResponse OrderItemToOrderItemResponse(OrderItem orderItem);
+        public partial PaymentResponse PaymentToPaymentResponse(Payment payment);
     }
 }

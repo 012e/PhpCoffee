@@ -36,7 +36,11 @@ import 'package:api_client/src/model/menu_item.dart';
 import 'package:api_client/src/model/menu_item_response.dart';
 import 'package:api_client/src/model/order.dart';
 import 'package:api_client/src/model/order_item.dart';
+import 'package:api_client/src/model/order_item_response.dart';
+import 'package:api_client/src/model/order_response.dart';
 import 'package:api_client/src/model/payment.dart';
+import 'package:api_client/src/model/payment_response.dart';
+import 'package:api_client/src/model/payment_status_response.dart';
 import 'package:api_client/src/model/problem_details.dart';
 import 'package:api_client/src/model/recipe.dart';
 import 'package:api_client/src/model/recipe_ingredient.dart';
@@ -70,7 +74,11 @@ part 'serializers.g.dart';
   MenuItemResponse,
   Order,
   OrderItem,
+  OrderItemResponse,
+  OrderResponse,
   Payment,
+  PaymentResponse,
+  PaymentStatusResponse,
   ProblemDetails,
   Recipe,
   RecipeIngredient,
