@@ -35,6 +35,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
+    public virtual DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
@@ -293,6 +295,46 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("supplier_name");
         });
 
+<<<<<<< HEAD
+=======
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.UserId).HasName("user_pkey");
+
+            entity.ToTable("user", "phpcafe");
+
+            entity.HasIndex(e => e.Email, "user_email_key").IsUnique();
+
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.Email)
+                .HasMaxLength(40)
+                .HasColumnName("email");
+            entity.Property(e => e.EmailVerified).HasColumnName("email_verified");
+            entity.Property(e => e.FirstName)
+                .HasMaxLength(30)
+                .HasColumnName("first_name");
+            entity.Property(e => e.LastName)
+                .HasMaxLength(30)
+                .HasColumnName("last_name");
+            entity.Property(e => e.PhoneNumber)
+                .HasMaxLength(10)
+                .HasColumnName("phone_number");
+            entity.Property(e => e.PhoneVerified).HasColumnName("phone_verified");
+            entity.Property(e => e.Picture).HasColumnName("picture");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.Username)
+                .HasMaxLength(30)
+                .HasColumnName("username");
+        });
+
+>>>>>>> e30491f (update database and create api user)
         OnModelCreatingPartial(modelBuilder);
     }
 

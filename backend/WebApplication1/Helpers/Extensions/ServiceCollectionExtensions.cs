@@ -27,6 +27,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<SupplierMapper>();
         services.AddSingleton<InventoryTransactionMapper>();
         services.AddSingleton<OrdersMapper>();
+        services.AddSingleton<UserMapper>();
         return services;
     }
 
