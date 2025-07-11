@@ -5,7 +5,7 @@ using WebApplication1.Dtos.Mappers;
 using WebApplication1.Dtos.Requests;
 using WebApplication1.Helpers;
 using WebApplication1.Services;
-
+using ClosedXML.Excel;
 namespace WebApplication1.Controllers;
 
 [Route("[controller]/")]
@@ -316,5 +316,51 @@ public class IngredientController : ControllerBase
 
 
         return Ok(new Success("File Uploaded"));
+    }
+
+    [HttpGet("export-excel")]
+    public async Task<IActionResult> ExportIngredientsToExcel()
+    {
+        var ingredients = await _context.Ingredients
+            .Include(x => x.Supplier)
+            .ToListAsync();
+
+        var ingredientResponses = _ingredientMapper.IngredientsToIngredientResponses(ingredients);
+
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Ingredients");
+
+        // Header
+        worksheet.Cell(1, 1).Value = "IngredientId";
+        worksheet.Cell(1, 2).Value = "IngredientName";
+        worksheet.Cell(1, 3).Value = "Unit";
+        worksheet.Cell(1, 4).Value = "CurrentQuantity";
+        worksheet.Cell(1, 5).Value = "ImageUrl";
+        worksheet.Cell(1, 6).Value = "CreatedAt";
+        worksheet.Cell(1, 7).Value = "SupplierName";
+
+        int row = 2;
+        foreach (var item in ingredientResponses)
+        {
+            worksheet.Cell(row, 1).Value = item.IngredientId;
+            worksheet.Cell(row, 2).Value = item.IngredientName;
+            worksheet.Cell(row, 3).Value = item.Unit;
+            worksheet.Cell(row, 4).Value = item.CurrentQuantity.HasValue ? item.CurrentQuantity.Value.ToString() : "";
+            worksheet.Cell(row, 5).Value = item.ImageUrl ?? "";
+            worksheet.Cell(row, 6).Value = item.CreatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "";
+            worksheet.Cell(row, 7).Value = item.Supplier?.SupplierName ?? "";
+            row++;
+        }
+
+        worksheet.Columns().AdjustToContents();
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+
+        var fileName = $"Ingredients_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+        return File(stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            fileName);
     }
 }

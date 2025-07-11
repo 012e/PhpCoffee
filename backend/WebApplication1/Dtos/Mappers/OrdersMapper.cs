@@ -35,5 +35,7 @@ namespace WebApplication1.Dtos.Mappers
         public partial OrderResponse OrderToOrderResponse(Order order);
         public partial OrderItemResponse OrderItemToOrderItemResponse(OrderItem orderItem);
         public partial PaymentResponse PaymentToPaymentResponse(Payment payment);
+        public partial MenuItemResponse MenuItemToMenuItemResponse(MenuItem menuItem);
+
     }
 }
