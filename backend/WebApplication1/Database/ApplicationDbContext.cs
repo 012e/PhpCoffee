@@ -295,8 +295,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("supplier_name");
         });
 
-<<<<<<< HEAD
-=======
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("user_pkey");
@@ -334,7 +332,6 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnName("username");
         });
 
->>>>>>> e30491f (update database and create api user)
         OnModelCreatingPartial(modelBuilder);
     }
 
