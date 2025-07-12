@@ -83,7 +83,7 @@ public class MenuItemController : ControllerBase
 
     //Delete
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(MenuItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MenuItemResponse>> DeleteMenuItem(int id)
     {
