@@ -24,7 +24,9 @@ public class MenuItemController : ControllerBase
         StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<MenuItemResponse>>> GetMenuItems()
     {
-        var menuItems = await _context.MenuItems.ToListAsync();
+        var menuItems = await _context.MenuItems
+    .Where(m => m.IsActive == true)
+    .ToListAsync();
         return Ok(_menuItemMapper.MenuItemsToMenuItemResponses(menuItems));
     }
     //Lấy phần tử theo id 
@@ -34,7 +36,9 @@ public class MenuItemController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MenuItemResponse>> GetMenuItem(int id)
     {
-        var menuItem = await _context.MenuItems.FindAsync(id);
+        var menuItem = await _context.MenuItems
+        .FirstOrDefaultAsync(m => m.ItemId == id && m.IsActive == true);
+
         if (menuItem == null)
         {
             return NotFound();
