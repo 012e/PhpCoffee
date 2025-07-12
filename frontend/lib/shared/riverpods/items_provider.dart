@@ -18,7 +18,38 @@ class ItemList extends _$ItemList {
     return response.data ?? BuiltList<MenuItemResponse>();
   }
 
-  Future<void> placeCashOrder(data) async {}
+  Future<void> deleteItem(int itemId) async {
+    final api = GetIt.I<MenuItemApi>();
+    final response = await api.menuItemIdDelete(id: itemId);
 
-  Future<void> placeBankingOrder(data) async {}
+    if (response.statusCode == 204) {
+      // Refresh the list after successful deletion
+      ref.invalidateSelf();
+    } else {
+      throw Exception('Failed to delete item');
+    }
+  }
+
+  Future<MenuItemResponse?> getItemById(int itemId) async {
+    final api = GetIt.I<MenuItemApi>();
+    final response = await api.menuItemIdGet(id: itemId);
+
+    if (response.statusCode == 200) {
+      return response.data;
+    }
+    return null;
+  }
+
+  Future<MenuItemResponse> createMenuItem(CreateMenuItemRequest request) async {
+    final api = GetIt.I<MenuItemApi>();
+    final response = await api.menuItemPost(createMenuItemRequest: request);
+
+    if (response.statusCode == 201) {
+      // Refresh the list after successful creation
+      ref.invalidateSelf();
+      return response.data!;
+    } else {
+      throw Exception('Failed to create menu item');
+    }
+  }
 }

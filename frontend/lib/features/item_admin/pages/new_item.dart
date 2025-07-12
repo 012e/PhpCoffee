@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:frontend/features/item_admin/riverpods/menu_item_form_data.dart';
+import 'package:frontend/features/item_admin/riverpods/selected_ingredients.dart';
 
 @RoutePage()
 class NewItemPage extends ConsumerStatefulWidget {
@@ -15,35 +17,34 @@ class NewItemPage extends ConsumerStatefulWidget {
 class _NewItemPageState extends ConsumerState<NewItemPage> {
   final _formKey = GlobalKey<FormBuilderState>();
 
+  @override
+  void initState() {
+    super.initState();
+    // Clear any previous form data and selected ingredients when starting fresh
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(menuItemFormDataNotifierProvider.notifier).reset();
+      ref.read(selectedIngredientsProvider.notifier).clear();
+    });
+  }
+
   Future<void> _submitForm(BuildContext context, WidgetRef ref) async {
-    var router = AutoRouter.of(context);
-    await router.navigatePath("admin/item/new/step2");
-    // if (_formKey.currentState?.saveAndValidate() ?? false) {
-    //   final formData = _formKey.currentState!.value;
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
+      final formData = _formKey.currentState!.value;
 
-    //   // Manually construct the complex RecipeIngredient list
-    //   // We iterate through the keys managed by the recipeIngredientsProvider
-    //   // and retrieve the values from the FormBuilder state using the dynamic field names.
-    //   final recipeIngredientsRows = ref.read(recipeIngredientsProvider);
-    //   final List<RecipeIngredient> recipeIngredients = [];
+      // Save form data to provider
+      ref
+          .read(menuItemFormDataNotifierProvider.notifier)
+          .updateFormData(
+            itemName: formData['itemName'] as String,
+            description: formData['description'] as String,
+            basePrice: formData['basePrice'] as double,
+            isActive: formData['isActive'] as bool,
+          );
 
-    //   for (var row in recipeIngredientsRows) {
-    //     final ingredientFieldName =
-    //         'recipeIngredients_${row.key}_ingredientId';
-    //     final quantityFieldName = 'recipeIngredients_${row.key}_quantity';
-
-    //     final ingredientId = formData[ingredientFieldName] as int?;
-    //     final quantity =
-    //         formData[quantityFieldName]
-    //             as double?; // ValueTransformer already made it double
-
-    //     if (ingredientId != null && quantity != null) {
-    //       recipeIngredients.add(
-    //         RecipeIngredient(ingredientId: ingredientId, quantity: quantity),
-    //       );
-    //     }
-    //     // Note: If validation passed, ingredientId and quantity should not be null.
-    //     // The null check is just a safety measure based on the type hints.
+      // Navigate to ingredients selection
+      var router = AutoRouter.of(context);
+      await router.navigatePath("/admin/item/new/step2");
+    }
   }
 
   @override

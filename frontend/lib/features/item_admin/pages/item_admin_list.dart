@@ -20,6 +20,15 @@ class ItemAdminListPage extends ConsumerStatefulWidget {
 class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
+  String? _statusFilter; // 'active', 'inactive', null for all
+  String? _priceFilter; // 'low-to-high', 'high-to-low', null for none
+  String? _dateFilter; // 'newest', 'oldest', null for none
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,23 +40,54 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
         .watch(itemListProvider)
         .when(
           data: (data) {
-            // Filter items based on search query if needed
-            final filteredItems =
-                _searchQuery.isEmpty
-                    ? data!
-                    : BuiltList<MenuItemResponse>(
-                      data!.where(
-                        (item) =>
-                            (item.itemName?.toLowerCase().contains(
-                                  _searchQuery.toLowerCase(),
-                                ) ??
-                                false) ||
-                            (item.description?.toLowerCase().contains(
-                                  _searchQuery.toLowerCase(),
-                                ) ??
-                                false),
-                      ),
-                    );
+            // Apply all filters
+            var filteredItems =
+                data!.where((item) {
+                  // Search filter
+                  final matchesSearch =
+                      _searchQuery.isEmpty ||
+                      (item.itemName?.toLowerCase().contains(
+                            _searchQuery.toLowerCase(),
+                          ) ??
+                          false) ||
+                      (item.description?.toLowerCase().contains(
+                            _searchQuery.toLowerCase(),
+                          ) ??
+                          false);
+
+                  // Status filter
+                  final matchesStatus =
+                      _statusFilter == null ||
+                      (_statusFilter == 'active' && item.isActive == true) ||
+                      (_statusFilter == 'inactive' && item.isActive != true);
+
+                  return matchesSearch && matchesStatus;
+                }).toList();
+
+            // Apply sorting based on filters
+            if (_priceFilter != null) {
+              filteredItems.sort((a, b) {
+                final priceA = a.basePrice ?? 0;
+                final priceB = b.basePrice ?? 0;
+                return _priceFilter == 'low-to-high'
+                    ? priceA.compareTo(priceB)
+                    : priceB.compareTo(priceA);
+              });
+            }
+
+            if (_dateFilter != null) {
+              filteredItems.sort((a, b) {
+                final dateA = a.createdAt ?? DateTime(1970);
+                final dateB = b.createdAt ?? DateTime(1970);
+                return _dateFilter == 'newest'
+                    ? dateB.compareTo(dateA)
+                    : dateA.compareTo(dateB);
+              });
+            }
+
+            final filteredBuiltList = BuiltList<MenuItemResponse>(
+              filteredItems,
+            );
 
             return Scaffold(
               body: Container(
@@ -78,7 +118,12 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
                         _buildStatCards(data),
                         const SizedBox(height: 24),
                         Expanded(
-                          child: MenuItemsDataTable(menuItems: filteredItems),
+                          child: MenuItemsDataTable(
+                            menuItems: filteredBuiltList,
+                            onNavigateToEdit: _navigateToEdit,
+                            onDeleteItem: _deleteItem,
+                            onShowDetails: _showDetailsDialog,
+                          ),
                         ),
                       ],
                     ),
@@ -343,10 +388,22 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
   }
 
   Widget _buildFilterButton(String label, Icon icon) {
+    VoidCallback? onPressed;
+
+    switch (label) {
+      case 'Status':
+        onPressed = _showStatusFilter;
+        break;
+      case 'Price':
+        onPressed = _showPriceFilter;
+        break;
+      case 'Date':
+        onPressed = _showDateFilter;
+        break;
+    }
+
     return OutlinedButton.icon(
-      onPressed: () {
-        // Implement filter functionality
-      },
+      onPressed: onPressed,
       icon: icon,
       label: Text(label),
       style: OutlinedButton.styleFrom(
@@ -462,12 +519,210 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
         .fade(duration: 300.ms, delay: delay.ms)
         .slideY(begin: 0.2, end: 0);
   }
+
+  // Action methods
+  void _navigateToEdit(StackRouter router, MenuItemResponse item) {
+    // Navigate to edit page - for now, we'll show a placeholder
+    // In a real implementation, you'd navigate to an edit page
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Edit feature for ${item.itemName} - Navigate to edit page',
+        ),
+        backgroundColor: const Color(0xFF6366F1),
+      ),
+    );
+  }
+
+  Future<void> _deleteItem(MenuItemResponse item) async {
+    try {
+      await ref.read(itemListProvider.notifier).deleteItem(item.itemId!);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${item.itemName} deleted successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to delete ${item.itemName}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showDetailsDialog(BuildContext context, MenuItemResponse item) {
+    showDialog(
+      context: context,
+      builder: (context) => _ItemDetailsDialog(item: item),
+    );
+  }
+
+  // Filter methods
+  void _showStatusFilter() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Filter by Status', style: GoogleFonts.poppins()),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text('All Items', style: GoogleFonts.poppins()),
+                  leading: Radio<String?>(
+                    value: null,
+                    groupValue: _statusFilter,
+                    onChanged: (value) {
+                      setState(() => _statusFilter = value);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text('Active Only', style: GoogleFonts.poppins()),
+                  leading: Radio<String?>(
+                    value: 'active',
+                    groupValue: _statusFilter,
+                    onChanged: (value) {
+                      setState(() => _statusFilter = value);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text('Inactive Only', style: GoogleFonts.poppins()),
+                  leading: Radio<String?>(
+                    value: 'inactive',
+                    groupValue: _statusFilter,
+                    onChanged: (value) {
+                      setState(() => _statusFilter = value);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
+  }
+
+  void _showPriceFilter() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Sort by Price', style: GoogleFonts.poppins()),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text('Default', style: GoogleFonts.poppins()),
+                  leading: Radio<String?>(
+                    value: null,
+                    groupValue: _priceFilter,
+                    onChanged: (value) {
+                      setState(() => _priceFilter = value);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text('Low to High', style: GoogleFonts.poppins()),
+                  leading: Radio<String?>(
+                    value: 'low-to-high',
+                    groupValue: _priceFilter,
+                    onChanged: (value) {
+                      setState(() => _priceFilter = value);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text('High to Low', style: GoogleFonts.poppins()),
+                  leading: Radio<String?>(
+                    value: 'high-to-low',
+                    groupValue: _priceFilter,
+                    onChanged: (value) {
+                      setState(() => _priceFilter = value);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
+  }
+
+  void _showDateFilter() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Sort by Date', style: GoogleFonts.poppins()),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text('Default', style: GoogleFonts.poppins()),
+                  leading: Radio<String?>(
+                    value: null,
+                    groupValue: _dateFilter,
+                    onChanged: (value) {
+                      setState(() => _dateFilter = value);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text('Newest First', style: GoogleFonts.poppins()),
+                  leading: Radio<String?>(
+                    value: 'newest',
+                    groupValue: _dateFilter,
+                    onChanged: (value) {
+                      setState(() => _dateFilter = value);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text('Oldest First', style: GoogleFonts.poppins()),
+                  leading: Radio<String?>(
+                    value: 'oldest',
+                    groupValue: _dateFilter,
+                    onChanged: (value) {
+                      setState(() => _dateFilter = value);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
+  }
 }
 
 class MenuItemsDataTable extends StatelessWidget {
   final BuiltList<MenuItemResponse> menuItems;
+  final Function(StackRouter, MenuItemResponse) onNavigateToEdit;
+  final Function(MenuItemResponse) onDeleteItem;
+  final Function(BuildContext, MenuItemResponse) onShowDetails;
 
-  const MenuItemsDataTable({super.key, required this.menuItems});
+  const MenuItemsDataTable({
+    super.key,
+    required this.menuItems,
+    required this.onNavigateToEdit,
+    required this.onDeleteItem,
+    required this.onShowDetails,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -568,7 +823,13 @@ class MenuItemsDataTable extends StatelessWidget {
             ],
           ),
         ),
-        source: _MenuItemDataSource(menuItems, context),
+        source: _MenuItemDataSource(
+          menuItems,
+          context,
+          onNavigateToEdit,
+          onDeleteItem,
+          onShowDetails,
+        ),
       ),
     ).animate().fade(duration: 500.ms, delay: 400.ms);
   }
@@ -587,8 +848,17 @@ class MenuItemsDataTable extends StatelessWidget {
 class _MenuItemDataSource extends DataTableSource {
   final BuiltList<MenuItemResponse> _menuItems;
   final BuildContext _context;
+  final Function(StackRouter, MenuItemResponse) _onNavigateToEdit;
+  final Function(MenuItemResponse) _onDeleteItem;
+  final Function(BuildContext, MenuItemResponse) _onShowDetails;
 
-  _MenuItemDataSource(this._menuItems, this._context);
+  _MenuItemDataSource(
+    this._menuItems,
+    this._context,
+    this._onNavigateToEdit,
+    this._onDeleteItem,
+    this._onShowDetails,
+  );
 
   @override
   DataRow getRow(int index) {
@@ -719,7 +989,7 @@ class _MenuItemDataSource extends DataTableSource {
           icon: Icons.edit_outlined,
           color: const Color(0xFF6366F1),
           tooltip: 'Edit',
-          onPressed: () => _showEditDialog(_context, item),
+          onPressed: () => _onNavigateToEdit(AutoRouter.of(_context), item),
         ),
         const SizedBox(width: 8),
         _buildActionButton(
@@ -733,9 +1003,7 @@ class _MenuItemDataSource extends DataTableSource {
           icon: Icons.visibility_outlined,
           color: isDarkMode ? Colors.white70 : Colors.black54,
           tooltip: 'View Details',
-          onPressed: () {
-            // View details
-          },
+          onPressed: () => _onShowDetails(_context, item),
         ),
       ],
     );
@@ -760,87 +1028,6 @@ class _MenuItemDataSource extends DataTableSource {
         padding: EdgeInsets.zero,
         splashRadius: 20,
       ),
-    );
-  }
-
-  void _showEditDialog(BuildContext context, MenuItemResponse menuItem) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-    showDialog(
-      context: context,
-      builder:
-          (context) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              constraints: const BoxConstraints(maxWidth: 500),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Edit Menu Item',
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Form fields would go here
-                  Text(
-                    'Edit functionality to be implemented',
-                    style: GoogleFonts.poppins(),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      OutlinedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor:
-                              isDarkMode ? Colors.white70 : Colors.black54,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Text('Cancel', style: GoogleFonts.poppins()),
-                      ),
-                      const SizedBox(width: 12),
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF6366F1),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: Text(
-                          'Save Changes',
-                          style: GoogleFonts.poppins(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ).animate().fade().scale(
-            begin: const Offset(0.9, 0.9),
-            end: const Offset(1.0, 1.0),
-            duration: 300.ms,
-          ),
     );
   }
 
@@ -892,9 +1079,9 @@ class _MenuItemDataSource extends DataTableSource {
               ),
               ElevatedButton.icon(
                 icon: const Icon(Icons.delete_outline, size: 18),
-                onPressed: () {
-                  // Implement delete functionality
+                onPressed: () async {
                   Navigator.pop(context);
+                  await _onDeleteItem(menuItem);
                 },
                 label: Text('Delete', style: GoogleFonts.poppins()),
                 style: ElevatedButton.styleFrom(
@@ -926,4 +1113,119 @@ class _MenuItemDataSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
+}
+
+class _ItemDetailsDialog extends StatelessWidget {
+  final MenuItemResponse item;
+
+  const _ItemDetailsDialog({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        constraints: const BoxConstraints(maxWidth: 500),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Menu Item Details',
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildDetailRow('Name', item.itemName ?? 'N/A', context),
+            _buildDetailRow('Description', item.description ?? 'N/A', context),
+            _buildDetailRow(
+              'Price',
+              '\$${item.basePrice?.toStringAsFixed(2) ?? 'N/A'}',
+              context,
+            ),
+            _buildDetailRow(
+              'Status',
+              item.isActive == true ? 'Active' : 'Inactive',
+              context,
+            ),
+            _buildDetailRow(
+              'Created At',
+              item.createdAt != null
+                  ? DateFormat('MMM dd, yyyy').format(item.createdAt!)
+                  : 'N/A',
+              context,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6366F1),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text('Close', style: GoogleFonts.poppins()),
+            ),
+          ],
+        ),
+      ),
+    ).animate().fade().scale(
+      begin: const Offset(0.9, 0.9),
+      end: const Offset(1.0, 1.0),
+      duration: 300.ms,
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w500,
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white70
+                      : Colors.black54,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white10
+                        : Colors.black.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                value,
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  color:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black87,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

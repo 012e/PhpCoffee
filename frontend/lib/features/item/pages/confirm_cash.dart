@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/shared/riverpods/items_provider.dart';
 import 'package:frontend/shared/riverpods/order_items_provider.dart';
 
 @RoutePage()
@@ -11,7 +10,6 @@ class ConfirmCashPaymentPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedItems = ref.watch(selectedItemsNotifierProvider);
     final router = AutoRouter.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -26,9 +24,6 @@ class ConfirmCashPaymentPage extends ConsumerWidget {
             backgroundColor: Colors.green,
           ),
           onPressed: () async {
-            await ref
-                .read(itemListProvider.notifier)
-                .placeCashOrder(selectedItems);
             ref.read(selectedItemsNotifierProvider.notifier).clearItems();
             router.navigatePath("/items");
           },

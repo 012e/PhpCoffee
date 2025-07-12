@@ -1,12 +1,14 @@
 import 'package:api_client/api_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/features/item_admin/widgets/quantity_dialog.dart';
 
 class IngredientCard extends ConsumerStatefulWidget {
   final IngredientResponse ingredient;
   final int amount;
   final VoidCallback? onTap;
   final VoidCallback? onSecondaryTap;
+  final Function(int)? onQuantityChanged;
 
   const IngredientCard({
     super.key,
@@ -14,6 +16,7 @@ class IngredientCard extends ConsumerStatefulWidget {
     this.onTap,
     this.amount = 0,
     this.onSecondaryTap,
+    this.onQuantityChanged,
   });
 
   @override
@@ -76,6 +79,18 @@ class _ItemCardState extends ConsumerState<IngredientCard> {
         child: GestureDetector(
           onTap: widget.onTap,
           onSecondaryTap: widget.onSecondaryTap,
+          onLongPress: () async {
+            if (widget.onQuantityChanged != null) {
+              final newQuantity = await showQuantityDialog(
+                context: context,
+                ingredientName: widget.ingredient.ingredientName ?? 'Unknown',
+                currentQuantity: widget.amount,
+              );
+              if (newQuantity != null) {
+                widget.onQuantityChanged!(newQuantity);
+              }
+            }
+          },
           child: Card(
             elevation: isHovering ? 8 : 4,
             color: isSelected ? selectedCardColor : defaultCardColor,
