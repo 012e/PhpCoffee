@@ -7,7 +7,7 @@ part of 'selected_ingredients.dart';
 // **************************************************************************
 
 String _$selectedIngredientsHash() =>
-    r'1928230c31a0a44fe6ddaab4ea871cc92d16a945';
+    r'8eb382cc5cf52e463376711c3725bedd103784bd';
 
 /// See also [SelectedIngredients].
 @ProviderFor(SelectedIngredients)

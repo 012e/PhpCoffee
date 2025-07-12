@@ -109,7 +109,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       });
     }
 
-    var hero = Image.asset('login-hero-image.jpg', fit: BoxFit.cover);
     return Scaffold(
       body: Stack(
         children: [
@@ -163,7 +162,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     await login(ref, router);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.2),
+                    backgroundColor: Colors.white.withValues(alpha: 0.2),
                     foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.08,

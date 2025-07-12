@@ -3,8 +3,9 @@ using WebApplication1.Helpers.Extensions;
 using WebApplication1.Middlewares;
 using WebApplication1.Services;
 using System.Net.Http.Headers;
-
+using QuestPDF.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
+QuestPDF.Settings.License = LicenseType.Community;
 
 builder.Services
     .AddAppControllers()

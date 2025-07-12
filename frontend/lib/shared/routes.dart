@@ -4,7 +4,7 @@ import 'package:frontend/auth/login.dart';
 import 'package:frontend/features/dashboard/dashboard_page.dart';
 import 'package:frontend/features/employee/employee_page.dart';
 import 'package:frontend/features/ingredient/ingredient_page.dart';
-import 'package:frontend/features/ingredient/pages/ingredient_list.dart';
+import 'package:frontend/features/ingredient/widgets/pages/ingredient_list.dart';
 import 'package:frontend/features/item/items_page.dart';
 import 'package:frontend/features/item/pages/confirm_cash.dart';
 import 'package:frontend/features/item/pages/items_list.dart';
