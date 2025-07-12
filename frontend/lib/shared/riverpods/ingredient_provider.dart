@@ -117,12 +117,6 @@ class IngredientList extends _$IngredientList {
         // Fallback to application documents if downloads directory is not available or failed
         downloadDirectory ??= await getApplicationDocumentsDirectory();
 
-        if (downloadDirectory == null) {
-          throw Exception(
-            "Could not get a suitable directory to save the file.",
-          );
-        }
-
         // Ensure the directory exists
         if (!await downloadDirectory.exists()) {
           await downloadDirectory.create(recursive: true);

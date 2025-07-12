@@ -8,6 +8,7 @@ import 'package:frontend/shared/riverpods/items_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:toastification/toastification.dart';
 
 @RoutePage()
 class ItemAdminListPage extends ConsumerStatefulWidget {
@@ -23,11 +24,56 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
   String? _statusFilter; // 'active', 'inactive', null for all
   String? _priceFilter; // 'low-to-high', 'high-to-low', null for none
   String? _dateFilter; // 'newest', 'oldest', null for none
+  bool _isExporting = false;
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Downloads the menu items collection as an Excel file
+  Future<void> _downloadMenuItemsExcel() async {
+    if (_isExporting) return; // Prevent multiple concurrent exports
+
+    setState(() {
+      _isExporting = true;
+    });
+
+    try {
+      // Generate a unique filename with current timestamp
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final fileName = 'menu_items_export_$timestamp.xlsx';
+
+      // Call the export method from the provider
+      final filePath = await ref
+          .read(itemListProvider.notifier)
+          .exportMenuItems(fileName: fileName);
+
+      // Show success notification
+      toastification.show(
+        type: ToastificationType.success,
+        title: const Text('Export Successful'),
+        description: Text('Menu items exported to: $filePath'),
+        autoCloseDuration: const Duration(seconds: 5),
+        primaryColor: Colors.green,
+        icon: const Icon(Icons.download_done),
+      );
+    } catch (error) {
+      // Show error notification
+      toastification.show(
+        type: ToastificationType.error,
+        title: const Text('Export Failed'),
+        description: Text('Failed to export menu items: $error'),
+        autoCloseDuration: const Duration(seconds: 5),
+        primaryColor: Colors.red,
+        icon: const Icon(Icons.error),
+      );
+    } finally {
+      setState(() {
+        _isExporting = false;
+      });
+    }
   }
 
   @override
@@ -287,6 +333,75 @@ class _ItemAdminListState extends ConsumerState<ItemAdminListPage> {
         ),
         Row(
           children: [
+            // Download Excel Button
+            Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(
+                      colors:
+                          _isExporting
+                              ? [Colors.grey.shade400, Colors.grey.shade500]
+                              : [Colors.blue.shade500, Colors.blue.shade700],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow:
+                        _isExporting
+                            ? []
+                            : [
+                              BoxShadow(
+                                color: Colors.blue.withValues(alpha: 0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: _isExporting ? null : _downloadMenuItemsExcel,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _isExporting
+                                ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                                : const Icon(
+                                  Icons.download,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                            const SizedBox(width: 8),
+                            Text(
+                              _isExporting ? 'Exporting...' : 'Export Excel',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                .animate()
+                .scale(duration: 300.ms, curve: Curves.easeOut)
+                .fade(duration: 300.ms),
+            const SizedBox(width: 12),
             IconButton(
               onPressed: () {
                 ref.invalidate(itemListProvider);
