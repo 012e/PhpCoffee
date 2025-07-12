@@ -19,7 +19,7 @@ public class IngredientImageService
             throw new ArgumentException("Invalid file");
 
         var fileExtension = Path.GetExtension(file.FileName);
-        var path = $"iagems/{ingredientId}{fileExtension}";
+        var path = $"images/{ingredientId}{fileExtension}";
 
         using var memoryStream = new MemoryStream();
         await file.CopyToAsync(memoryStream);
