@@ -29,7 +29,7 @@ class _$Ingredient extends Ingredient {
   final Supplier? supplier;
 
   factory _$Ingredient([void Function(IngredientBuilder)? updates]) =>
-      (new IngredientBuilder()..update(updates))._build();
+      (IngredientBuilder()..update(updates))._build();
 
   _$Ingredient._(
       {this.ingredientId,
@@ -43,13 +43,12 @@ class _$Ingredient extends Ingredient {
       this.recipeIngredients,
       this.supplier})
       : super._();
-
   @override
   Ingredient rebuild(void Function(IngredientBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  IngredientBuilder toBuilder() => new IngredientBuilder()..replace(this);
+  IngredientBuilder toBuilder() => IngredientBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -137,7 +136,7 @@ class IngredientBuilder implements Builder<Ingredient, IngredientBuilder> {
   ListBuilder<InventoryTransactionDetail>? _inventoryTransactionDetails;
   ListBuilder<InventoryTransactionDetail> get inventoryTransactionDetails =>
       _$this._inventoryTransactionDetails ??=
-          new ListBuilder<InventoryTransactionDetail>();
+          ListBuilder<InventoryTransactionDetail>();
   set inventoryTransactionDetails(
           ListBuilder<InventoryTransactionDetail>?
               inventoryTransactionDetails) =>
@@ -145,12 +144,12 @@ class IngredientBuilder implements Builder<Ingredient, IngredientBuilder> {
 
   ListBuilder<RecipeIngredient>? _recipeIngredients;
   ListBuilder<RecipeIngredient> get recipeIngredients =>
-      _$this._recipeIngredients ??= new ListBuilder<RecipeIngredient>();
+      _$this._recipeIngredients ??= ListBuilder<RecipeIngredient>();
   set recipeIngredients(ListBuilder<RecipeIngredient>? recipeIngredients) =>
       _$this._recipeIngredients = recipeIngredients;
 
   SupplierBuilder? _supplier;
-  SupplierBuilder get supplier => _$this._supplier ??= new SupplierBuilder();
+  SupplierBuilder get supplier => _$this._supplier ??= SupplierBuilder();
   set supplier(SupplierBuilder? supplier) => _$this._supplier = supplier;
 
   IngredientBuilder() {
@@ -178,7 +177,6 @@ class IngredientBuilder implements Builder<Ingredient, IngredientBuilder> {
 
   @override
   void replace(Ingredient other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$Ingredient;
   }
 
@@ -194,7 +192,7 @@ class IngredientBuilder implements Builder<Ingredient, IngredientBuilder> {
     _$Ingredient _$result;
     try {
       _$result = _$v ??
-          new _$Ingredient._(
+          _$Ingredient._(
             ingredientId: ingredientId,
             ingredientName: ingredientName,
             unit: unit,
@@ -216,7 +214,7 @@ class IngredientBuilder implements Builder<Ingredient, IngredientBuilder> {
         _$failedField = 'supplier';
         _supplier?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'Ingredient', _$failedField, e.toString());
       }
       rethrow;

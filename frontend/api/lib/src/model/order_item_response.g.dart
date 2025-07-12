@@ -1,14 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'order_item.dart';
+part of 'order_item_response.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$OrderItem extends OrderItem {
-  @override
-  final int? orderId;
+class _$OrderItemResponse extends OrderItemResponse {
   @override
   final int? itemId;
   @override
@@ -18,76 +16,65 @@ class _$OrderItem extends OrderItem {
   @override
   final double? totalPrice;
   @override
-  final MenuItem? item;
-  @override
-  final Order? order;
+  final MenuItemResponse? menuItem;
 
-  factory _$OrderItem([void Function(OrderItemBuilder)? updates]) =>
-      (OrderItemBuilder()..update(updates))._build();
+  factory _$OrderItemResponse(
+          [void Function(OrderItemResponseBuilder)? updates]) =>
+      (OrderItemResponseBuilder()..update(updates))._build();
 
-  _$OrderItem._(
-      {this.orderId,
-      this.itemId,
+  _$OrderItemResponse._(
+      {this.itemId,
       this.quantity,
       this.unitPrice,
       this.totalPrice,
-      this.item,
-      this.order})
+      this.menuItem})
       : super._();
   @override
-  OrderItem rebuild(void Function(OrderItemBuilder) updates) =>
+  OrderItemResponse rebuild(void Function(OrderItemResponseBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  OrderItemBuilder toBuilder() => OrderItemBuilder()..replace(this);
+  OrderItemResponseBuilder toBuilder() =>
+      OrderItemResponseBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is OrderItem &&
-        orderId == other.orderId &&
+    return other is OrderItemResponse &&
         itemId == other.itemId &&
         quantity == other.quantity &&
         unitPrice == other.unitPrice &&
         totalPrice == other.totalPrice &&
-        item == other.item &&
-        order == other.order;
+        menuItem == other.menuItem;
   }
 
   @override
   int get hashCode {
     var _$hash = 0;
-    _$hash = $jc(_$hash, orderId.hashCode);
     _$hash = $jc(_$hash, itemId.hashCode);
     _$hash = $jc(_$hash, quantity.hashCode);
     _$hash = $jc(_$hash, unitPrice.hashCode);
     _$hash = $jc(_$hash, totalPrice.hashCode);
-    _$hash = $jc(_$hash, item.hashCode);
-    _$hash = $jc(_$hash, order.hashCode);
+    _$hash = $jc(_$hash, menuItem.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper(r'OrderItem')
-          ..add('orderId', orderId)
+    return (newBuiltValueToStringHelper(r'OrderItemResponse')
           ..add('itemId', itemId)
           ..add('quantity', quantity)
           ..add('unitPrice', unitPrice)
           ..add('totalPrice', totalPrice)
-          ..add('item', item)
-          ..add('order', order))
+          ..add('menuItem', menuItem))
         .toString();
   }
 }
 
-class OrderItemBuilder implements Builder<OrderItem, OrderItemBuilder> {
-  _$OrderItem? _$v;
-
-  int? _orderId;
-  int? get orderId => _$this._orderId;
-  set orderId(int? orderId) => _$this._orderId = orderId;
+class OrderItemResponseBuilder
+    implements Builder<OrderItemResponse, OrderItemResponseBuilder> {
+  _$OrderItemResponse? _$v;
 
   int? _itemId;
   int? get itemId => _$this._itemId;
@@ -105,69 +92,61 @@ class OrderItemBuilder implements Builder<OrderItem, OrderItemBuilder> {
   double? get totalPrice => _$this._totalPrice;
   set totalPrice(double? totalPrice) => _$this._totalPrice = totalPrice;
 
-  MenuItemBuilder? _item;
-  MenuItemBuilder get item => _$this._item ??= MenuItemBuilder();
-  set item(MenuItemBuilder? item) => _$this._item = item;
+  MenuItemResponseBuilder? _menuItem;
+  MenuItemResponseBuilder get menuItem =>
+      _$this._menuItem ??= MenuItemResponseBuilder();
+  set menuItem(MenuItemResponseBuilder? menuItem) =>
+      _$this._menuItem = menuItem;
 
-  OrderBuilder? _order;
-  OrderBuilder get order => _$this._order ??= OrderBuilder();
-  set order(OrderBuilder? order) => _$this._order = order;
-
-  OrderItemBuilder() {
-    OrderItem._defaults(this);
+  OrderItemResponseBuilder() {
+    OrderItemResponse._defaults(this);
   }
 
-  OrderItemBuilder get _$this {
+  OrderItemResponseBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
-      _orderId = $v.orderId;
       _itemId = $v.itemId;
       _quantity = $v.quantity;
       _unitPrice = $v.unitPrice;
       _totalPrice = $v.totalPrice;
-      _item = $v.item?.toBuilder();
-      _order = $v.order?.toBuilder();
+      _menuItem = $v.menuItem?.toBuilder();
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(OrderItem other) {
-    _$v = other as _$OrderItem;
+  void replace(OrderItemResponse other) {
+    _$v = other as _$OrderItemResponse;
   }
 
   @override
-  void update(void Function(OrderItemBuilder)? updates) {
+  void update(void Function(OrderItemResponseBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  OrderItem build() => _build();
+  OrderItemResponse build() => _build();
 
-  _$OrderItem _build() {
-    _$OrderItem _$result;
+  _$OrderItemResponse _build() {
+    _$OrderItemResponse _$result;
     try {
       _$result = _$v ??
-          _$OrderItem._(
-            orderId: orderId,
+          _$OrderItemResponse._(
             itemId: itemId,
             quantity: quantity,
             unitPrice: unitPrice,
             totalPrice: totalPrice,
-            item: _item?.build(),
-            order: _order?.build(),
+            menuItem: _menuItem?.build(),
           );
     } catch (_) {
       late String _$failedField;
       try {
-        _$failedField = 'item';
-        _item?.build();
-        _$failedField = 'order';
-        _order?.build();
+        _$failedField = 'menuItem';
+        _menuItem?.build();
       } catch (e) {
         throw BuiltValueNestedFieldError(
-            r'OrderItem', _$failedField, e.toString());
+            r'OrderItemResponse', _$failedField, e.toString());
       }
       rethrow;
     }

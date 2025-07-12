@@ -20,7 +20,7 @@ class _$CreateMenuItemRequest extends CreateMenuItemRequest {
 
   factory _$CreateMenuItemRequest(
           [void Function(CreateMenuItemRequestBuilder)? updates]) =>
-      (new CreateMenuItemRequestBuilder()..update(updates))._build();
+      (CreateMenuItemRequestBuilder()..update(updates))._build();
 
   _$CreateMenuItemRequest._(
       {this.itemName,
@@ -29,7 +29,6 @@ class _$CreateMenuItemRequest extends CreateMenuItemRequest {
       this.isActive,
       this.recipe})
       : super._();
-
   @override
   CreateMenuItemRequest rebuild(
           void Function(CreateMenuItemRequestBuilder) updates) =>
@@ -37,7 +36,7 @@ class _$CreateMenuItemRequest extends CreateMenuItemRequest {
 
   @override
   CreateMenuItemRequestBuilder toBuilder() =>
-      new CreateMenuItemRequestBuilder()..replace(this);
+      CreateMenuItemRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -96,7 +95,7 @@ class CreateMenuItemRequestBuilder
 
   CreateRecipeRequestBuilder? _recipe;
   CreateRecipeRequestBuilder get recipe =>
-      _$this._recipe ??= new CreateRecipeRequestBuilder();
+      _$this._recipe ??= CreateRecipeRequestBuilder();
   set recipe(CreateRecipeRequestBuilder? recipe) => _$this._recipe = recipe;
 
   CreateMenuItemRequestBuilder() {
@@ -118,7 +117,6 @@ class CreateMenuItemRequestBuilder
 
   @override
   void replace(CreateMenuItemRequest other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CreateMenuItemRequest;
   }
 
@@ -134,7 +132,7 @@ class CreateMenuItemRequestBuilder
     _$CreateMenuItemRequest _$result;
     try {
       _$result = _$v ??
-          new _$CreateMenuItemRequest._(
+          _$CreateMenuItemRequest._(
             itemName: itemName,
             description: description,
             basePrice: basePrice,
@@ -147,7 +145,7 @@ class CreateMenuItemRequestBuilder
         _$failedField = 'recipe';
         _recipe?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'CreateMenuItemRequest', _$failedField, e.toString());
       }
       rethrow;

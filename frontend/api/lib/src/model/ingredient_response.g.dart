@@ -24,7 +24,7 @@ class _$IngredientResponse extends IngredientResponse {
 
   factory _$IngredientResponse(
           [void Function(IngredientResponseBuilder)? updates]) =>
-      (new IngredientResponseBuilder()..update(updates))._build();
+      (IngredientResponseBuilder()..update(updates))._build();
 
   _$IngredientResponse._(
       {this.ingredientId,
@@ -35,7 +35,6 @@ class _$IngredientResponse extends IngredientResponse {
       this.createdAt,
       this.supplier})
       : super._();
-
   @override
   IngredientResponse rebuild(
           void Function(IngredientResponseBuilder) updates) =>
@@ -43,7 +42,7 @@ class _$IngredientResponse extends IngredientResponse {
 
   @override
   IngredientResponseBuilder toBuilder() =>
-      new IngredientResponseBuilder()..replace(this);
+      IngredientResponseBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -118,7 +117,7 @@ class IngredientResponseBuilder
 
   SupplierResponseBuilder? _supplier;
   SupplierResponseBuilder get supplier =>
-      _$this._supplier ??= new SupplierResponseBuilder();
+      _$this._supplier ??= SupplierResponseBuilder();
   set supplier(SupplierResponseBuilder? supplier) =>
       _$this._supplier = supplier;
 
@@ -143,7 +142,6 @@ class IngredientResponseBuilder
 
   @override
   void replace(IngredientResponse other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$IngredientResponse;
   }
 
@@ -159,7 +157,7 @@ class IngredientResponseBuilder
     _$IngredientResponse _$result;
     try {
       _$result = _$v ??
-          new _$IngredientResponse._(
+          _$IngredientResponse._(
             ingredientId: ingredientId,
             ingredientName: ingredientName,
             unit: unit,
@@ -174,7 +172,7 @@ class IngredientResponseBuilder
         _$failedField = 'supplier';
         _supplier?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'IngredientResponse', _$failedField, e.toString());
       }
       rethrow;

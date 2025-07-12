@@ -22,7 +22,7 @@ class _$InventoryTransaction extends InventoryTransaction {
 
   factory _$InventoryTransaction(
           [void Function(InventoryTransactionBuilder)? updates]) =>
-      (new InventoryTransactionBuilder()..update(updates))._build();
+      (InventoryTransactionBuilder()..update(updates))._build();
 
   _$InventoryTransaction._(
       {this.transactionId,
@@ -32,7 +32,6 @@ class _$InventoryTransaction extends InventoryTransaction {
       this.notes,
       this.inventoryTransactionDetails})
       : super._();
-
   @override
   InventoryTransaction rebuild(
           void Function(InventoryTransactionBuilder) updates) =>
@@ -40,7 +39,7 @@ class _$InventoryTransaction extends InventoryTransaction {
 
   @override
   InventoryTransactionBuilder toBuilder() =>
-      new InventoryTransactionBuilder()..replace(this);
+      InventoryTransactionBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -110,7 +109,7 @@ class InventoryTransactionBuilder
   ListBuilder<InventoryTransactionDetail>? _inventoryTransactionDetails;
   ListBuilder<InventoryTransactionDetail> get inventoryTransactionDetails =>
       _$this._inventoryTransactionDetails ??=
-          new ListBuilder<InventoryTransactionDetail>();
+          ListBuilder<InventoryTransactionDetail>();
   set inventoryTransactionDetails(
           ListBuilder<InventoryTransactionDetail>?
               inventoryTransactionDetails) =>
@@ -137,7 +136,6 @@ class InventoryTransactionBuilder
 
   @override
   void replace(InventoryTransaction other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$InventoryTransaction;
   }
 
@@ -153,7 +151,7 @@ class InventoryTransactionBuilder
     _$InventoryTransaction _$result;
     try {
       _$result = _$v ??
-          new _$InventoryTransaction._(
+          _$InventoryTransaction._(
             transactionId: transactionId,
             transactionType: transactionType,
             transactionDate: transactionDate,
@@ -167,7 +165,7 @@ class InventoryTransactionBuilder
         _$failedField = 'inventoryTransactionDetails';
         _inventoryTransactionDetails?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'InventoryTransaction', _$failedField, e.toString());
       }
       rethrow;

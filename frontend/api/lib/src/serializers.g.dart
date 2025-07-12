@@ -6,7 +6,7 @@ part of 'serializers.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializers _$serializers = (new Serializers().toBuilder()
+Serializers _$serializers = (Serializers().toBuilder()
       ..add(Claim.serializer)
       ..add(ClaimsIdentity.serializer)
       ..add(CreateIngredientRequest.serializer)
@@ -29,7 +29,11 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(MenuItemResponse.serializer)
       ..add(Order.serializer)
       ..add(OrderItem.serializer)
+      ..add(OrderItemResponse.serializer)
+      ..add(OrderResponse.serializer)
       ..add(Payment.serializer)
+      ..add(PaymentResponse.serializer)
+      ..add(PaymentStatusResponse.serializer)
       ..add(ProblemDetails.serializer)
       ..add(Recipe.serializer)
       ..add(RecipeIngredient.serializer)
@@ -39,56 +43,62 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(UpdateIngredientRequest.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Claim)]),
-          () => new ListBuilder<Claim>())
+          () => ListBuilder<Claim>())
       ..addBuilderFactory(
           const FullType(BuiltList,
               const [const FullType(CreateInventoryTransactionDetailRequest)]),
-          () => new ListBuilder<CreateInventoryTransactionDetailRequest>())
+          () => ListBuilder<CreateInventoryTransactionDetailRequest>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(CreateOrderItemRequest)]),
-          () => new ListBuilder<CreateOrderItemRequest>())
+          () => ListBuilder<CreateOrderItemRequest>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(CreateRecipeIngredientRequest)]),
-          () => new ListBuilder<CreateRecipeIngredientRequest>())
+          () => ListBuilder<CreateRecipeIngredientRequest>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Ingredient)]),
-          () => new ListBuilder<Ingredient>())
+          () => ListBuilder<Ingredient>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(InventoryTransactionDetail)]),
-          () => new ListBuilder<InventoryTransactionDetail>())
+          () => ListBuilder<InventoryTransactionDetail>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(InventoryTransactionDetail)]),
-          () => new ListBuilder<InventoryTransactionDetail>())
+          () => ListBuilder<InventoryTransactionDetail>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(RecipeIngredient)]),
-          () => new ListBuilder<RecipeIngredient>())
+          () => ListBuilder<RecipeIngredient>())
       ..addBuilderFactory(
           const FullType(BuiltList,
               const [const FullType(InventoryTransactionDetailResponse)]),
-          () => new ListBuilder<InventoryTransactionDetailResponse>())
+          () => ListBuilder<InventoryTransactionDetailResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(MenuItem)]),
-          () => new ListBuilder<MenuItem>())
+          () => ListBuilder<MenuItem>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(RecipeIngredient)]),
-          () => new ListBuilder<RecipeIngredient>())
+          () => ListBuilder<RecipeIngredient>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(OrderItem)]),
-          () => new ListBuilder<OrderItem>())
+          () => ListBuilder<OrderItem>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(OrderItem)]),
-          () => new ListBuilder<OrderItem>())
+          () => ListBuilder<OrderItem>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Payment)]),
-          () => new ListBuilder<Payment>())
+          () => ListBuilder<Payment>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(OrderItemResponse)]),
+          () => ListBuilder<OrderItemResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(PaymentResponse)]),
+          () => ListBuilder<PaymentResponse>())
       ..addBuilderFactory(
           const FullType(
               BuiltMap, const [const FullType(String), const FullType(String)]),
-          () => new MapBuilder<String, String>()))
+          () => MapBuilder<String, String>()))
     .build();
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint

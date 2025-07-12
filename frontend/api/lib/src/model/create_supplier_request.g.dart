@@ -18,12 +18,11 @@ class _$CreateSupplierRequest extends CreateSupplierRequest {
 
   factory _$CreateSupplierRequest(
           [void Function(CreateSupplierRequestBuilder)? updates]) =>
-      (new CreateSupplierRequestBuilder()..update(updates))._build();
+      (CreateSupplierRequestBuilder()..update(updates))._build();
 
   _$CreateSupplierRequest._(
       {this.supplierName, this.contactPhone, this.address, this.isActive})
       : super._();
-
   @override
   CreateSupplierRequest rebuild(
           void Function(CreateSupplierRequestBuilder) updates) =>
@@ -31,7 +30,7 @@ class _$CreateSupplierRequest extends CreateSupplierRequest {
 
   @override
   CreateSupplierRequestBuilder toBuilder() =>
-      new CreateSupplierRequestBuilder()..replace(this);
+      CreateSupplierRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -103,7 +102,6 @@ class CreateSupplierRequestBuilder
 
   @override
   void replace(CreateSupplierRequest other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CreateSupplierRequest;
   }
 
@@ -117,7 +115,7 @@ class CreateSupplierRequestBuilder
 
   _$CreateSupplierRequest _build() {
     final _$result = _$v ??
-        new _$CreateSupplierRequest._(
+        _$CreateSupplierRequest._(
           supplierName: supplierName,
           contactPhone: contactPhone,
           address: address,

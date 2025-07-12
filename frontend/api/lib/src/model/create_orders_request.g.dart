@@ -16,14 +16,13 @@ class _$CreateOrdersRequest extends CreateOrdersRequest {
 
   factory _$CreateOrdersRequest(
           [void Function(CreateOrdersRequestBuilder)? updates]) =>
-      (new CreateOrdersRequestBuilder()..update(updates))._build();
+      (CreateOrdersRequestBuilder()..update(updates))._build();
 
   _$CreateOrdersRequest._(
       {this.paymentStatus,
       this.createOrderItemRequests,
       this.createPaymentRequest})
       : super._();
-
   @override
   CreateOrdersRequest rebuild(
           void Function(CreateOrdersRequestBuilder) updates) =>
@@ -31,7 +30,7 @@ class _$CreateOrdersRequest extends CreateOrdersRequest {
 
   @override
   CreateOrdersRequestBuilder toBuilder() =>
-      new CreateOrdersRequestBuilder()..replace(this);
+      CreateOrdersRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -73,15 +72,14 @@ class CreateOrdersRequestBuilder
 
   ListBuilder<CreateOrderItemRequest>? _createOrderItemRequests;
   ListBuilder<CreateOrderItemRequest> get createOrderItemRequests =>
-      _$this._createOrderItemRequests ??=
-          new ListBuilder<CreateOrderItemRequest>();
+      _$this._createOrderItemRequests ??= ListBuilder<CreateOrderItemRequest>();
   set createOrderItemRequests(
           ListBuilder<CreateOrderItemRequest>? createOrderItemRequests) =>
       _$this._createOrderItemRequests = createOrderItemRequests;
 
   CreatePaymentRequestBuilder? _createPaymentRequest;
   CreatePaymentRequestBuilder get createPaymentRequest =>
-      _$this._createPaymentRequest ??= new CreatePaymentRequestBuilder();
+      _$this._createPaymentRequest ??= CreatePaymentRequestBuilder();
   set createPaymentRequest(CreatePaymentRequestBuilder? createPaymentRequest) =>
       _$this._createPaymentRequest = createPaymentRequest;
 
@@ -102,7 +100,6 @@ class CreateOrdersRequestBuilder
 
   @override
   void replace(CreateOrdersRequest other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CreateOrdersRequest;
   }
 
@@ -118,7 +115,7 @@ class CreateOrdersRequestBuilder
     _$CreateOrdersRequest _$result;
     try {
       _$result = _$v ??
-          new _$CreateOrdersRequest._(
+          _$CreateOrdersRequest._(
             paymentStatus: paymentStatus,
             createOrderItemRequests: _createOrderItemRequests?.build(),
             createPaymentRequest: _createPaymentRequest?.build(),
@@ -131,7 +128,7 @@ class CreateOrdersRequestBuilder
         _$failedField = 'createPaymentRequest';
         _createPaymentRequest?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'CreateOrdersRequest', _$failedField, e.toString());
       }
       rethrow;

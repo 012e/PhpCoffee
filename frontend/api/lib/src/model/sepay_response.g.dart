@@ -33,7 +33,7 @@ class _$SepayResponse extends SepayResponse {
   final String? description;
 
   factory _$SepayResponse([void Function(SepayResponseBuilder)? updates]) =>
-      (new SepayResponseBuilder()..update(updates))._build();
+      (SepayResponseBuilder()..update(updates))._build();
 
   _$SepayResponse._(
       {this.id,
@@ -49,13 +49,12 @@ class _$SepayResponse extends SepayResponse {
       this.referenceCode,
       this.description})
       : super._();
-
   @override
   SepayResponse rebuild(void Function(SepayResponseBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  SepayResponseBuilder toBuilder() => new SepayResponseBuilder()..replace(this);
+  SepayResponseBuilder toBuilder() => SepayResponseBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -195,7 +194,6 @@ class SepayResponseBuilder
 
   @override
   void replace(SepayResponse other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$SepayResponse;
   }
 
@@ -209,7 +207,7 @@ class SepayResponseBuilder
 
   _$SepayResponse _build() {
     final _$result = _$v ??
-        new _$SepayResponse._(
+        _$SepayResponse._(
           id: id,
           gateway: gateway,
           transactionDate: transactionDate,

@@ -21,7 +21,7 @@ class _$Payment extends Payment {
   final Order? order;
 
   factory _$Payment([void Function(PaymentBuilder)? updates]) =>
-      (new PaymentBuilder()..update(updates))._build();
+      (PaymentBuilder()..update(updates))._build();
 
   _$Payment._(
       {this.orderId,
@@ -31,13 +31,12 @@ class _$Payment extends Payment {
       this.paymentId,
       this.order})
       : super._();
-
   @override
   Payment rebuild(void Function(PaymentBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  PaymentBuilder toBuilder() => new PaymentBuilder()..replace(this);
+  PaymentBuilder toBuilder() => PaymentBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -102,7 +101,7 @@ class PaymentBuilder implements Builder<Payment, PaymentBuilder> {
   set paymentId(int? paymentId) => _$this._paymentId = paymentId;
 
   OrderBuilder? _order;
-  OrderBuilder get order => _$this._order ??= new OrderBuilder();
+  OrderBuilder get order => _$this._order ??= OrderBuilder();
   set order(OrderBuilder? order) => _$this._order = order;
 
   PaymentBuilder() {
@@ -125,7 +124,6 @@ class PaymentBuilder implements Builder<Payment, PaymentBuilder> {
 
   @override
   void replace(Payment other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$Payment;
   }
 
@@ -141,7 +139,7 @@ class PaymentBuilder implements Builder<Payment, PaymentBuilder> {
     _$Payment _$result;
     try {
       _$result = _$v ??
-          new _$Payment._(
+          _$Payment._(
             orderId: orderId,
             amount: amount,
             paymentMethod: paymentMethod,
@@ -155,7 +153,7 @@ class PaymentBuilder implements Builder<Payment, PaymentBuilder> {
         _$failedField = 'order';
         _order?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'Payment', _$failedField, e.toString());
       }
       rethrow;

@@ -20,8 +20,7 @@ class _$CreateInventoryTransactionRequest
 
   factory _$CreateInventoryTransactionRequest(
           [void Function(CreateInventoryTransactionRequestBuilder)? updates]) =>
-      (new CreateInventoryTransactionRequestBuilder()..update(updates))
-          ._build();
+      (CreateInventoryTransactionRequestBuilder()..update(updates))._build();
 
   _$CreateInventoryTransactionRequest._(
       {this.transactionType,
@@ -29,7 +28,6 @@ class _$CreateInventoryTransactionRequest
       this.notes,
       this.inventoryTransactionDetails})
       : super._();
-
   @override
   CreateInventoryTransactionRequest rebuild(
           void Function(CreateInventoryTransactionRequestBuilder) updates) =>
@@ -37,7 +35,7 @@ class _$CreateInventoryTransactionRequest
 
   @override
   CreateInventoryTransactionRequestBuilder toBuilder() =>
-      new CreateInventoryTransactionRequestBuilder()..replace(this);
+      CreateInventoryTransactionRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -94,7 +92,7 @@ class CreateInventoryTransactionRequestBuilder
       _inventoryTransactionDetails;
   ListBuilder<CreateInventoryTransactionDetailRequest>
       get inventoryTransactionDetails => _$this._inventoryTransactionDetails ??=
-          new ListBuilder<CreateInventoryTransactionDetailRequest>();
+          ListBuilder<CreateInventoryTransactionDetailRequest>();
   set inventoryTransactionDetails(
           ListBuilder<CreateInventoryTransactionDetailRequest>?
               inventoryTransactionDetails) =>
@@ -119,7 +117,6 @@ class CreateInventoryTransactionRequestBuilder
 
   @override
   void replace(CreateInventoryTransactionRequest other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CreateInventoryTransactionRequest;
   }
 
@@ -136,7 +133,7 @@ class CreateInventoryTransactionRequestBuilder
     _$CreateInventoryTransactionRequest _$result;
     try {
       _$result = _$v ??
-          new _$CreateInventoryTransactionRequest._(
+          _$CreateInventoryTransactionRequest._(
             transactionType: transactionType,
             createdBy: createdBy,
             notes: notes,
@@ -148,7 +145,7 @@ class CreateInventoryTransactionRequestBuilder
         _$failedField = 'inventoryTransactionDetails';
         _inventoryTransactionDetails?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'CreateInventoryTransactionRequest', _$failedField, e.toString());
       }
       rethrow;

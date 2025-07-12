@@ -4,16 +4,12 @@
 
 import 'dart:async';
 
-import 'package:built_value/json_object.dart';
 import 'package:built_value/serializer.dart';
 import 'package:dio/dio.dart';
 
-import 'package:api_client/src/model/claim.dart';
 import 'package:api_client/src/model/problem_details.dart';
-import 'package:built_collection/built_collection.dart';
 
 class HealthCheckApi {
-
   final Dio _dio;
 
   final Serializers _serializers;
@@ -21,7 +17,7 @@ class HealthCheckApi {
   const HealthCheckApi(this._dio, this._serializers);
 
   /// healthCheckAuthorizedGet
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -33,7 +29,7 @@ class HealthCheckApi {
   ///
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<String>> healthCheckAuthorizedGet({ 
+  Future<Response<String>> healthCheckAuthorizedGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -72,7 +68,6 @@ class HealthCheckApi {
     try {
       final rawResponse = _response.data;
       _responseData = rawResponse == null ? null : rawResponse as String;
-
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -96,7 +91,7 @@ class HealthCheckApi {
   }
 
   /// healthCheckCurrentUserGet
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -108,7 +103,7 @@ class HealthCheckApi {
   ///
   /// Returns a [Future] containing a [Response] with a [ProblemDetails] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<ProblemDetails>> healthCheckCurrentUserGet({ 
+  Future<Response<ProblemDetails>> healthCheckCurrentUserGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -146,11 +141,12 @@ class HealthCheckApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(ProblemDetails),
-      ) as ProblemDetails;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(ProblemDetails),
+            ) as ProblemDetails;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -174,7 +170,7 @@ class HealthCheckApi {
   }
 
   /// healthCheckThrowExceptionGet
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -186,7 +182,7 @@ class HealthCheckApi {
   ///
   /// Returns a [Future] containing a [Response] with a [String] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<String>> healthCheckThrowExceptionGet({ 
+  Future<Response<String>> healthCheckThrowExceptionGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -225,7 +221,6 @@ class HealthCheckApi {
     try {
       final rawResponse = _response.data;
       _responseData = rawResponse == null ? null : rawResponse as String;
-
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -247,5 +242,4 @@ class HealthCheckApi {
       extra: _response.extra,
     );
   }
-
 }

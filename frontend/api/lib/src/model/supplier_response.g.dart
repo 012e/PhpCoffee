@@ -22,7 +22,7 @@ class _$SupplierResponse extends SupplierResponse {
 
   factory _$SupplierResponse(
           [void Function(SupplierResponseBuilder)? updates]) =>
-      (new SupplierResponseBuilder()..update(updates))._build();
+      (SupplierResponseBuilder()..update(updates))._build();
 
   _$SupplierResponse._(
       {this.supplierId,
@@ -32,14 +32,13 @@ class _$SupplierResponse extends SupplierResponse {
       this.isActive,
       this.createdAt})
       : super._();
-
   @override
   SupplierResponse rebuild(void Function(SupplierResponseBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
   SupplierResponseBuilder toBuilder() =>
-      new SupplierResponseBuilder()..replace(this);
+      SupplierResponseBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -127,7 +126,6 @@ class SupplierResponseBuilder
 
   @override
   void replace(SupplierResponse other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$SupplierResponse;
   }
 
@@ -141,7 +139,7 @@ class SupplierResponseBuilder
 
   _$SupplierResponse _build() {
     final _$result = _$v ??
-        new _$SupplierResponse._(
+        _$SupplierResponse._(
           supplierId: supplierId,
           supplierName: supplierName,
           contactPhone: contactPhone,

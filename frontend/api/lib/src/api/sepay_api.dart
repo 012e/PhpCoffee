@@ -4,14 +4,12 @@
 
 import 'dart:async';
 
-import 'package:built_value/json_object.dart';
 import 'package:built_value/serializer.dart';
 import 'package:dio/dio.dart';
 
 import 'package:api_client/src/model/sepay_response.dart';
 
 class SepayApi {
-
   final Dio _dio;
 
   final Serializers _serializers;
@@ -19,10 +17,10 @@ class SepayApi {
   const SepayApi(this._dio, this._serializers);
 
   /// sepayPost
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [sepayResponse] 
+  /// * [sepayResponse]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -32,7 +30,7 @@ class SepayApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> sepayPost({ 
+  Future<Response<void>> sepayPost({
     SepayResponse? sepayResponse,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -64,11 +62,12 @@ class SepayApi {
 
     try {
       const _type = FullType(SepayResponse);
-      _bodyData = sepayResponse == null ? null : _serializers.serialize(sepayResponse, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = sepayResponse == null
+          ? null
+          : _serializers.serialize(sepayResponse, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -89,5 +88,4 @@ class SepayApi {
 
     return _response;
   }
-
 }

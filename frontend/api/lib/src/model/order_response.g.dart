@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'order.dart';
+part of 'order_response.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$Order extends Order {
+class _$OrderResponse extends OrderResponse {
   @override
   final int? orderId;
   @override
@@ -18,14 +18,14 @@ class _$Order extends Order {
   @override
   final double? remaining;
   @override
-  final BuiltList<OrderItem>? orderItems;
+  final BuiltList<OrderItemResponse>? orderItems;
   @override
-  final BuiltList<Payment>? payments;
+  final BuiltList<PaymentResponse>? payments;
 
-  factory _$Order([void Function(OrderBuilder)? updates]) =>
-      (OrderBuilder()..update(updates))._build();
+  factory _$OrderResponse([void Function(OrderResponseBuilder)? updates]) =>
+      (OrderResponseBuilder()..update(updates))._build();
 
-  _$Order._(
+  _$OrderResponse._(
       {this.orderId,
       this.orderDate,
       this.totalAmount,
@@ -35,16 +35,16 @@ class _$Order extends Order {
       this.payments})
       : super._();
   @override
-  Order rebuild(void Function(OrderBuilder) updates) =>
+  OrderResponse rebuild(void Function(OrderResponseBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  OrderBuilder toBuilder() => OrderBuilder()..replace(this);
+  OrderResponseBuilder toBuilder() => OrderResponseBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Order &&
+    return other is OrderResponse &&
         orderId == other.orderId &&
         orderDate == other.orderDate &&
         totalAmount == other.totalAmount &&
@@ -70,7 +70,7 @@ class _$Order extends Order {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper(r'Order')
+    return (newBuiltValueToStringHelper(r'OrderResponse')
           ..add('orderId', orderId)
           ..add('orderDate', orderDate)
           ..add('totalAmount', totalAmount)
@@ -82,8 +82,9 @@ class _$Order extends Order {
   }
 }
 
-class OrderBuilder implements Builder<Order, OrderBuilder> {
-  _$Order? _$v;
+class OrderResponseBuilder
+    implements Builder<OrderResponse, OrderResponseBuilder> {
+  _$OrderResponse? _$v;
 
   int? _orderId;
   int? get orderId => _$this._orderId;
@@ -106,22 +107,23 @@ class OrderBuilder implements Builder<Order, OrderBuilder> {
   double? get remaining => _$this._remaining;
   set remaining(double? remaining) => _$this._remaining = remaining;
 
-  ListBuilder<OrderItem>? _orderItems;
-  ListBuilder<OrderItem> get orderItems =>
-      _$this._orderItems ??= ListBuilder<OrderItem>();
-  set orderItems(ListBuilder<OrderItem>? orderItems) =>
+  ListBuilder<OrderItemResponse>? _orderItems;
+  ListBuilder<OrderItemResponse> get orderItems =>
+      _$this._orderItems ??= ListBuilder<OrderItemResponse>();
+  set orderItems(ListBuilder<OrderItemResponse>? orderItems) =>
       _$this._orderItems = orderItems;
 
-  ListBuilder<Payment>? _payments;
-  ListBuilder<Payment> get payments =>
-      _$this._payments ??= ListBuilder<Payment>();
-  set payments(ListBuilder<Payment>? payments) => _$this._payments = payments;
+  ListBuilder<PaymentResponse>? _payments;
+  ListBuilder<PaymentResponse> get payments =>
+      _$this._payments ??= ListBuilder<PaymentResponse>();
+  set payments(ListBuilder<PaymentResponse>? payments) =>
+      _$this._payments = payments;
 
-  OrderBuilder() {
-    Order._defaults(this);
+  OrderResponseBuilder() {
+    OrderResponse._defaults(this);
   }
 
-  OrderBuilder get _$this {
+  OrderResponseBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _orderId = $v.orderId;
@@ -137,23 +139,23 @@ class OrderBuilder implements Builder<Order, OrderBuilder> {
   }
 
   @override
-  void replace(Order other) {
-    _$v = other as _$Order;
+  void replace(OrderResponse other) {
+    _$v = other as _$OrderResponse;
   }
 
   @override
-  void update(void Function(OrderBuilder)? updates) {
+  void update(void Function(OrderResponseBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  Order build() => _build();
+  OrderResponse build() => _build();
 
-  _$Order _build() {
-    _$Order _$result;
+  _$OrderResponse _build() {
+    _$OrderResponse _$result;
     try {
       _$result = _$v ??
-          _$Order._(
+          _$OrderResponse._(
             orderId: orderId,
             orderDate: orderDate,
             totalAmount: totalAmount,
@@ -170,7 +172,8 @@ class OrderBuilder implements Builder<Order, OrderBuilder> {
         _$failedField = 'payments';
         _payments?.build();
       } catch (e) {
-        throw BuiltValueNestedFieldError(r'Order', _$failedField, e.toString());
+        throw BuiltValueNestedFieldError(
+            r'OrderResponse', _$failedField, e.toString());
       }
       rethrow;
     }
