@@ -20,7 +20,7 @@ class _$RecipeIngredient extends RecipeIngredient {
 
   factory _$RecipeIngredient(
           [void Function(RecipeIngredientBuilder)? updates]) =>
-      (new RecipeIngredientBuilder()..update(updates))._build();
+      (RecipeIngredientBuilder()..update(updates))._build();
 
   _$RecipeIngredient._(
       {this.recipeId,
@@ -29,14 +29,13 @@ class _$RecipeIngredient extends RecipeIngredient {
       this.ingredient,
       this.recipe})
       : super._();
-
   @override
   RecipeIngredient rebuild(void Function(RecipeIngredientBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
   RecipeIngredientBuilder toBuilder() =>
-      new RecipeIngredientBuilder()..replace(this);
+      RecipeIngredientBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -91,12 +90,12 @@ class RecipeIngredientBuilder
 
   IngredientBuilder? _ingredient;
   IngredientBuilder get ingredient =>
-      _$this._ingredient ??= new IngredientBuilder();
+      _$this._ingredient ??= IngredientBuilder();
   set ingredient(IngredientBuilder? ingredient) =>
       _$this._ingredient = ingredient;
 
   RecipeBuilder? _recipe;
-  RecipeBuilder get recipe => _$this._recipe ??= new RecipeBuilder();
+  RecipeBuilder get recipe => _$this._recipe ??= RecipeBuilder();
   set recipe(RecipeBuilder? recipe) => _$this._recipe = recipe;
 
   RecipeIngredientBuilder() {
@@ -118,7 +117,6 @@ class RecipeIngredientBuilder
 
   @override
   void replace(RecipeIngredient other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$RecipeIngredient;
   }
 
@@ -134,7 +132,7 @@ class RecipeIngredientBuilder
     _$RecipeIngredient _$result;
     try {
       _$result = _$v ??
-          new _$RecipeIngredient._(
+          _$RecipeIngredient._(
             recipeId: recipeId,
             ingredientId: ingredientId,
             quantity: quantity,
@@ -149,7 +147,7 @@ class RecipeIngredientBuilder
         _$failedField = 'recipe';
         _recipe?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'RecipeIngredient', _$failedField, e.toString());
       }
       rethrow;

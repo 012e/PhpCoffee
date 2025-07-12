@@ -22,7 +22,7 @@ class _$MenuItemResponse extends MenuItemResponse {
 
   factory _$MenuItemResponse(
           [void Function(MenuItemResponseBuilder)? updates]) =>
-      (new MenuItemResponseBuilder()..update(updates))._build();
+      (MenuItemResponseBuilder()..update(updates))._build();
 
   _$MenuItemResponse._(
       {this.itemId,
@@ -32,14 +32,13 @@ class _$MenuItemResponse extends MenuItemResponse {
       this.isActive,
       this.createdAt})
       : super._();
-
   @override
   MenuItemResponse rebuild(void Function(MenuItemResponseBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
   MenuItemResponseBuilder toBuilder() =>
-      new MenuItemResponseBuilder()..replace(this);
+      MenuItemResponseBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -127,7 +126,6 @@ class MenuItemResponseBuilder
 
   @override
   void replace(MenuItemResponse other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$MenuItemResponse;
   }
 
@@ -141,7 +139,7 @@ class MenuItemResponseBuilder
 
   _$MenuItemResponse _build() {
     final _$result = _$v ??
-        new _$MenuItemResponse._(
+        _$MenuItemResponse._(
           itemId: itemId,
           itemName: itemName,
           description: description,

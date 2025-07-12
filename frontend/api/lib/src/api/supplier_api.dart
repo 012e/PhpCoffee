@@ -4,18 +4,15 @@
 
 import 'dart:async';
 
-import 'package:built_value/json_object.dart';
 import 'package:built_value/serializer.dart';
 import 'package:dio/dio.dart';
 
 import 'package:api_client/src/api_util.dart';
 import 'package:api_client/src/model/create_supplier_request.dart';
-import 'package:api_client/src/model/problem_details.dart';
 import 'package:api_client/src/model/supplier_response.dart';
 import 'package:built_collection/built_collection.dart';
 
 class SupplierApi {
-
   final Dio _dio;
 
   final Serializers _serializers;
@@ -23,7 +20,7 @@ class SupplierApi {
   const SupplierApi(this._dio, this._serializers);
 
   /// supplierGet
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -35,7 +32,7 @@ class SupplierApi {
   ///
   /// Returns a [Future] containing a [Response] with a [BuiltList<SupplierResponse>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<BuiltList<SupplierResponse>>> supplierGet({ 
+  Future<Response<BuiltList<SupplierResponse>>> supplierGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -73,11 +70,13 @@ class SupplierApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(BuiltList, [FullType(SupplierResponse)]),
-      ) as BuiltList<SupplierResponse>;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType:
+                  const FullType(BuiltList, [FullType(SupplierResponse)]),
+            ) as BuiltList<SupplierResponse>;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -101,10 +100,10 @@ class SupplierApi {
   }
 
   /// supplierIdDelete
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [id] 
+  /// * [id]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -114,7 +113,7 @@ class SupplierApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> supplierIdDelete({ 
+  Future<Response<void>> supplierIdDelete({
     required int id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -123,7 +122,8 @@ class SupplierApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/Supplier/{id}'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(int)).toString());
+    final _path = r'/Supplier/{id}'.replaceAll('{' r'id' '}',
+        encodeQueryParameter(_serializers, id, const FullType(int)).toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -153,10 +153,10 @@ class SupplierApi {
   }
 
   /// supplierIdGet
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [id] 
+  /// * [id]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -166,7 +166,7 @@ class SupplierApi {
   ///
   /// Returns a [Future] containing a [Response] with a [SupplierResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SupplierResponse>> supplierIdGet({ 
+  Future<Response<SupplierResponse>> supplierIdGet({
     required int id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -175,7 +175,8 @@ class SupplierApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/Supplier/{id}'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(int)).toString());
+    final _path = r'/Supplier/{id}'.replaceAll('{' r'id' '}',
+        encodeQueryParameter(_serializers, id, const FullType(int)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -205,11 +206,12 @@ class SupplierApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(SupplierResponse),
-      ) as SupplierResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(SupplierResponse),
+            ) as SupplierResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -233,10 +235,10 @@ class SupplierApi {
   }
 
   /// supplierPost
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [createSupplierRequest] 
+  /// * [createSupplierRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -246,7 +248,7 @@ class SupplierApi {
   ///
   /// Returns a [Future] containing a [Response] with a [SupplierResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<SupplierResponse>> supplierPost({ 
+  Future<Response<SupplierResponse>> supplierPost({
     CreateSupplierRequest? createSupplierRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -278,11 +280,12 @@ class SupplierApi {
 
     try {
       const _type = FullType(CreateSupplierRequest);
-      _bodyData = createSupplierRequest == null ? null : _serializers.serialize(createSupplierRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = createSupplierRequest == null
+          ? null
+          : _serializers.serialize(createSupplierRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -305,11 +308,12 @@ class SupplierApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(SupplierResponse),
-      ) as SupplierResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(SupplierResponse),
+            ) as SupplierResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -331,5 +335,4 @@ class SupplierApi {
       extra: _response.extra,
     );
   }
-
 }

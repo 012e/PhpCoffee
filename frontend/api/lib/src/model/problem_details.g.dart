@@ -19,19 +19,17 @@ class _$ProblemDetails extends ProblemDetails {
   final String? instance;
 
   factory _$ProblemDetails([void Function(ProblemDetailsBuilder)? updates]) =>
-      (new ProblemDetailsBuilder()..update(updates))._build();
+      (ProblemDetailsBuilder()..update(updates))._build();
 
   _$ProblemDetails._(
       {this.type, this.title, this.status, this.detail, this.instance})
       : super._();
-
   @override
   ProblemDetails rebuild(void Function(ProblemDetailsBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ProblemDetailsBuilder toBuilder() =>
-      new ProblemDetailsBuilder()..replace(this);
+  ProblemDetailsBuilder toBuilder() => ProblemDetailsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -111,7 +109,6 @@ class ProblemDetailsBuilder
 
   @override
   void replace(ProblemDetails other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$ProblemDetails;
   }
 
@@ -125,7 +122,7 @@ class ProblemDetailsBuilder
 
   _$ProblemDetails _build() {
     final _$result = _$v ??
-        new _$ProblemDetails._(
+        _$ProblemDetails._(
           type: type,
           title: title,
           status: status,

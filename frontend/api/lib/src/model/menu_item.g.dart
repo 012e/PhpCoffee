@@ -27,7 +27,7 @@ class _$MenuItem extends MenuItem {
   final Recipe? recipe;
 
   factory _$MenuItem([void Function(MenuItemBuilder)? updates]) =>
-      (new MenuItemBuilder()..update(updates))._build();
+      (MenuItemBuilder()..update(updates))._build();
 
   _$MenuItem._(
       {this.itemId,
@@ -40,13 +40,12 @@ class _$MenuItem extends MenuItem {
       this.orderItems,
       this.recipe})
       : super._();
-
   @override
   MenuItem rebuild(void Function(MenuItemBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  MenuItemBuilder toBuilder() => new MenuItemBuilder()..replace(this);
+  MenuItemBuilder toBuilder() => MenuItemBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -128,12 +127,12 @@ class MenuItemBuilder implements Builder<MenuItem, MenuItemBuilder> {
 
   ListBuilder<OrderItem>? _orderItems;
   ListBuilder<OrderItem> get orderItems =>
-      _$this._orderItems ??= new ListBuilder<OrderItem>();
+      _$this._orderItems ??= ListBuilder<OrderItem>();
   set orderItems(ListBuilder<OrderItem>? orderItems) =>
       _$this._orderItems = orderItems;
 
   RecipeBuilder? _recipe;
-  RecipeBuilder get recipe => _$this._recipe ??= new RecipeBuilder();
+  RecipeBuilder get recipe => _$this._recipe ??= RecipeBuilder();
   set recipe(RecipeBuilder? recipe) => _$this._recipe = recipe;
 
   MenuItemBuilder() {
@@ -159,7 +158,6 @@ class MenuItemBuilder implements Builder<MenuItem, MenuItemBuilder> {
 
   @override
   void replace(MenuItem other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$MenuItem;
   }
 
@@ -175,7 +173,7 @@ class MenuItemBuilder implements Builder<MenuItem, MenuItemBuilder> {
     _$MenuItem _$result;
     try {
       _$result = _$v ??
-          new _$MenuItem._(
+          _$MenuItem._(
             itemId: itemId,
             itemName: itemName,
             description: description,
@@ -194,7 +192,7 @@ class MenuItemBuilder implements Builder<MenuItem, MenuItemBuilder> {
         _$failedField = 'recipe';
         _recipe?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'MenuItem', _$failedField, e.toString());
       }
       rethrow;

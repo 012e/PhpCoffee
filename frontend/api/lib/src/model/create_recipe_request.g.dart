@@ -18,12 +18,11 @@ class _$CreateRecipeRequest extends CreateRecipeRequest {
 
   factory _$CreateRecipeRequest(
           [void Function(CreateRecipeRequestBuilder)? updates]) =>
-      (new CreateRecipeRequestBuilder()..update(updates))._build();
+      (CreateRecipeRequestBuilder()..update(updates))._build();
 
   _$CreateRecipeRequest._(
       {this.name, this.description, this.instructions, this.recipeIngredients})
       : super._();
-
   @override
   CreateRecipeRequest rebuild(
           void Function(CreateRecipeRequestBuilder) updates) =>
@@ -31,7 +30,7 @@ class _$CreateRecipeRequest extends CreateRecipeRequest {
 
   @override
   CreateRecipeRequestBuilder toBuilder() =>
-      new CreateRecipeRequestBuilder()..replace(this);
+      CreateRecipeRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -84,7 +83,7 @@ class CreateRecipeRequestBuilder
   ListBuilder<CreateRecipeIngredientRequest>? _recipeIngredients;
   ListBuilder<CreateRecipeIngredientRequest> get recipeIngredients =>
       _$this._recipeIngredients ??=
-          new ListBuilder<CreateRecipeIngredientRequest>();
+          ListBuilder<CreateRecipeIngredientRequest>();
   set recipeIngredients(
           ListBuilder<CreateRecipeIngredientRequest>? recipeIngredients) =>
       _$this._recipeIngredients = recipeIngredients;
@@ -107,7 +106,6 @@ class CreateRecipeRequestBuilder
 
   @override
   void replace(CreateRecipeRequest other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CreateRecipeRequest;
   }
 
@@ -123,7 +121,7 @@ class CreateRecipeRequestBuilder
     _$CreateRecipeRequest _$result;
     try {
       _$result = _$v ??
-          new _$CreateRecipeRequest._(
+          _$CreateRecipeRequest._(
             name: name,
             description: description,
             instructions: instructions,
@@ -135,7 +133,7 @@ class CreateRecipeRequestBuilder
         _$failedField = 'recipeIngredients';
         _recipeIngredients?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'CreateRecipeRequest', _$failedField, e.toString());
       }
       rethrow;

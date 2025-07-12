@@ -22,7 +22,7 @@ class _$CreateIngredientRequest extends CreateIngredientRequest {
 
   factory _$CreateIngredientRequest(
           [void Function(CreateIngredientRequestBuilder)? updates]) =>
-      (new CreateIngredientRequestBuilder()..update(updates))._build();
+      (CreateIngredientRequestBuilder()..update(updates))._build();
 
   _$CreateIngredientRequest._(
       {this.ingredientName,
@@ -32,7 +32,6 @@ class _$CreateIngredientRequest extends CreateIngredientRequest {
       this.quantity,
       this.supplierId})
       : super._();
-
   @override
   CreateIngredientRequest rebuild(
           void Function(CreateIngredientRequestBuilder) updates) =>
@@ -40,7 +39,7 @@ class _$CreateIngredientRequest extends CreateIngredientRequest {
 
   @override
   CreateIngredientRequestBuilder toBuilder() =>
-      new CreateIngredientRequestBuilder()..replace(this);
+      CreateIngredientRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -131,7 +130,6 @@ class CreateIngredientRequestBuilder
 
   @override
   void replace(CreateIngredientRequest other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CreateIngredientRequest;
   }
 
@@ -145,7 +143,7 @@ class CreateIngredientRequestBuilder
 
   _$CreateIngredientRequest _build() {
     final _$result = _$v ??
-        new _$CreateIngredientRequest._(
+        _$CreateIngredientRequest._(
           ingredientName: ingredientName,
           unit: unit,
           currentQuantity: currentQuantity,

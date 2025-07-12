@@ -23,7 +23,7 @@ class _$Claim extends Claim {
   final String? valueType;
 
   factory _$Claim([void Function(ClaimBuilder)? updates]) =>
-      (new ClaimBuilder()..update(updates))._build();
+      (ClaimBuilder()..update(updates))._build();
 
   _$Claim._(
       {this.issuer,
@@ -34,13 +34,12 @@ class _$Claim extends Claim {
       this.value,
       this.valueType})
       : super._();
-
   @override
   Claim rebuild(void Function(ClaimBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ClaimBuilder toBuilder() => new ClaimBuilder()..replace(this);
+  ClaimBuilder toBuilder() => ClaimBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -97,13 +96,13 @@ class ClaimBuilder implements Builder<Claim, ClaimBuilder> {
 
   MapBuilder<String, String>? _properties;
   MapBuilder<String, String> get properties =>
-      _$this._properties ??= new MapBuilder<String, String>();
+      _$this._properties ??= MapBuilder<String, String>();
   set properties(MapBuilder<String, String>? properties) =>
       _$this._properties = properties;
 
   ClaimsIdentityBuilder? _subject;
   ClaimsIdentityBuilder get subject =>
-      _$this._subject ??= new ClaimsIdentityBuilder();
+      _$this._subject ??= ClaimsIdentityBuilder();
   set subject(ClaimsIdentityBuilder? subject) => _$this._subject = subject;
 
   String? _type;
@@ -139,7 +138,6 @@ class ClaimBuilder implements Builder<Claim, ClaimBuilder> {
 
   @override
   void replace(Claim other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$Claim;
   }
 
@@ -155,7 +153,7 @@ class ClaimBuilder implements Builder<Claim, ClaimBuilder> {
     _$Claim _$result;
     try {
       _$result = _$v ??
-          new _$Claim._(
+          _$Claim._(
             issuer: issuer,
             originalIssuer: originalIssuer,
             properties: _properties?.build(),
@@ -172,8 +170,7 @@ class ClaimBuilder implements Builder<Claim, ClaimBuilder> {
         _$failedField = 'subject';
         _subject?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            r'Claim', _$failedField, e.toString());
+        throw BuiltValueNestedFieldError(r'Claim', _$failedField, e.toString());
       }
       rethrow;
     }

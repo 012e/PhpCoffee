@@ -18,13 +18,12 @@ class _$CreateInventoryTransactionDetailRequest
   factory _$CreateInventoryTransactionDetailRequest(
           [void Function(CreateInventoryTransactionDetailRequestBuilder)?
               updates]) =>
-      (new CreateInventoryTransactionDetailRequestBuilder()..update(updates))
+      (CreateInventoryTransactionDetailRequestBuilder()..update(updates))
           ._build();
 
   _$CreateInventoryTransactionDetailRequest._(
       {this.ingredientId, this.quantity, this.unitPrice})
       : super._();
-
   @override
   CreateInventoryTransactionDetailRequest rebuild(
           void Function(CreateInventoryTransactionDetailRequestBuilder)
@@ -33,7 +32,7 @@ class _$CreateInventoryTransactionDetailRequest
 
   @override
   CreateInventoryTransactionDetailRequestBuilder toBuilder() =>
-      new CreateInventoryTransactionDetailRequestBuilder()..replace(this);
+      CreateInventoryTransactionDetailRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -100,7 +99,6 @@ class CreateInventoryTransactionDetailRequestBuilder
 
   @override
   void replace(CreateInventoryTransactionDetailRequest other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CreateInventoryTransactionDetailRequest;
   }
 
@@ -115,7 +113,7 @@ class CreateInventoryTransactionDetailRequestBuilder
 
   _$CreateInventoryTransactionDetailRequest _build() {
     final _$result = _$v ??
-        new _$CreateInventoryTransactionDetailRequest._(
+        _$CreateInventoryTransactionDetailRequest._(
           ingredientId: ingredientId,
           quantity: quantity,
           unitPrice: unitPrice,

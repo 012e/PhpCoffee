@@ -23,7 +23,7 @@ class _$InventoryTransactionResponse extends InventoryTransactionResponse {
 
   factory _$InventoryTransactionResponse(
           [void Function(InventoryTransactionResponseBuilder)? updates]) =>
-      (new InventoryTransactionResponseBuilder()..update(updates))._build();
+      (InventoryTransactionResponseBuilder()..update(updates))._build();
 
   _$InventoryTransactionResponse._(
       {this.transactionId,
@@ -33,7 +33,6 @@ class _$InventoryTransactionResponse extends InventoryTransactionResponse {
       this.notes,
       this.inventoryTransactionDetailResponses})
       : super._();
-
   @override
   InventoryTransactionResponse rebuild(
           void Function(InventoryTransactionResponseBuilder) updates) =>
@@ -41,7 +40,7 @@ class _$InventoryTransactionResponse extends InventoryTransactionResponse {
 
   @override
   InventoryTransactionResponseBuilder toBuilder() =>
-      new InventoryTransactionResponseBuilder()..replace(this);
+      InventoryTransactionResponseBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -117,7 +116,7 @@ class InventoryTransactionResponseBuilder
   ListBuilder<InventoryTransactionDetailResponse>
       get inventoryTransactionDetailResponses =>
           _$this._inventoryTransactionDetailResponses ??=
-              new ListBuilder<InventoryTransactionDetailResponse>();
+              ListBuilder<InventoryTransactionDetailResponse>();
   set inventoryTransactionDetailResponses(
           ListBuilder<InventoryTransactionDetailResponse>?
               inventoryTransactionDetailResponses) =>
@@ -145,7 +144,6 @@ class InventoryTransactionResponseBuilder
 
   @override
   void replace(InventoryTransactionResponse other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$InventoryTransactionResponse;
   }
 
@@ -161,7 +159,7 @@ class InventoryTransactionResponseBuilder
     _$InventoryTransactionResponse _$result;
     try {
       _$result = _$v ??
-          new _$InventoryTransactionResponse._(
+          _$InventoryTransactionResponse._(
             transactionId: transactionId,
             transactionType: transactionType,
             transactionDate: transactionDate,
@@ -176,7 +174,7 @@ class InventoryTransactionResponseBuilder
         _$failedField = 'inventoryTransactionDetailResponses';
         _inventoryTransactionDetailResponses?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'InventoryTransactionResponse', _$failedField, e.toString());
       }
       rethrow;

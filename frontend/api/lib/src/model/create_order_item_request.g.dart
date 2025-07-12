@@ -16,11 +16,10 @@ class _$CreateOrderItemRequest extends CreateOrderItemRequest {
 
   factory _$CreateOrderItemRequest(
           [void Function(CreateOrderItemRequestBuilder)? updates]) =>
-      (new CreateOrderItemRequestBuilder()..update(updates))._build();
+      (CreateOrderItemRequestBuilder()..update(updates))._build();
 
   _$CreateOrderItemRequest._({this.itemId, this.quantity, this.unitPrice})
       : super._();
-
   @override
   CreateOrderItemRequest rebuild(
           void Function(CreateOrderItemRequestBuilder) updates) =>
@@ -28,7 +27,7 @@ class _$CreateOrderItemRequest extends CreateOrderItemRequest {
 
   @override
   CreateOrderItemRequestBuilder toBuilder() =>
-      new CreateOrderItemRequestBuilder()..replace(this);
+      CreateOrderItemRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -92,7 +91,6 @@ class CreateOrderItemRequestBuilder
 
   @override
   void replace(CreateOrderItemRequest other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CreateOrderItemRequest;
   }
 
@@ -106,7 +104,7 @@ class CreateOrderItemRequestBuilder
 
   _$CreateOrderItemRequest _build() {
     final _$result = _$v ??
-        new _$CreateOrderItemRequest._(
+        _$CreateOrderItemRequest._(
           itemId: itemId,
           quantity: quantity,
           unitPrice: unitPrice,

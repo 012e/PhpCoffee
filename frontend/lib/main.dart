@@ -81,7 +81,7 @@ class MyApp extends ConsumerWidget {
       hintStyle: const TextStyle(color: Colors.black54), // Hint text style
     ),
     // Customize dialog appearance
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       backgroundColor:
           ThemeData.light()
@@ -166,7 +166,7 @@ class MyApp extends ConsumerWidget {
       hintStyle: const TextStyle(color: Colors.white70), // Hint text style
     ),
     // Customize dialog appearance
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       backgroundColor:
           ThemeData.dark()

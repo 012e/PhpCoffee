@@ -12,10 +12,9 @@ class _$CreatePaymentRequest extends CreatePaymentRequest {
 
   factory _$CreatePaymentRequest(
           [void Function(CreatePaymentRequestBuilder)? updates]) =>
-      (new CreatePaymentRequestBuilder()..update(updates))._build();
+      (CreatePaymentRequestBuilder()..update(updates))._build();
 
   _$CreatePaymentRequest._({this.paymentMethod}) : super._();
-
   @override
   CreatePaymentRequest rebuild(
           void Function(CreatePaymentRequestBuilder) updates) =>
@@ -23,7 +22,7 @@ class _$CreatePaymentRequest extends CreatePaymentRequest {
 
   @override
   CreatePaymentRequestBuilder toBuilder() =>
-      new CreatePaymentRequestBuilder()..replace(this);
+      CreatePaymentRequestBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -72,7 +71,6 @@ class CreatePaymentRequestBuilder
 
   @override
   void replace(CreatePaymentRequest other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CreatePaymentRequest;
   }
 
@@ -86,7 +84,7 @@ class CreatePaymentRequestBuilder
 
   _$CreatePaymentRequest _build() {
     final _$result = _$v ??
-        new _$CreatePaymentRequest._(
+        _$CreatePaymentRequest._(
           paymentMethod: paymentMethod,
         );
     replace(_$result);
