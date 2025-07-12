@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/features/ingredient/widgets/ingredient_form.dart';
 import 'package:frontend/features/ingredient/widgets/ingredient_card.dart';
 import 'package:frontend/shared/riverpods/ingredient_provider.dart';
+import 'package:toastification/toastification.dart';
+import 'package:intl/intl.dart';
 
 @RoutePage()
 class IngredientListPage extends ConsumerStatefulWidget {
@@ -18,6 +20,7 @@ class IngredientListPage extends ConsumerStatefulWidget {
 class _IngredientListPageState extends ConsumerState<IngredientListPage> {
   late TextEditingController _searchController;
   String _searchQuery = '';
+  bool _isExporting = false;
 
   @override
   void initState() {
@@ -29,6 +32,50 @@ class _IngredientListPageState extends ConsumerState<IngredientListPage> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  /// Downloads the ingredients collection as an Excel file
+  Future<void> _downloadIngredientsExcel() async {
+    if (_isExporting) return; // Prevent multiple concurrent exports
+
+    setState(() {
+      _isExporting = true;
+    });
+
+    try {
+      // Generate a unique filename with current timestamp
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final fileName = 'ingredients_export_$timestamp.xlsx';
+
+      // Call the export method from the provider
+      final filePath = await ref
+          .read(ingredientListProvider.notifier)
+          .exportExcel(fileName: fileName);
+
+      // Show success notification
+      toastification.show(
+        type: ToastificationType.success,
+        title: const Text('Export Successful'),
+        description: Text('Ingredients exported to: $filePath'),
+        autoCloseDuration: const Duration(seconds: 5),
+        primaryColor: Colors.green,
+        icon: const Icon(Icons.download_done),
+      );
+    } catch (error) {
+      // Show error notification
+      toastification.show(
+        type: ToastificationType.error,
+        title: const Text('Export Failed'),
+        description: Text('Failed to export ingredients: $error'),
+        autoCloseDuration: const Duration(seconds: 5),
+        primaryColor: Colors.red,
+        icon: const Icon(Icons.error),
+      );
+    } finally {
+      setState(() {
+        _isExporting = false;
+      });
+    }
   }
 
   BuiltList<IngredientResponse> _filterIngredients(
@@ -86,6 +133,40 @@ class _IngredientListPageState extends ConsumerState<IngredientListPage> {
                       },
                     ),
                   ),
+                  SizedBox(
+                    width: 140.0,
+                    height: 50.0,
+                    child: FilledButton.icon(
+                      onPressed:
+                          _isExporting ? null : _downloadIngredientsExcel,
+                      style: FilledButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        backgroundColor:
+                            _isExporting ? Colors.grey : Colors.blue.shade600,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      ),
+                      icon:
+                          _isExporting
+                              ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                              : const Icon(Icons.download, size: 18),
+                      label: Text(
+                        _isExporting ? 'Exporting...' : 'Download',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  // Add Button
                   const SizedBox(width: 8.0),
                   SizedBox(
                     width: 120.0,
