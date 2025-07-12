@@ -23,7 +23,7 @@ class _$Supplier extends Supplier {
   final BuiltList<Ingredient>? ingredients;
 
   factory _$Supplier([void Function(SupplierBuilder)? updates]) =>
-      (new SupplierBuilder()..update(updates))._build();
+      (SupplierBuilder()..update(updates))._build();
 
   _$Supplier._(
       {this.supplierId,
@@ -34,13 +34,12 @@ class _$Supplier extends Supplier {
       this.createdAt,
       this.ingredients})
       : super._();
-
   @override
   Supplier rebuild(void Function(SupplierBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  SupplierBuilder toBuilder() => new SupplierBuilder()..replace(this);
+  SupplierBuilder toBuilder() => SupplierBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -112,7 +111,7 @@ class SupplierBuilder implements Builder<Supplier, SupplierBuilder> {
 
   ListBuilder<Ingredient>? _ingredients;
   ListBuilder<Ingredient> get ingredients =>
-      _$this._ingredients ??= new ListBuilder<Ingredient>();
+      _$this._ingredients ??= ListBuilder<Ingredient>();
   set ingredients(ListBuilder<Ingredient>? ingredients) =>
       _$this._ingredients = ingredients;
 
@@ -137,7 +136,6 @@ class SupplierBuilder implements Builder<Supplier, SupplierBuilder> {
 
   @override
   void replace(Supplier other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$Supplier;
   }
 
@@ -153,7 +151,7 @@ class SupplierBuilder implements Builder<Supplier, SupplierBuilder> {
     _$Supplier _$result;
     try {
       _$result = _$v ??
-          new _$Supplier._(
+          _$Supplier._(
             supplierId: supplierId,
             supplierName: supplierName,
             contactPhone: contactPhone,
@@ -168,7 +166,7 @@ class SupplierBuilder implements Builder<Supplier, SupplierBuilder> {
         _$failedField = 'ingredients';
         _ingredients?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'Supplier', _$failedField, e.toString());
       }
       rethrow;

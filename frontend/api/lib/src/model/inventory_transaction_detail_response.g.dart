@@ -22,8 +22,7 @@ class _$InventoryTransactionDetailResponse
   factory _$InventoryTransactionDetailResponse(
           [void Function(InventoryTransactionDetailResponseBuilder)?
               updates]) =>
-      (new InventoryTransactionDetailResponseBuilder()..update(updates))
-          ._build();
+      (InventoryTransactionDetailResponseBuilder()..update(updates))._build();
 
   _$InventoryTransactionDetailResponse._(
       {this.transactionId,
@@ -32,7 +31,6 @@ class _$InventoryTransactionDetailResponse
       this.unitPrice,
       this.totalCost})
       : super._();
-
   @override
   InventoryTransactionDetailResponse rebuild(
           void Function(InventoryTransactionDetailResponseBuilder) updates) =>
@@ -40,7 +38,7 @@ class _$InventoryTransactionDetailResponse
 
   @override
   InventoryTransactionDetailResponseBuilder toBuilder() =>
-      new InventoryTransactionDetailResponseBuilder()..replace(this);
+      InventoryTransactionDetailResponseBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -123,7 +121,6 @@ class InventoryTransactionDetailResponseBuilder
 
   @override
   void replace(InventoryTransactionDetailResponse other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$InventoryTransactionDetailResponse;
   }
 
@@ -138,7 +135,7 @@ class InventoryTransactionDetailResponseBuilder
 
   _$InventoryTransactionDetailResponse _build() {
     final _$result = _$v ??
-        new _$InventoryTransactionDetailResponse._(
+        _$InventoryTransactionDetailResponse._(
           transactionId: transactionId,
           ingredientId: ingredientId,
           quantity: quantity,

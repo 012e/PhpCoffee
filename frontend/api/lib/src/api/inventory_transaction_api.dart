@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:built_value/json_object.dart';
 import 'package:built_value/serializer.dart';
 import 'package:dio/dio.dart';
 
@@ -15,7 +14,6 @@ import 'package:api_client/src/model/inventory_transaction_response.dart';
 import 'package:built_collection/built_collection.dart';
 
 class InventoryTransactionApi {
-
   final Dio _dio;
 
   final Serializers _serializers;
@@ -23,7 +21,7 @@ class InventoryTransactionApi {
   const InventoryTransactionApi(this._dio, this._serializers);
 
   /// inventoryTransactionGet
-  /// 
+  ///
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
@@ -35,7 +33,8 @@ class InventoryTransactionApi {
   ///
   /// Returns a [Future] containing a [Response] with a [BuiltList<InventoryTransactionResponse>] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<BuiltList<InventoryTransactionResponse>>> inventoryTransactionGet({ 
+  Future<Response<BuiltList<InventoryTransactionResponse>>>
+      inventoryTransactionGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -73,11 +72,13 @@ class InventoryTransactionApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(BuiltList, [FullType(InventoryTransactionResponse)]),
-      ) as BuiltList<InventoryTransactionResponse>;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(
+                  BuiltList, [FullType(InventoryTransactionResponse)]),
+            ) as BuiltList<InventoryTransactionResponse>;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -101,10 +102,10 @@ class InventoryTransactionApi {
   }
 
   /// inventoryTransactionIdDelete
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [id] 
+  /// * [id]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -114,7 +115,7 @@ class InventoryTransactionApi {
   ///
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> inventoryTransactionIdDelete({ 
+  Future<Response<void>> inventoryTransactionIdDelete({
     required int id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -123,7 +124,8 @@ class InventoryTransactionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/InventoryTransaction/{id}'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(int)).toString());
+    final _path = r'/InventoryTransaction/{id}'.replaceAll('{' r'id' '}',
+        encodeQueryParameter(_serializers, id, const FullType(int)).toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -153,10 +155,10 @@ class InventoryTransactionApi {
   }
 
   /// inventoryTransactionIdGet
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [id] 
+  /// * [id]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -166,7 +168,7 @@ class InventoryTransactionApi {
   ///
   /// Returns a [Future] containing a [Response] with a [InventoryTransactionResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<InventoryTransactionResponse>> inventoryTransactionIdGet({ 
+  Future<Response<InventoryTransactionResponse>> inventoryTransactionIdGet({
     required int id,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -175,7 +177,8 @@ class InventoryTransactionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/InventoryTransaction/{id}'.replaceAll('{' r'id' '}', encodeQueryParameter(_serializers, id, const FullType(int)).toString());
+    final _path = r'/InventoryTransaction/{id}'.replaceAll('{' r'id' '}',
+        encodeQueryParameter(_serializers, id, const FullType(int)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -205,11 +208,12 @@ class InventoryTransactionApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(InventoryTransactionResponse),
-      ) as InventoryTransactionResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(InventoryTransactionResponse),
+            ) as InventoryTransactionResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -233,10 +237,10 @@ class InventoryTransactionApi {
   }
 
   /// inventoryTransactionPost
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [createInventoryTransactionRequest] 
+  /// * [createInventoryTransactionRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -246,7 +250,7 @@ class InventoryTransactionApi {
   ///
   /// Returns a [Future] containing a [Response] with a [InventoryTransaction] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<InventoryTransaction>> inventoryTransactionPost({ 
+  Future<Response<InventoryTransaction>> inventoryTransactionPost({
     CreateInventoryTransactionRequest? createInventoryTransactionRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -278,11 +282,13 @@ class InventoryTransactionApi {
 
     try {
       const _type = FullType(CreateInventoryTransactionRequest);
-      _bodyData = createInventoryTransactionRequest == null ? null : _serializers.serialize(createInventoryTransactionRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = createInventoryTransactionRequest == null
+          ? null
+          : _serializers.serialize(createInventoryTransactionRequest,
+              specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -305,11 +311,12 @@ class InventoryTransactionApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(InventoryTransaction),
-      ) as InventoryTransaction;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(InventoryTransaction),
+            ) as InventoryTransaction;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -331,5 +338,4 @@ class InventoryTransactionApi {
       extra: _response.extra,
     );
   }
-
 }

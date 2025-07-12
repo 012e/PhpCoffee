@@ -23,7 +23,7 @@ class _$Recipe extends Recipe {
   final BuiltList<RecipeIngredient>? recipeIngredients;
 
   factory _$Recipe([void Function(RecipeBuilder)? updates]) =>
-      (new RecipeBuilder()..update(updates))._build();
+      (RecipeBuilder()..update(updates))._build();
 
   _$Recipe._(
       {this.id,
@@ -34,13 +34,12 @@ class _$Recipe extends Recipe {
       this.menuItems,
       this.recipeIngredients})
       : super._();
-
   @override
   Recipe rebuild(void Function(RecipeBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  RecipeBuilder toBuilder() => new RecipeBuilder()..replace(this);
+  RecipeBuilder toBuilder() => RecipeBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -108,13 +107,13 @@ class RecipeBuilder implements Builder<Recipe, RecipeBuilder> {
 
   ListBuilder<MenuItem>? _menuItems;
   ListBuilder<MenuItem> get menuItems =>
-      _$this._menuItems ??= new ListBuilder<MenuItem>();
+      _$this._menuItems ??= ListBuilder<MenuItem>();
   set menuItems(ListBuilder<MenuItem>? menuItems) =>
       _$this._menuItems = menuItems;
 
   ListBuilder<RecipeIngredient>? _recipeIngredients;
   ListBuilder<RecipeIngredient> get recipeIngredients =>
-      _$this._recipeIngredients ??= new ListBuilder<RecipeIngredient>();
+      _$this._recipeIngredients ??= ListBuilder<RecipeIngredient>();
   set recipeIngredients(ListBuilder<RecipeIngredient>? recipeIngredients) =>
       _$this._recipeIngredients = recipeIngredients;
 
@@ -139,7 +138,6 @@ class RecipeBuilder implements Builder<Recipe, RecipeBuilder> {
 
   @override
   void replace(Recipe other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$Recipe;
   }
 
@@ -155,7 +153,7 @@ class RecipeBuilder implements Builder<Recipe, RecipeBuilder> {
     _$Recipe _$result;
     try {
       _$result = _$v ??
-          new _$Recipe._(
+          _$Recipe._(
             id: id,
             name: name,
             description: description,
@@ -172,7 +170,7 @@ class RecipeBuilder implements Builder<Recipe, RecipeBuilder> {
         _$failedField = 'recipeIngredients';
         _recipeIngredients?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'Recipe', _$failedField, e.toString());
       }
       rethrow;

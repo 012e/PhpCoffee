@@ -23,7 +23,7 @@ class _$OrderItem extends OrderItem {
   final Order? order;
 
   factory _$OrderItem([void Function(OrderItemBuilder)? updates]) =>
-      (new OrderItemBuilder()..update(updates))._build();
+      (OrderItemBuilder()..update(updates))._build();
 
   _$OrderItem._(
       {this.orderId,
@@ -34,13 +34,12 @@ class _$OrderItem extends OrderItem {
       this.item,
       this.order})
       : super._();
-
   @override
   OrderItem rebuild(void Function(OrderItemBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  OrderItemBuilder toBuilder() => new OrderItemBuilder()..replace(this);
+  OrderItemBuilder toBuilder() => OrderItemBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -107,11 +106,11 @@ class OrderItemBuilder implements Builder<OrderItem, OrderItemBuilder> {
   set totalPrice(double? totalPrice) => _$this._totalPrice = totalPrice;
 
   MenuItemBuilder? _item;
-  MenuItemBuilder get item => _$this._item ??= new MenuItemBuilder();
+  MenuItemBuilder get item => _$this._item ??= MenuItemBuilder();
   set item(MenuItemBuilder? item) => _$this._item = item;
 
   OrderBuilder? _order;
-  OrderBuilder get order => _$this._order ??= new OrderBuilder();
+  OrderBuilder get order => _$this._order ??= OrderBuilder();
   set order(OrderBuilder? order) => _$this._order = order;
 
   OrderItemBuilder() {
@@ -135,7 +134,6 @@ class OrderItemBuilder implements Builder<OrderItem, OrderItemBuilder> {
 
   @override
   void replace(OrderItem other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$OrderItem;
   }
 
@@ -151,7 +149,7 @@ class OrderItemBuilder implements Builder<OrderItem, OrderItemBuilder> {
     _$OrderItem _$result;
     try {
       _$result = _$v ??
-          new _$OrderItem._(
+          _$OrderItem._(
             orderId: orderId,
             itemId: itemId,
             quantity: quantity,
@@ -168,7 +166,7 @@ class OrderItemBuilder implements Builder<OrderItem, OrderItemBuilder> {
         _$failedField = 'order';
         _order?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'OrderItem', _$failedField, e.toString());
       }
       rethrow;

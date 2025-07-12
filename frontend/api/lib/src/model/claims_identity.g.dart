@@ -27,7 +27,7 @@ class _$ClaimsIdentity extends ClaimsIdentity {
   final String? roleClaimType;
 
   factory _$ClaimsIdentity([void Function(ClaimsIdentityBuilder)? updates]) =>
-      (new ClaimsIdentityBuilder()..update(updates))._build();
+      (ClaimsIdentityBuilder()..update(updates))._build();
 
   _$ClaimsIdentity._(
       {this.authenticationType,
@@ -40,14 +40,12 @@ class _$ClaimsIdentity extends ClaimsIdentity {
       this.nameClaimType,
       this.roleClaimType})
       : super._();
-
   @override
   ClaimsIdentity rebuild(void Function(ClaimsIdentityBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ClaimsIdentityBuilder toBuilder() =>
-      new ClaimsIdentityBuilder()..replace(this);
+  ClaimsIdentityBuilder toBuilder() => ClaimsIdentityBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -111,8 +109,7 @@ class ClaimsIdentityBuilder
       _$this._isAuthenticated = isAuthenticated;
 
   ClaimsIdentityBuilder? _actor;
-  ClaimsIdentityBuilder get actor =>
-      _$this._actor ??= new ClaimsIdentityBuilder();
+  ClaimsIdentityBuilder get actor => _$this._actor ??= ClaimsIdentityBuilder();
   set actor(ClaimsIdentityBuilder? actor) => _$this._actor = actor;
 
   JsonObject? _bootstrapContext;
@@ -121,7 +118,7 @@ class ClaimsIdentityBuilder
       _$this._bootstrapContext = bootstrapContext;
 
   ListBuilder<Claim>? _claims;
-  ListBuilder<Claim> get claims => _$this._claims ??= new ListBuilder<Claim>();
+  ListBuilder<Claim> get claims => _$this._claims ??= ListBuilder<Claim>();
   set claims(ListBuilder<Claim>? claims) => _$this._claims = claims;
 
   String? _label;
@@ -165,7 +162,6 @@ class ClaimsIdentityBuilder
 
   @override
   void replace(ClaimsIdentity other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$ClaimsIdentity;
   }
 
@@ -181,7 +177,7 @@ class ClaimsIdentityBuilder
     _$ClaimsIdentity _$result;
     try {
       _$result = _$v ??
-          new _$ClaimsIdentity._(
+          _$ClaimsIdentity._(
             authenticationType: authenticationType,
             isAuthenticated: isAuthenticated,
             actor: _actor?.build(),
@@ -201,7 +197,7 @@ class ClaimsIdentityBuilder
         _$failedField = 'claims';
         _claims?.build();
       } catch (e) {
-        throw new BuiltValueNestedFieldError(
+        throw BuiltValueNestedFieldError(
             r'ClaimsIdentity', _$failedField, e.toString());
       }
       rethrow;
