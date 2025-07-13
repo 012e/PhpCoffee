@@ -116,19 +116,8 @@ public class OrderController : Controller
     [HttpGet("{id}/payment-status")]
     [ProducesResponseType(typeof(PaymentStatusResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status408RequestTimeout)]
-    public async Task<ActionResult<PaymentStatusResponse>> ValidatePaymentStatus(int id,
-        [FromQuery] int timeoutSeconds = 30)
+    public async Task<ActionResult<PaymentStatusResponse>> ValidatePaymentStatus(int id)
     {
-        // Set a maximum timeout limit to prevent excessive resource usage
-        if (timeoutSeconds > 120)
-        {
-            timeoutSeconds = 120;
-        }
-
-        // Create a cancellation token that will timeout after specified seconds
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
-
         try
         {
             // Check if the order exists
@@ -143,72 +132,15 @@ public class OrderController : Controller
                 });
             }
 
-            // Poll for payment status changes
-            var startTime = DateTime.UtcNow;
+            // Get current payment status immediately (no long polling)
             string currentStatus = await GetCurrentPaymentStatus(id);
+            bool isPaid = currentStatus == "Da thanh toan";
 
-            // If already paid, return immediately
-            if (currentStatus == "Da thanh toan")
-            {
-                return Ok(new PaymentStatusResponse
-                {
-                    PaymentStatus = currentStatus,
-                    OrderId = id,
-                    IsPaid = true
-                });
-            }
-
-            // Long polling loop
-            while (!cts.Token.IsCancellationRequested)
-            {
-                // Wait a short time before checking again to avoid hammering the database
-                await Task.Delay(1000, cts.Token);
-
-                // Get latest payment status
-                string latestStatus = await GetCurrentPaymentStatus(id);
-
-                // If status changed to paid, return immediately
-                if (latestStatus == "Da thanh toan")
-                {
-                    return Ok(new PaymentStatusResponse
-                    {
-                        PaymentStatus = latestStatus,
-                        OrderId = id,
-                        IsPaid = true
-                    });
-                }
-
-                // If status changed at all, return the new status
-                if (latestStatus != currentStatus)
-                {
-                    return Ok(new PaymentStatusResponse
-                    {
-                        PaymentStatus = latestStatus,
-                        OrderId = id,
-                        IsPaid = false
-                    });
-                }
-            }
-
-            // If we reach here, we timed out without a status change
-            return StatusCode(StatusCodes.Status408RequestTimeout, new PaymentStatusResponse
+            return Ok(new PaymentStatusResponse
             {
                 PaymentStatus = currentStatus,
                 OrderId = id,
-                IsPaid = currentStatus == "Da thanh toan",
-                Message = "Long polling timed out. No payment status change detected."
-            });
-        }
-        catch (OperationCanceledException)
-        {
-            // Handle timeout
-            var finalStatus = await GetCurrentPaymentStatus(id);
-            return StatusCode(StatusCodes.Status408RequestTimeout, new PaymentStatusResponse
-            {
-                PaymentStatus = finalStatus,
-                OrderId = id,
-                IsPaid = finalStatus == "Da thanh toan",
-                Message = "Request timed out"
+                IsPaid = isPaid
             });
         }
         catch (Exception ex)

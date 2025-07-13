@@ -31,7 +31,7 @@ final selectedItemsWithDetailsProvider =
 typedef SelectedItemsWithDetailsRef =
     AutoDisposeProviderRef<SelectedItemsWithAmount>;
 String _$selectedItemsNotifierHash() =>
-    r'46c684333326290e7bd2c2e1934ed976b10c1cca';
+    r'4f8da410b533488c7c91bbf04fcccd71efb40cd3';
 
 /// See also [SelectedItemsNotifier].
 @ProviderFor(SelectedItemsNotifier)
