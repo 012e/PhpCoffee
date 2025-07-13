@@ -131,7 +131,9 @@ class _OrderPageState extends ConsumerState<OrderPage> {
         )
         .listen(
           (paymentStatus) {
-            print('Payment status update: ${paymentStatus.paymentStatus}, isPaid: ${paymentStatus.isPaid}'); // Debug
+            print(
+              'Payment status update: ${paymentStatus.paymentStatus}, isPaid: ${paymentStatus.isPaid}',
+            ); // Debug
             setState(() {
               _paymentStatus = paymentStatus;
             });
@@ -140,7 +142,9 @@ class _OrderPageState extends ConsumerState<OrderPage> {
             if (paymentStatus.isPaid == true ||
                 (paymentStatus.message != null &&
                     paymentStatus.message!.toLowerCase().contains('error'))) {
-              print('Stopping polling: isPaid=${paymentStatus.isPaid}, hasError=${paymentStatus.message?.contains('error')}'); // Debug
+              print(
+                'Stopping polling: isPaid=${paymentStatus.isPaid}, hasError=${paymentStatus.message?.contains('error')}',
+              ); // Debug
               setState(() {
                 _isPollingPayment = false;
               });
@@ -203,7 +207,7 @@ class _OrderPageState extends ConsumerState<OrderPage> {
     if (_createdOrder != null) {
       orderDescription = _createdOrder!.orderId.toString();
     }
-    
+
     final qrUrl =
         'https://qr.sepay.vn/img?acc=96247R3YHR&bank=BIDV&amount=$totalAmount&des=$orderDescription';
 
@@ -332,12 +336,17 @@ class _OrderPageState extends ConsumerState<OrderPage> {
                               if (_createdOrder != null) ...[
                                 const SizedBox(height: 16),
                                 ElevatedButton(
-                                  onPressed: _isPollingPayment 
-                                      ? null 
-                                      : () => _startPaymentPolling(_createdOrder!.orderId!),
-                                  child: Text(_isPollingPayment 
-                                      ? 'Polling...' 
-                                      : 'Test Polling'),
+                                  onPressed:
+                                      _isPollingPayment
+                                          ? null
+                                          : () => _startPaymentPolling(
+                                            _createdOrder!.orderId!,
+                                          ),
+                                  child: Text(
+                                    _isPollingPayment
+                                        ? 'Polling...'
+                                        : 'Test Polling',
+                                  ),
                                 ),
                               ],
                             ],
