@@ -7,7 +7,7 @@ part of 'menu_item_form_data.dart';
 // **************************************************************************
 
 String _$menuItemFormDataNotifierHash() =>
-    r'b07b298d8c9e6b920fe1115cea5f414c862981be';
+    r'efeab1d5d4b99c9334b48dcb72bf21abee3269ec';
 
 /// See also [MenuItemFormDataNotifier].
 @ProviderFor(MenuItemFormDataNotifier)

@@ -24,7 +24,9 @@ public class MenuItemController : ControllerBase
         StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<MenuItemResponse>>> GetMenuItems()
     {
-        var menuItems = await _context.MenuItems.ToListAsync();
+        var menuItems = await _context.MenuItems
+    .Where(m => m.IsActive == true)
+    .ToListAsync();
         return Ok(_menuItemMapper.MenuItemsToMenuItemResponses(menuItems));
     }
     //Lấy phần tử theo id 
@@ -34,7 +36,9 @@ public class MenuItemController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MenuItemResponse>> GetMenuItem(int id)
     {
-        var menuItem = await _context.MenuItems.FindAsync(id);
+        var menuItem = await _context.MenuItems
+        .FirstOrDefaultAsync(m => m.ItemId == id && m.IsActive == true);
+
         if (menuItem == null)
         {
             return NotFound();
@@ -43,13 +47,11 @@ public class MenuItemController : ControllerBase
     }
     //Thêm mới 1 item
     [HttpPost]
-    [ProducesResponseType(typeof(MenuItemResponse),
-        StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(MenuItemResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<MenuItem>> CreateMenuItem(CreateMenuItemRequest menuItemRequest)
     {
         using var transaction = await _context.Database.BeginTransactionAsync();
-
         try
         {
             var newRecipe = _menuItemMapper.CreateRecipeInMenu(menuItemRequest.Recipe);
@@ -66,6 +68,7 @@ public class MenuItemController : ControllerBase
                 _context.RecipeIngredients.Add(RecipeIngredientMap);
             }
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
             var response = _menuItemMapper.MenuItemToMenuItemResponse(newItem);
             return CreatedAtAction(nameof(GetMenuItem), new { id = newItem.ItemId }, response);
         }
@@ -75,6 +78,7 @@ public class MenuItemController : ControllerBase
             return BadRequest("Failed to create menu item: " + ex.Message);
         }
     }
+
     private bool Exists(int? id)
     {
         // Kiểm tra xem supplier có tồn tại trong database hay không
@@ -83,21 +87,16 @@ public class MenuItemController : ControllerBase
 
     //Delete
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteMenuItem(int id)
+    [ProducesResponseType(typeof(MenuItemResponse), 200)]
+    [ProducesResponseType(204)]
+    public async Task<ActionResult<MenuItemResponse>> DeleteMenuItem(int id)
     {
         var menuItem = await _context.MenuItems.FindAsync(id);
         if (menuItem == null)
         {
-            return NotFound(new ProblemDetails
-            {
-                Detail = $"MenuItem with ID {id} not found",
-                Title = "Resource Not Found",
-                Status = 404,
-            });
+            return NoContent();
         }
-        _context.MenuItems.Remove(menuItem);
+        menuItem.IsActive = false;
         await _context.SaveChangesAsync();
         return NoContent();
     }

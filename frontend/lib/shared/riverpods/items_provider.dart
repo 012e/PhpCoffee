@@ -27,7 +27,7 @@ class ItemList extends _$ItemList {
     final api = GetIt.I<MenuItemApi>();
     final response = await api.menuItemIdDelete(id: itemId);
 
-    if (response.statusCode == 204) {
+    if (response.statusCode != 500) {
       // Refresh the list after successful deletion
       ref.invalidateSelf();
     } else {
@@ -37,12 +37,14 @@ class ItemList extends _$ItemList {
 
   Future<MenuItemResponse?> getItemById(int itemId) async {
     final api = GetIt.I<MenuItemApi>();
-    final response = await api.menuItemIdGet(id: itemId);
+    final response = await api.menuItemIdGet(
+      id: itemId,
+      validateStatus: (status) {
+        return status == 204;
+      },
+    );
 
-    if (response.statusCode == 200) {
-      return response.data;
-    }
-    return null;
+    return response.data;
   }
 
   Future<MenuItemResponse> createMenuItem(CreateMenuItemRequest request) async {
