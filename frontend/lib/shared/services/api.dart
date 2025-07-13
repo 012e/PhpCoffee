@@ -1,5 +1,6 @@
 import 'package:api_client/api_client.dart';
 import 'package:dio/dio.dart';
+import 'package:frontend/shared/services/dashboard_service.dart';
 import 'package:get_it/get_it.dart';
 
 void setupApis() {
@@ -23,4 +24,7 @@ void setupApis() {
 
   final HealthCheckApi healthCheckApi = apiClient.getHealthCheckApi();
   getIt.registerSingleton<HealthCheckApi>(healthCheckApi);
+
+  final DashboardService dashboardService = DashboardService();
+  getIt.registerSingleton<DashboardService>(dashboardService);
 }
