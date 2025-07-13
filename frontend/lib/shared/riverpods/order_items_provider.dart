@@ -117,13 +117,17 @@ class SelectedItemsNotifier extends _$SelectedItemsNotifier {
           // No timeout parameter needed since backend now returns immediately
         );
 
-        print('Response status: ${response.statusCode}, data: ${response.data}'); // Debug
+        print(
+          'Response status: ${response.statusCode}, data: ${response.data}',
+        ); // Debug
         if (response.statusCode == 200 && response.data != null) {
           final paymentStatus = response.data!;
 
           // Only yield if status changed or if it's the first check
           if (lastKnownStatus != paymentStatus.paymentStatus) {
-            print('Status changed from $lastKnownStatus to ${paymentStatus.paymentStatus}'); // Debug
+            print(
+              'Status changed from $lastKnownStatus to ${paymentStatus.paymentStatus}',
+            ); // Debug
             lastKnownStatus = paymentStatus.paymentStatus;
             yield paymentStatus;
 
