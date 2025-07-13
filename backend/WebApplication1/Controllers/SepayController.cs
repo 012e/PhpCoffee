@@ -24,35 +24,42 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Webhook([FromBody] SepayResponse sepayResponse)
         {
-            string[] content = sepayResponse.Content.Split(' ');
-            int paymentId = int.Parse(content[^1]);
-            var payment = await _context.Payments.Include(x => x.Order).FirstOrDefaultAsync(x => x.PaymentId == paymentId);
-            if (payment == null)
+            string[] content = sepayResponse.Content.Split(';');
+            int orderId = int.Parse(content[^1]); // This is the Order ID, not Payment ID
+            var order = await _context.Orders
+                .Include(x => x.Payments)
+                .FirstOrDefaultAsync(x => x.OrderId == orderId);
+            
+            if (order == null)
             {
                 return StatusCode(200, new { success = true, message = "Order not found" });
             }
             else
             {
-                payment.Order.Remaining -= sepayResponse.TransferAmount;
-                if (payment.Order.Remaining == 0)
+                order.Remaining -= sepayResponse.TransferAmount;
+                if (order.Remaining <= 0)
                 {
-                    payment.Order.PaymentStatus = "Da thanh toan";
-                    _context.Update(payment.Order);
+                    order.PaymentStatus = "Da thanh toan";
+                    order.Remaining = 0; // Ensure it doesn't go negative
+                    _context.Update(order);
                 }
                 else
                 {
-                    _context.Update(payment.Order);
+                    _context.Update(order);
                     await _context.SaveChangesAsync();
                     var newPayment = new Payment();
-                    newPayment.Amount = payment.Order.Remaining;
-                    newPayment.OrderId = payment.Order.OrderId;
+                    newPayment.Amount = order.Remaining;
+                    newPayment.OrderId = order.OrderId;
                     newPayment.PaymentMethod = "Chuyen khoan";
                     _context.Add(newPayment);
                 }
 
                 await _context.SaveChangesAsync();
+                
+                // Log for debugging
+                Console.WriteLine($"Webhook processed: Order {orderId}, Status: {order.PaymentStatus}, Remaining: {order.Remaining}");
             }
-            return StatusCode(201, new { success = true }); ;
+            return StatusCode(200, new { success = true }); // Changed to 200 as per webhook standards
         }
     }
 }
