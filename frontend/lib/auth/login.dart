@@ -88,7 +88,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final tokenResponse = await authenticate(uri, clientId, scopes);
       ref
           .read(authNotifierProvider.notifier)
-          .login(accessToken: tokenResponse.accessToken);
+          .login(
+            accessToken: tokenResponse.accessToken,
+            idToken: tokenResponse.idToken?.toCompactSerialization(),
+          );
       await Future.delayed(const Duration(milliseconds: 500));
       await router.navigatePath("/");
     }

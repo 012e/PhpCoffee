@@ -12,9 +12,13 @@ class SettingListPage extends ConsumerWidget {
   SettingListPage({super.key});
   final tokenStorage = GetIt.I<TokenService>();
 
-  Future<void> _logout(WidgetRef ref) async {
-    await tokenStorage.removetoken();
-    ref.read(authNotifierProvider.notifier).logout();
+  Future<void> _logout(WidgetRef ref, BuildContext context) async {
+    // Use federated logout with Auth0 OIDC
+    // Set federated: true to also log out of identity provider (Google, etc.)
+    await ref.read(authNotifierProvider.notifier).logout(
+      postLogoutRedirectUri: null, // Could be set to a specific URL if needed
+      federated: true, // This will log the user out of their identity provider too
+    );
   }
 
   @override
@@ -120,7 +124,7 @@ class SettingListPage extends ConsumerWidget {
             TextButton(
               onPressed: () async {
                 Navigator.of(dialogContext).pop(); // close dialog
-                await _logout(ref); // perform logout
+                await _logout(ref, context); // perform logout
                 router.navigatePath("/auth/login");
               },
               style: TextButton.styleFrom(foregroundColor: dangerColor),
