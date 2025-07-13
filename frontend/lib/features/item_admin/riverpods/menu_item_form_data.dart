@@ -34,6 +34,9 @@ class MenuItemFormData {
 class MenuItemFormDataNotifier extends _$MenuItemFormDataNotifier {
   @override
   MenuItemFormData build() {
+    // Keep the provider alive to prevent auto-disposal during navigation
+    ref.keepAlive();
+    
     return const MenuItemFormData(
       itemName: '',
       description: '',

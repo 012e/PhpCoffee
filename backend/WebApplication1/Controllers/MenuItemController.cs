@@ -87,23 +87,18 @@ public class MenuItemController : ControllerBase
 
     //Delete
     [HttpDelete("{id}")]
-    [ProducesResponseType(typeof(MenuItemResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(MenuItemResponse), 200)]
+    [ProducesResponseType(204)]
     public async Task<ActionResult<MenuItemResponse>> DeleteMenuItem(int id)
     {
         var menuItem = await _context.MenuItems.FindAsync(id);
         if (menuItem == null)
         {
-            return NotFound(new ProblemDetails
-            {
-                Detail = $"MenuItem with ID {id} not found",
-                Title = "Resource Not Found",
-                Status = 404,
-            });
+            return NoContent();
         }
         menuItem.IsActive = false;
         await _context.SaveChangesAsync();
-        return await GetMenuItem(id);
+        return NoContent();
     }
     [HttpGet("export-excel-closedxml")]
     public async Task<IActionResult> ExportMenuItemsToExcel_ClosedXML()
