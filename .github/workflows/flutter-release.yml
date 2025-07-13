@@ -25,7 +25,7 @@ jobs:
         with:
           cache: true
           channel: stable
-          flutter-version: 3.29.1
+          flutter-version: 3.32.6
       
       - name: Enable desktop support
         run: flutter config --enable-linux-desktop
