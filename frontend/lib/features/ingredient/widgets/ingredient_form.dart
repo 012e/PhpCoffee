@@ -67,18 +67,16 @@ class _IngredientFormDialogState extends ConsumerState<IngredientFormDialog> {
       try {
         if (_isEditMode) {
           // Handle update
-          final UpdateIngredientRequest updateIngredientRequest =
-              UpdateIngredientRequest(
-                (b) =>
-                    b
-                      ..ingredientName = formData['ingredientName'] as String
-                      ..unit = formData['unit'] as String
-                      ..currentQuantity = double.parse(
-                        formData['currentQuantity'],
-                      )
-                      ..currentQuantity = double.parse(formData['quantity'])
-                      ..supplierId = int.parse(formData['supplierId']),
-              );
+          final UpdateIngredientRequest
+          updateIngredientRequest = UpdateIngredientRequest(
+            (b) =>
+                b
+                  ..ingredientName = formData['ingredientName'] as String
+                  ..unit = formData['unit'] as String
+                  ..currentQuantity = double.parse(formData['currentQuantity'])
+                  ..currentQuantity = double.parse(formData['currentQuantity'])
+                  ..supplierId = int.parse(formData['supplierId']),
+          );
 
           await ref
               .read(ingredientListProvider.notifier)
@@ -108,13 +106,13 @@ class _IngredientFormDialogState extends ConsumerState<IngredientFormDialog> {
               CreateIngredientRequest(
                 (b) =>
                     b
-                      ..name = formData['name'] as String
+                      ..name = formData['ingredientName'] as String
                       ..ingredientName = formData['ingredientName'] as String
                       ..unit = formData['unit'] as String
                       ..currentQuantity = double.parse(
                         formData['currentQuantity'],
                       )
-                      ..quantity = double.parse(formData['quantity'])
+                      ..quantity = double.parse(formData['currentQuantity'])
                       ..supplierId = int.parse(formData['supplierId']),
               );
 
@@ -288,19 +286,6 @@ class _IngredientFormDialogState extends ConsumerState<IngredientFormDialog> {
                   child: Column(
                     children: [
                       FormBuilderTextField(
-                        name: 'name',
-                        decoration: const InputDecoration(
-                          labelText: 'Name',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.label),
-                        ),
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                          FormBuilderValidators.minLength(2),
-                        ]),
-                      ),
-                      const SizedBox(height: 16),
-                      FormBuilderTextField(
                         name: 'ingredientName',
                         decoration: const InputDecoration(
                           labelText: 'Ingredient Name',
@@ -329,20 +314,6 @@ class _IngredientFormDialogState extends ConsumerState<IngredientFormDialog> {
                           labelText: 'Current Quantity',
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.inventory),
-                        ),
-                        keyboardType: TextInputType.number,
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(),
-                          FormBuilderValidators.numeric(),
-                        ]),
-                      ),
-                      const SizedBox(height: 16),
-                      FormBuilderTextField(
-                        name: 'quantity',
-                        decoration: const InputDecoration(
-                          labelText: 'Quantity',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.add_shopping_cart),
                         ),
                         keyboardType: TextInputType.number,
                         validator: FormBuilderValidators.compose([
